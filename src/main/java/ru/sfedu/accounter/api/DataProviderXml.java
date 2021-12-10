@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class DataProviderXml implements IDataProvider {
     private final String PATH_TO_XML = ConfigurationUtil.getConfigurationEntry(Constants.PATH_TO_XML);
@@ -222,6 +223,56 @@ public class DataProviderXml implements IDataProvider {
             return new Result(ResultType.Error, Constants.RESULT_MESSAGE_WRITING_ERROR);
         }
         return new Result(ResultType.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+    }
+
+    public void manageBalance() {
+        log.info(calculateBalance());
+        log.info(displayIncomesAndOutcomes());
+        Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();
+        long transactionId = scanner.nextLong();
+        switch (option) {
+            case 1: log.info(repeatTransaction(transactionId));
+            case 2: log.info(makePlanBasedOnTransaction(transactionId));
+        }
+    }
+
+    public Balance calculateBalance() {
+        List<Balance> list = getAllBalance();
+        return list.get(list.size() - 1);
+    }
+
+    public List<Transaction> displayIncomesAndOutcomes() {
+        return getAllTransaction();
+    }
+
+    public Transaction repeatTransaction(long transactionId) {
+        return appendTransaction(getTransactionById(transactionId));
+    }
+
+    public Plan makePlanBasedOnTransaction(long transactionId) {
+        Scanner scanner = new Scanner(System.in);
+        String startDate = scanner.next();
+        String name = scanner.next();
+        String period = scanner.next();
+        return appendPlan(new Plan(startDate, name, period, getTransactionById(transactionId)));
+    }
+
+    public void managePlans() {
+        log.info(displayPlans());
+        Scanner scanner = new Scanner(System.in);
+        boolean execute = scanner.nextBoolean();
+        long planId = scanner.nextLong();
+        if (execute)
+            executePlanNow(planId);
+    }
+
+    public List<Plan> displayPlans() {
+        return getAllPlan();
+    }
+
+    public Transaction executePlanNow(long planId) {
+        return appendTransaction(getPlanById(planId).getTransaction());
     }
 }
 
