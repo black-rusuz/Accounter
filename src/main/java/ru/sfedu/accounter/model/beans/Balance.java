@@ -4,10 +4,12 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Class Balance
  */
+@Element
 public class Balance implements Serializable {
 
     //
@@ -17,8 +19,6 @@ public class Balance implements Serializable {
     @Attribute
     private long id;
 
-    // String is temporarily used because SimpleXml does not serialize LocalDateTime
-    // TODO: Change to LocalDateTime
     @Element
     private String time;
 
@@ -29,13 +29,14 @@ public class Balance implements Serializable {
     // Constructors
     //
 
-    public Balance () { };
+    public Balance() {
+    }
 
-    public Balance (String time, double value) {
+    public Balance(String time, double value) {
         setId();
         setTime(time);
         setValue(value);
-    };
+    }
 
     //
     // Methods
@@ -49,55 +50,61 @@ public class Balance implements Serializable {
     /**
      * Set the value of id System.currenttimemillis()
      */
-    public void setId () {
+    public void setId() {
         id = System.currentTimeMillis();
     }
 
     /**
      * Set the value of id
+     *
      * @param newVar the new value of id
      */
-    public void setId (long newVar) {
+    public void setId(long newVar) {
         id = newVar;
     }
 
     /**
      * Get the value of id
+     *
      * @return the value of id
      */
-    public long getId () {
+    public long getId() {
         return id;
     }
 
     /**
      * Set the value of time
+     *
      * @param newVar the new value of time
      */
-    public void setTime (String newVar) {
+    public void setTime(String newVar) {
         time = newVar;
     }
 
     /**
      * Get the value of time
+     *
      * @return the value of time
      */
-    public String getTime () {
+    public String getTime() {
         return time;
     }
 
     /**
      * Set the value of value
+     *
      * @param newVar the new value of value
      */
-    public void setValue (double newVar) {
+    public void setValue(double newVar) {
         value = newVar;
     }
 
     /**
      * Get the value of value
+     *
      * @return the value of value
      */
-    public double getValue () {
+    public double getValue() {
         return value;
     }
 
@@ -105,4 +112,26 @@ public class Balance implements Serializable {
     // Other methods
     //
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Balance balance)) return false;
+        return getId() == balance.getId()
+                && Double.compare(balance.getValue(), getValue()) == 0
+                && Objects.equals(getTime(), balance.getTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTime(), getValue());
+    }
+
+    @Override
+    public String toString() {
+        return "Balance{" +
+                "id=" + getId() +
+                ", time='" + getTime() + '\'' +
+                ", value=" + getValue() +
+                '}';
+    }
 }

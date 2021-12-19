@@ -1,24 +1,24 @@
 package ru.sfedu.accounter.model;
 
 public class Result {
-    private ResultType resultType;
+    private ResultState resultState;
     private String message;
 
-    public Result(ResultType resultType, String message) {
-        this.resultType = resultType;
+    public Result(ResultState resultState, String message) {
+        this.resultState = resultState;
         this.message = message;
     }
 
-    public void setResultState(ResultType resultType) {
-        this.resultType = resultType;
+    public void setResultState(ResultState resultState) {
+        this.resultState = resultState;
     }
 
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public ResultType getResultState() {
-        return resultType;
+    public ResultState getResultState() {
+        return resultState;
     }
 
     public String getMessage() {
@@ -27,6 +27,6 @@ public class Result {
 
     @Override
     public String toString() {
-        return "Result{resultState=" + resultType + ", message=: " + message + "}";
+        return "Result{resultState=" + resultState + ", message=: " + message + "}";
     }
 }

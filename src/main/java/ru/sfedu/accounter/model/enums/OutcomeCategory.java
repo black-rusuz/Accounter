@@ -1,4 +1,4 @@
-package ru.sfedu.accounter.model.beans;
+package ru.sfedu.accounter.model.enums;
 
 public enum OutcomeCategory {
     Transport,

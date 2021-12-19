@@ -1,6 +1,6 @@
 package ru.sfedu.accounter.model;
 
-public enum ResultType {
+public enum ResultState {
     Success,
     Warning,
     Error
