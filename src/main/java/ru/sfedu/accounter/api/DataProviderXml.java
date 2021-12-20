@@ -1,12 +1,9 @@
 package ru.sfedu.accounter.api;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import ru.sfedu.accounter.Constants;
 import ru.sfedu.accounter.model.Result;
-import ru.sfedu.accounter.model.ResultType;
 import ru.sfedu.accounter.model.XmlWrapper;
 import ru.sfedu.accounter.model.beans.Balance;
 import ru.sfedu.accounter.model.beans.Plan;
@@ -19,19 +16,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class DataProviderXml implements IDataProvider {
-    private final String PATH_TO_XML = ConfigurationUtil.getConfigurationEntry(Constants.PATH_TO_XML);
-    private final String XML_FILE_EXTENSION = ConfigurationUtil.getConfigurationEntry(Constants.XML_FILE_EXTENSION);
+public class DataProviderXml extends AbstractDataProvider implements IDataProvider {
+    private final String XML_PATH = ConfigurationUtil.getConfigurationEntry(Constants.XML_PATH);
+    private final String XML_EXTENSION = ConfigurationUtil.getConfigurationEntry(Constants.XML_EXTENSION);
+    private final Serializer serializer = new Persister();
 
-    private static final Serializer serializer = new Persister();
-    private static final Logger log = LogManager.getLogger(DataProviderXml.class);
-
-    public DataProviderXml() throws IOException {}
+    public DataProviderXml() throws IOException {
+    }
 
     private File initFile(String name) throws IOException {
-        String path = PATH_TO_XML + name + XML_FILE_EXTENSION;
+        String path = XML_PATH + name + XML_EXTENSION;
         File file = new File(path);
         if (!file.exists()) {
             file.getParentFile().mkdirs();
@@ -43,6 +38,7 @@ public class DataProviderXml implements IDataProvider {
 
     private <T> List<T> read(Class<T> bean) {
         String name = bean.getSimpleName();
+        List<T> list = new ArrayList<T>();
         if (!bean.getSuperclass().equals(Object.class))
             name = bean.getSuperclass().getSimpleName();
         try {
@@ -50,9 +46,10 @@ public class DataProviderXml implements IDataProvider {
             FileReader fileReader = new FileReader(file);
             XmlWrapper<T> xmlWrapper = serializer.read(XmlWrapper.class, fileReader);
             fileReader.close();
-            return xmlWrapper.getList();
-        } catch (Exception ignored) {}
-        return new ArrayList<T>();
+            list = xmlWrapper.getList();
+        } catch (Exception ignored) {
+        }
+        return list;
     }
 
     private <T> Result write(List<T> list) {
@@ -67,41 +64,43 @@ public class DataProviderXml implements IDataProvider {
             serializer.write(xmlWrapper, fileWriter);
             fileWriter.close();
         } catch (Exception e) {
-            return new Result(ResultType.Error, Constants.RESULT_MESSAGE_WRITING_ERROR + e.getMessage());
+            sendLogs("write", list.get(list.size() - 1), Result.State.Error);
+            return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR + e.getMessage());
         }
-        return new Result(ResultType.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        sendLogs("write", list.get(list.size() - 1), Result.State.Success);
+        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 
-    @Override
     public List<Balance> getAllBalance() {
+        ArrayList<Balance> list = new ArrayList<>();
         try {
-            return read(Balance.class);
-        } catch (Exception ignored) {}
-        return new ArrayList<Balance>();
+            list = (ArrayList<Balance>) read(Balance.class);
+        } catch (Exception ignored) {
+        }
+        return list;
     }
 
-    @Override
     public Balance getBalanceById(long id) {
         List<Balance> list = getAllBalance().stream().filter(a -> a.getId() == id).toList();
         return list.isEmpty() ? null : list.get(0);
     }
 
-    @Override
     public Balance appendBalance(Balance balance) {
         try {
             if (getBalanceById(balance.getId()) != null)
                 balance.setId();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         List<Balance> list = getAllBalance();
         list.add(balance);
         write(list);
         return balance;
     }
 
-    @Override
     public Result deleteBalance(long id) {
-        if (getBalanceById(id) == null) {
-            return new Result(ResultType.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        Balance balance = getBalanceById(id);
+        if (balance == null) {
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
         List<Balance> list;
         list = getAllBalance();
@@ -109,50 +108,50 @@ public class DataProviderXml implements IDataProvider {
         return write(list);
     }
 
-    @Override
     public Result updateBalance(Balance balance) {
-        if (getBalanceById(balance.getId()) == null) {
-            return new Result(ResultType.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        long id = balance.getId();
+        if (getBalanceById(id) == null) {
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
         try {
-            deleteBalance(balance.getId());
+            deleteBalance(id);
             appendBalance(balance);
         } catch (Exception e) {
-            return new Result(ResultType.Error, Constants.RESULT_MESSAGE_WRITING_ERROR);
+            return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR);
         }
-        return new Result(ResultType.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 
-    @Override
     public List<Plan> getAllPlan() {
+        ArrayList<Plan> list = new ArrayList<>();
         try {
-            return read(Plan.class);
-        } catch (Exception ignored) {}
-        return new ArrayList<Plan>();
+            list = (ArrayList<Plan>) read(Plan.class);
+        } catch (Exception ignored) {
+        }
+        return list;
     }
 
-    @Override
     public Plan getPlanById(long id) {
         List<Plan> list = getAllPlan().stream().filter(a -> a.getId() == id).toList();
         return list.isEmpty() ? null : list.get(0);
     }
 
-    @Override
     public Plan appendPlan(Plan plan) {
         try {
             if (getPlanById(plan.getId()) != null)
                 plan.setId();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         List<Plan> list = getAllPlan();
         list.add(plan);
         write(list);
         return plan;
     }
 
-    @Override
     public Result deletePlan(long id) {
-        if (getPlanById(id) == null) {
-            return new Result(ResultType.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        Plan plan = getPlanById(id);
+        if (plan == null) {
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
         List<Plan> list;
         list = getAllPlan();
@@ -160,50 +159,50 @@ public class DataProviderXml implements IDataProvider {
         return write(list);
     }
 
-    @Override
     public Result updatePlan(Plan plan) {
-        if (getPlanById(plan.getId()) == null) {
-            return new Result(ResultType.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        long id = plan.getId();
+        if (getPlanById(id) == null) {
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
         try {
-            deletePlan(plan.getId());
+            deletePlan(id);
             appendPlan(plan);
         } catch (Exception e) {
-            return new Result(ResultType.Error, Constants.RESULT_MESSAGE_WRITING_ERROR);
+            return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR);
         }
-        return new Result(ResultType.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 
-    @Override
     public List<Transaction> getAllTransaction() {
+        ArrayList<Transaction> list = new ArrayList<>();
         try {
-            return read(Transaction.class);
-        } catch (Exception ignored) {}
-        return new ArrayList<Transaction>();
+            list = (ArrayList<Transaction>) read(Transaction.class);
+        } catch (Exception ignored) {
+        }
+        return list;
     }
 
-    @Override
     public Transaction getTransactionById(long id) {
         List<Transaction> list = getAllTransaction().stream().filter(a -> a.getId() == id).toList();
         return list.isEmpty() ? null : list.get(0);
     }
 
-    @Override
     public Transaction appendTransaction(Transaction transaction) {
         try {
             if (getTransactionById(transaction.getId()) != null)
                 transaction.setId();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         List<Transaction> list = getAllTransaction();
         list.add(transaction);
         write(list);
         return transaction;
     }
 
-    @Override
     public Result deleteTransaction(long id) {
-        if (getTransactionById(id) == null) {
-            return new Result(ResultType.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        Transaction transaction = getTransactionById(id);
+        if (transaction == null) {
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
         List<Transaction> list;
         list = getAllTransaction();
@@ -211,83 +210,17 @@ public class DataProviderXml implements IDataProvider {
         return write(list);
     }
 
-    @Override
     public Result updateTransaction(Transaction transaction) {
-        if (getTransactionById(transaction.getId()) == null) {
-            return new Result(ResultType.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        long id = transaction.getId();
+        if (getTransactionById(id) == null) {
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
         try {
-            deleteTransaction(transaction.getId());
+            deleteTransaction(id);
             appendTransaction(transaction);
         } catch (Exception e) {
-            return new Result(ResultType.Error, Constants.RESULT_MESSAGE_WRITING_ERROR);
+            return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR);
         }
-        return new Result(ResultType.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
-    }
-
-    public void manageBalance() {
-        log.info(calculateBalance());
-        log.info(displayIncomesAndOutcomes());
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
-        long transactionId = scanner.nextLong();
-        switch (option) {
-            case 1: log.info(repeatTransaction(transactionId));
-            case 2: log.info(makePlanBasedOnTransaction(transactionId));
-        }
-    }
-
-    public Balance calculateBalance() {
-        List<Balance> list = getAllBalance();
-        return list.get(list.size() - 1);
-    }
-
-    public List<Transaction> displayIncomesAndOutcomes() {
-        return getAllTransaction();
-    }
-
-    public Transaction repeatTransaction(long transactionId) {
-        return appendTransaction(getTransactionById(transactionId));
-    }
-
-    public Plan makePlanBasedOnTransaction(long transactionId) {
-        Scanner scanner = new Scanner(System.in);
-        String startDate = scanner.next();
-        String name = scanner.next();
-        String period = scanner.next();
-        return appendPlan(new Plan(startDate, name, period, getTransactionById(transactionId)));
-    }
-
-    public void managePlans() {
-        log.info(displayPlans());
-        Scanner scanner = new Scanner(System.in);
-        boolean execute = scanner.nextBoolean();
-        long planId = scanner.nextLong();
-        if (execute)
-            executePlanNow(planId);
-    }
-
-    public List<Plan> displayPlans() {
-        return getAllPlan();
-    }
-
-    public Transaction executePlanNow(long planId) {
-        return appendTransaction(getPlanById(planId).getTransaction());
+        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

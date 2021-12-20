@@ -1,24 +1,26 @@
 package ru.sfedu.accounter.model;
 
+import java.util.Objects;
+
 public class Result {
-    private ResultState resultState;
+    private State state;
     private String message;
 
-    public Result(ResultState resultState, String message) {
-        this.resultState = resultState;
+    public Result(State state, String message) {
+        this.state = state;
         this.message = message;
     }
 
-    public void setResultState(ResultState resultState) {
-        this.resultState = resultState;
+    public void setState(Result.State state) {
+        this.state = state;
     }
 
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public ResultState getResultState() {
-        return resultState;
+    public State getState() {
+        return state;
     }
 
     public String getMessage() {
@@ -27,6 +29,24 @@ public class Result {
 
     @Override
     public String toString() {
-        return "Result{resultState=" + resultState + ", message=: " + message + "}";
+        return "Result{state=" + state + ", message=: " + message + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Result result)) return false;
+        return getState() == result.getState() && Objects.equals(getMessage(), result.getMessage());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getState(), getMessage());
+    }
+
+    public enum State {
+        Success,
+        Warning,
+        Error
     }
 }
