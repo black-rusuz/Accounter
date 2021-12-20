@@ -46,6 +46,14 @@ public class Plan implements Serializable {
         setTransaction(transaction);
     }
 
+    public Plan(long id, String startDate, String name, String period, Transaction transaction) {
+        setId(id);
+        setStartDate(startDate);
+        setName(name);
+        setPeriod(period);
+        setTransaction(transaction);
+    }
+
     //
     // Methods
     //

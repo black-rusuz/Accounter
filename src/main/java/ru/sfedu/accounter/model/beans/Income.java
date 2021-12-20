@@ -36,6 +36,15 @@ public class Income extends Transaction implements Serializable {
         setIncomeCategory(incomeCategory);
     }
 
+    public Income(long id, String time, double value, String name, Balance newBalance, IncomeCategory incomeCategory) {
+        setId(id);
+        setTime(time);
+        setValue(value);
+        setName(name);
+        setNewBalance(newBalance);
+        setIncomeCategory(incomeCategory);
+    }
+
     //
     // Methods
     //

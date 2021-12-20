@@ -38,14 +38,6 @@ abstract public class Transaction implements Serializable {
     public Transaction() {
     }
 
-    public Transaction(String time, double value, String name, Balance newBalance) {
-        setId();
-        setTime(time);
-        setValue(value);
-        setName(name);
-        setNewBalance(newBalance);
-    }
-
     //
     // Methods
     //

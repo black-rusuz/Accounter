@@ -38,6 +38,12 @@ public class Balance implements Serializable {
         setValue(value);
     }
 
+    public Balance(long id, String time, double value) {
+        setId(id);
+        setTime(time);
+        setValue(value);
+    }
+
     //
     // Methods
     //

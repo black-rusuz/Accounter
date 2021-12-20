@@ -36,6 +36,15 @@ public class Outcome extends Transaction implements Serializable {
         setOutcomeCategory(outcomeCategory);
     }
 
+    public Outcome(long id, String time, double value, String name, Balance newBalance, OutcomeCategory outcomeCategory) {
+        setId(id);
+        setTime(time);
+        setValue(value);
+        setName(name);
+        setNewBalance(newBalance);
+        setOutcomeCategory(outcomeCategory);
+    }
+
     //
     // Methods
     //

@@ -64,10 +64,10 @@ public class DataProviderXml extends AbstractDataProvider implements IDataProvid
             serializer.write(xmlWrapper, fileWriter);
             fileWriter.close();
         } catch (Exception e) {
-            sendLogs("write", list.get(list.size() - 1), Result.State.Error);
+            sendLogs(Constants.METHOD_NAME_WRITE, list.get(list.size() - 1), Result.State.Error);
             return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR + e.getMessage());
         }
-        sendLogs("write", list.get(list.size() - 1), Result.State.Success);
+        sendLogs(Constants.METHOD_NAME_WRITE, list.get(list.size() - 1), Result.State.Success);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 
