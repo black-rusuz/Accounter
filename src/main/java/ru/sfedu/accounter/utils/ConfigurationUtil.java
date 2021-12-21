@@ -2,6 +2,7 @@ package ru.sfedu.accounter.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.sfedu.accounter.Constants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,19 +30,6 @@ public class ConfigurationUtil {
     private static Properties getConfiguration() throws IOException {
         if(configuration.isEmpty()){
             loadConfiguration();
-        } else {
-            if (System.getProperty("path") != null) {
-                String path = System.getProperty("path");
-                File nf = new File(path);
-                if (nf.exists()) {
-                    InputStream in = new FileInputStream(nf);
-                    configuration.load(in);
-                    in.close();
-                } else {
-                    log.error("Your .properties file not found. Default loaded.");
-                    loadConfiguration();
-                }
-            }
         }
         return configuration;
     }
@@ -52,7 +40,13 @@ public class ConfigurationUtil {
      */
     private static void loadConfiguration() throws IOException{
         File nf = new File(DEFAULT_CONFIG_PATH);
-        // DEFAULT_CONFIG_PATH.getClass().getResourceAsStream(DEFAULT_CONFIG_PATH);
+        if (System.getProperty(Constants.ENVIROMENT_VARIABLE) != null) {
+            nf = new File(System.getProperty(Constants.ENVIROMENT_VARIABLE));
+            if (!nf.exists()) {
+                log.error("Your .properties file not found. Default loaded.");
+                nf = new File(DEFAULT_CONFIG_PATH);
+            }
+        }
         try (InputStream in = new FileInputStream(nf)) {
             configuration.load(in);
         } catch (IOException ex) {
