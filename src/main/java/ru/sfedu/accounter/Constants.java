@@ -39,6 +39,6 @@ public class Constants {
     public static final String METHOD_NAME_UPDATE = "Update";
 
     public static final String RESULT_MESSAGE_WRITING_SUCCESS = "Records wrote successfully";
-    public static final String RESULT_MESSAGE_WRITING_ERROR = "Error while adding: ";
+    public static final String RESULT_MESSAGE_WRITING_ERROR = "Error while writing: ";
     public static final String RESULT_MESSAGE_NOT_FOUND = "Record with this ID not found";
 }
