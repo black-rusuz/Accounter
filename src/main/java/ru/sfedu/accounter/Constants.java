@@ -19,6 +19,10 @@ public class Constants {
     public static final String XML_PATH = "XML_PATH";
     public static final String XML_EXTENSION = "XML_EXTENSION";
 
+    // CSV
+    public static final String CSV_PATH = "CSV_PATH";
+    public static final String CSV_EXTENSION = "CSV_EXTENSION";
+
     // JDBC
     public static final String H2_HOSTNAME = "H2_HOSTNAME";
     public static final String H2_USERNAME = "H2_USERNAME";
