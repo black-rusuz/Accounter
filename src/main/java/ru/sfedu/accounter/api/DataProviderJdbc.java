@@ -78,7 +78,7 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         ResultSet resultSet = statement.executeQuery(sql);
 
         while (resultSet.next()) {
-            Transaction transaction = null;
+            Transaction transaction = new Transaction() {};
             if (resultSet.getString(7).isBlank())
                 transaction = new Income(
                         resultSet.getLong(1),
@@ -176,9 +176,9 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         }
         try {
             LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-            map.put(Constants.COLUMN_NAME_ID, balance.getId());
-            map.put(Constants.COLUMN_NAME_TIME, balance.getTime());
-            map.put(Constants.COLUMN_NAME_VALUE, balance.getValue());
+            map.put(JdbcUtil.COLUMN_NAME_ID, balance.getId());
+            map.put(JdbcUtil.COLUMN_NAME_TIME, balance.getTime());
+            map.put(JdbcUtil.COLUMN_NAME_VALUE, balance.getValue());
             write(JdbcUtil.updateTableSet(Balance.class.getSimpleName(), map, id));
         } catch (Exception e) {
             sendLogs(Constants.METHOD_NAME_UPDATE, balance, Result.State.Error);
@@ -254,11 +254,11 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         }
         try {
             LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-            map.put(Constants.COLUMN_NAME_ID, plan.getId());
-            map.put(Constants.COLUMN_NAME_START_DATE, plan.getStartDate());
-            map.put(Constants.COLUMN_NAME_NAME, plan.getName());
-            map.put(Constants.COLUMN_NAME_PERIOD, plan.getPeriod());
-            map.put(Constants.COLUMN_NAME_TRANSACTION, plan.getTransaction().getId());
+            map.put(JdbcUtil.COLUMN_NAME_ID, plan.getId());
+            map.put(JdbcUtil.COLUMN_NAME_START_DATE, plan.getStartDate());
+            map.put(JdbcUtil.COLUMN_NAME_NAME, plan.getName());
+            map.put(JdbcUtil.COLUMN_NAME_PERIOD, plan.getPeriod());
+            map.put(JdbcUtil.COLUMN_NAME_TRANSACTION, plan.getTransaction().getId());
             write(JdbcUtil.updateTableSet(Plan.class.getSimpleName(), map, id));
         } catch (Exception e) {
             sendLogs(Constants.METHOD_NAME_UPDATE, plan, Result.State.Error);
@@ -353,25 +353,25 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
             if (transaction.getClass().equals(Income.class)) {
                 Income income = (Income) transaction;
                 LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-                map.put(Constants.COLUMN_NAME_ID, income.getId());
-                map.put(Constants.COLUMN_NAME_TIME, income.getTime());
-                map.put(Constants.COLUMN_NAME_VALUE, income.getValue());
-                map.put(Constants.COLUMN_NAME_NAME, income.getName());
-                map.put(Constants.COLUMN_NAME_NEW_BALANCE, income.getNewBalance().getId());
-                map.put(Constants.COLUMN_NAME_INCOME_CATEGORY, income.getIncomeCategory());
-                map.put(Constants.COLUMN_NAME_OUTCOME_CATEGORY, "");
+                map.put(JdbcUtil.COLUMN_NAME_ID, income.getId());
+                map.put(JdbcUtil.COLUMN_NAME_TIME, income.getTime());
+                map.put(JdbcUtil.COLUMN_NAME_VALUE, income.getValue());
+                map.put(JdbcUtil.COLUMN_NAME_NAME, income.getName());
+                map.put(JdbcUtil.COLUMN_NAME_NEW_BALANCE, income.getNewBalance().getId());
+                map.put(JdbcUtil.COLUMN_NAME_INCOME_CATEGORY, income.getIncomeCategory());
+                map.put(JdbcUtil.COLUMN_NAME_OUTCOME_CATEGORY, "");
                 write(JdbcUtil.updateTableSet(Transaction.class.getSimpleName(), map, id));
             }
             if (transaction.getClass().equals(Outcome.class)) {
                 Outcome outcome = (Outcome) transaction;
                 LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-                map.put(Constants.COLUMN_NAME_ID, outcome.getId());
-                map.put(Constants.COLUMN_NAME_TIME, outcome.getTime());
-                map.put(Constants.COLUMN_NAME_VALUE, outcome.getValue());
-                map.put(Constants.COLUMN_NAME_NAME, outcome.getName());
-                map.put(Constants.COLUMN_NAME_NEW_BALANCE, outcome.getNewBalance().getId());
-                map.put(Constants.COLUMN_NAME_INCOME_CATEGORY, "");
-                map.put(Constants.COLUMN_NAME_OUTCOME_CATEGORY, outcome.getOutcomeCategory());
+                map.put(JdbcUtil.COLUMN_NAME_ID, outcome.getId());
+                map.put(JdbcUtil.COLUMN_NAME_TIME, outcome.getTime());
+                map.put(JdbcUtil.COLUMN_NAME_VALUE, outcome.getValue());
+                map.put(JdbcUtil.COLUMN_NAME_NAME, outcome.getName());
+                map.put(JdbcUtil.COLUMN_NAME_NEW_BALANCE, outcome.getNewBalance().getId());
+                map.put(JdbcUtil.COLUMN_NAME_INCOME_CATEGORY, "");
+                map.put(JdbcUtil.COLUMN_NAME_OUTCOME_CATEGORY, outcome.getOutcomeCategory());
                 write(JdbcUtil.updateTableSet(Transaction.class.getSimpleName(), map, id));
             }
         } catch (Exception e) {
