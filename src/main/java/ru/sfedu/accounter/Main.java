@@ -20,9 +20,9 @@ public class Main {
     static Transaction outcome;
     static Plan plan;
 
-    public static void main(String[] args) throws IOException, SQLException {
-        log.info("Salam");
+    public static void main(String[] args) throws IOException {
         log.info(ConfigurationUtil.getConfigurationEntry(Constants.APP_NAME));
+        log.info("Salam");
 
         balance = new Balance("21.12.2021", 500);
         income = new Income("21.12.2021", 500, "Money", balance, IncomeCategory.Bonus);
@@ -30,8 +30,8 @@ public class Main {
         plan = new Plan("21.12.2021", "Salary", "1 Month", income);
 
         //testXmlCrud();
-        log.info("=======================================================================================");
-        testH2Crud();
+        log.info("=======================================================");
+        //testH2Crud();
     }
 
     private static void testXmlCrud() throws IOException {

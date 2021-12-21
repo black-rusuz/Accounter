@@ -27,23 +27,25 @@ public class Constants {
 
 
     // Internal
-    public static String COLUMN_NAME_ID = "id";
-    public static String COLUMN_NAME_TIME = "time";
-    public static String COLUMN_NAME_VALUE = "cost";        // Because "value" is reserved word in SQL
-    public static String COLUMN_NAME_START_DATE = "start_date";
-    public static String COLUMN_NAME_NAME = "name";
-    public static String COLUMN_NAME_PERIOD = "period";
-    public static String COLUMN_NAME_TRANSACTION = "transaction_id";
-    public static String COLUMN_NAME_NEW_BALANCE = "new_balance_id";
-    public static String COLUMN_NAME_INCOME_CATEGORY = "income_category";
-    public static String COLUMN_NAME_OUTCOME_CATEGORY = "outcome_category";
+    public static final String ENVIROMENT_VARIABLE = "props";
 
-    public static String METHOD_NAME_WRITE = "Write";
-    public static String METHOD_NAME_APPEND = "Append";
-    public static String METHOD_NAME_DELETE = "Delete";
-    public static String METHOD_NAME_UPDATE = "Update";
+    public static final String COLUMN_NAME_ID = "id";
+    public static final String COLUMN_NAME_TIME = "time";
+    public static final String COLUMN_NAME_VALUE = "cost";        // Because "value" is reserved word in SQL
+    public static final String COLUMN_NAME_START_DATE = "start_date";
+    public static final String COLUMN_NAME_NAME = "name";
+    public static final String COLUMN_NAME_PERIOD = "period";
+    public static final String COLUMN_NAME_TRANSACTION = "transaction_id";
+    public static final String COLUMN_NAME_NEW_BALANCE = "new_balance_id";
+    public static final String COLUMN_NAME_INCOME_CATEGORY = "income_category";
+    public static final String COLUMN_NAME_OUTCOME_CATEGORY = "outcome_category";
 
-    public static String RESULT_MESSAGE_WRITING_SUCCESS = "Records wrote successfully";
-    public static String RESULT_MESSAGE_WRITING_ERROR = "Error while adding: ";
-    public static String RESULT_MESSAGE_NOT_FOUND = "Record with this ID not found";
+    public static final String METHOD_NAME_WRITE = "Write";
+    public static final String METHOD_NAME_APPEND = "Append";
+    public static final String METHOD_NAME_DELETE = "Delete";
+    public static final String METHOD_NAME_UPDATE = "Update";
+
+    public static final String RESULT_MESSAGE_WRITING_SUCCESS = "Records wrote successfully";
+    public static final String RESULT_MESSAGE_WRITING_ERROR = "Error while adding: ";
+    public static final String RESULT_MESSAGE_NOT_FOUND = "Record with this ID not found";
 }
