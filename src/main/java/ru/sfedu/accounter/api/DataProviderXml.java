@@ -38,15 +38,14 @@ public class DataProviderXml extends AbstractDataProvider implements IDataProvid
 
     private <T> List<T> read(Class<T> bean) {
         String name = bean.getSimpleName();
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         if (!bean.getSuperclass().equals(Object.class))
             name = bean.getSuperclass().getSimpleName();
         try {
             File file = initFile(name);
             FileReader fileReader = new FileReader(file);
-            XmlWrapper<T> xmlWrapper = serializer.read(XmlWrapper.class, fileReader);
+            list = serializer.read(XmlWrapper.class, fileReader).getList();
             fileReader.close();
-            list = xmlWrapper.getList();
         } catch (Exception ignored) {
         }
         return list;
@@ -60,8 +59,7 @@ public class DataProviderXml extends AbstractDataProvider implements IDataProvid
             File file = initFile(name);
             FileWriter fileWriter = new FileWriter(file);
             Serializer serializer = new Persister();
-            XmlWrapper<T> xmlWrapper = new XmlWrapper<T>(list);
-            serializer.write(xmlWrapper, fileWriter);
+            serializer.write(new XmlWrapper<>(list), fileWriter);
             fileWriter.close();
         } catch (Exception e) {
             sendLogs(Constants.METHOD_NAME_WRITE, list.get(list.size() - 1), Result.State.Error);
@@ -72,9 +70,9 @@ public class DataProviderXml extends AbstractDataProvider implements IDataProvid
     }
 
     public List<Balance> getAllBalance() {
-        ArrayList<Balance> list = new ArrayList<>();
+        List<Balance> list = new ArrayList<>();
         try {
-            list = (ArrayList<Balance>) read(Balance.class);
+            list = read(Balance.class);
         } catch (Exception ignored) {
         }
         return list;
@@ -123,9 +121,9 @@ public class DataProviderXml extends AbstractDataProvider implements IDataProvid
     }
 
     public List<Plan> getAllPlan() {
-        ArrayList<Plan> list = new ArrayList<>();
+        List<Plan> list = new ArrayList<>();
         try {
-            list = (ArrayList<Plan>) read(Plan.class);
+            list = read(Plan.class);
         } catch (Exception ignored) {
         }
         return list;
@@ -174,9 +172,9 @@ public class DataProviderXml extends AbstractDataProvider implements IDataProvid
     }
 
     public List<Transaction> getAllTransaction() {
-        ArrayList<Transaction> list = new ArrayList<>();
+        List<Transaction> list = new ArrayList<>();
         try {
-            list = (ArrayList<Transaction>) read(Transaction.class);
+            list = read(Transaction.class);
         } catch (Exception ignored) {
         }
         return list;
