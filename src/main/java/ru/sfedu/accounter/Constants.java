@@ -19,10 +19,31 @@ public class Constants {
     public static final String XML_PATH = "XML_PATH";
     public static final String XML_EXTENSION = "XML_EXTENSION";
 
+    // JDBC
+    public static final String H2_HOSTNAME = "H2_HOSTNAME";
+    public static final String H2_USERNAME = "H2_USERNAME";
+    public static final String H2_PASSWORD = "H2_PASSWORD";
+
 
 
     // Internal
-    public static String RESULT_MESSAGE_WRITING_SUCCESS = "Films wrote successfully";
-    public static String RESULT_MESSAGE_WRITING_ERROR = "Error while writing to file: ";
-    public static String RESULT_MESSAGE_NOT_FOUND = "Film with this ID not found";
+    public static String COLUMN_NAME_ID = "id";
+    public static String COLUMN_NAME_TIME = "time";
+    public static String COLUMN_NAME_VALUE = "cost";        // Because "value" is reserved word in SQL
+    public static String COLUMN_NAME_START_DATE = "start_date";
+    public static String COLUMN_NAME_NAME = "name";
+    public static String COLUMN_NAME_PERIOD = "period";
+    public static String COLUMN_NAME_TRANSACTION = "transaction_id";
+    public static String COLUMN_NAME_NEW_BALANCE = "new_balance_id";
+    public static String COLUMN_NAME_INCOME_CATEGORY = "income_category";
+    public static String COLUMN_NAME_OUTCOME_CATEGORY = "outcome_category";
+
+    public static String METHOD_NAME_WRITE = "Write";
+    public static String METHOD_NAME_APPEND = "Append";
+    public static String METHOD_NAME_DELETE = "Delete";
+    public static String METHOD_NAME_UPDATE = "Update";
+
+    public static String RESULT_MESSAGE_WRITING_SUCCESS = "Records wrote successfully";
+    public static String RESULT_MESSAGE_WRITING_ERROR = "Error while adding: ";
+    public static String RESULT_MESSAGE_NOT_FOUND = "Record with this ID not found";
 }

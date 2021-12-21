@@ -8,27 +8,35 @@ import ru.sfedu.accounter.model.Result;
 import ru.sfedu.accounter.model.beans.Balance;
 import ru.sfedu.accounter.model.beans.Plan;
 import ru.sfedu.accounter.model.beans.Transaction;
+import ru.sfedu.accounter.utils.ConfigurationUtil;
 import ru.sfedu.accounter.utils.MongoUtil;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
 public abstract class AbstractDataProvider implements IDataProvider {
-    private static final Logger log = LogManager.getLogger(DataProviderXml.class);
+    protected static final Logger log = LogManager.getLogger(AbstractDataProvider.class);
+    private final String actor = ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_DEFAULT_ACTOR);
+
+    protected AbstractDataProvider() throws IOException {
+    }
 
     protected void sendLogs(String methodName, Object bean, Result.State state) {
         HistoryContent historyContent = new HistoryContent(
                 UUID.randomUUID(),
                 this.getClass().getSimpleName(),
                 LocalDateTime.now().toString(),
-                Constants.MONGO_DB_DEFAULT_ACTOR,
+                actor,
                 methodName,
                 MongoUtil.objectToString(bean),
                 state);
         MongoUtil.saveToLog(historyContent);
     }
+
+
 
     public void manageBalance() {
         log.info(calculateBalance());
