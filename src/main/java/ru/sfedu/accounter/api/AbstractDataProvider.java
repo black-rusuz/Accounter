@@ -5,31 +5,39 @@ import org.apache.logging.log4j.Logger;
 import ru.sfedu.accounter.Constants;
 import ru.sfedu.accounter.model.HistoryContent;
 import ru.sfedu.accounter.model.Result;
-import ru.sfedu.accounter.model.beans.Balance;
-import ru.sfedu.accounter.model.beans.Plan;
-import ru.sfedu.accounter.model.beans.Transaction;
+import ru.sfedu.accounter.model.beans.*;
 import ru.sfedu.accounter.utils.ConfigurationUtil;
 import ru.sfedu.accounter.utils.MongoUtil;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public abstract class AbstractDataProvider implements IDataProvider {
     protected static final Logger log = LogManager.getLogger(AbstractDataProvider.class);
-    private final String actor = ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_DEFAULT_ACTOR);
+    private final String MONGO_DB_DEFAULT_ACTOR = ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_DEFAULT_ACTOR);
 
     protected AbstractDataProvider() throws IOException {
     }
 
+    /**
+     * Sends logs to MongoDB cluster declared in enviroment.properties
+     *
+     * @param methodName — method that called sending
+     * @param bean       — last bean working with
+     * @param state      — method result
+     */
     protected void sendLogs(String methodName, Object bean, Result.State state) {
         HistoryContent historyContent = new HistoryContent(
                 UUID.randomUUID(),
                 this.getClass().getSimpleName(),
                 LocalDateTime.now().toString(),
-                actor,
+                MONGO_DB_DEFAULT_ACTOR,
                 methodName,
                 MongoUtil.objectToString(bean),
                 state);
@@ -37,54 +45,108 @@ public abstract class AbstractDataProvider implements IDataProvider {
     }
 
 
+    private final String DEFAULT_PLAN_NAME = ConfigurationUtil.getConfigurationEntry(Constants.DEFAULT_PLAN_NAME);
+    private final String DEFAULT_PLAN_PERIOD = ConfigurationUtil.getConfigurationEntry(Constants.DEFAULT_PLAN_PERIOD);
 
-    public void manageBalance() {
-        log.info(calculateBalance());
-        log.info(displayIncomesAndOutcomes());
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
-        long transactionId = scanner.nextLong();
-        switch (option) {
-            case 1: log.info(repeatTransaction(transactionId));
-            case 2: log.info(makePlanBasedOnTransaction(transactionId));
+    /**
+     * Root use case for managing current balance
+     *
+     * @param action        — what you want to do next: repeat or plan transaction
+     * @param transactionId — chosen ID of transaction to apply your action
+     */
+    public void manageBalance(String action, long transactionId) {
+        calculateBalance();
+        displayIncomesAndOutcomes();
+        if (action.equalsIgnoreCase(Constants.REPEAT)) {
+            repeatTransaction(transactionId);
+        }
+        if (action.equalsIgnoreCase(Constants.PLAN)) {
+            makePlanBasedOnTransaction(transactionId);
         }
     }
 
-    public Balance calculateBalance() {
-        List<Balance> list = getAllBalance();
-        return list.get(list.size() - 1);
+    /**
+     * Calculates current balance using all written transactions and appends it to Balance list
+     *
+     * @return current balance value
+     */
+    public double calculateBalance() {
+        List<Transaction> list = getAllTransaction();
+        double balanceValue = 0;
+        for (Transaction transaction : list) {
+            if (transaction.getClass().equals(Income.class))
+                balanceValue += transaction.getValue();
+            if (transaction.getClass().equals(Outcome.class))
+                balanceValue -= transaction.getValue();
+        }
+        Balance balance = new Balance(LocalDateTime.now().toString(), balanceValue);
+        appendBalance(balance);
+        return balance.getValue();
     }
 
-    public List<Transaction> displayIncomesAndOutcomes() {
-        return getAllTransaction();
+    /**
+     * Displays all written transactions
+     *
+     * @return formatted string of them
+     */
+    public String displayIncomesAndOutcomes() {
+        List<Transaction> list = getAllTransaction();
+        List<String> strings = list.stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
+        return String.join("\n", strings);
     }
 
-    public Transaction repeatTransaction(long transactionId) {
-        return appendTransaction(getTransactionById(transactionId));
+    /**
+     * Repeats selected transaction
+     *
+     * @param transactionId — chosen ID of transaction to repeat
+     * @return true if transaction appended successfully
+     */
+    public boolean repeatTransaction(long transactionId) {
+        return appendTransaction(getTransactionById(transactionId)) != null;
     }
 
-    public Plan makePlanBasedOnTransaction(long transactionId) {
-        Scanner scanner = new Scanner(System.in);
-        String startDate = scanner.next();
-        String name = scanner.next();
-        String period = scanner.next();
-        return appendPlan(new Plan(startDate, name, period, getTransactionById(transactionId)));
+    /**
+     * Creates plan based on selected transaction
+     *
+     * @param transactionId — chosen ID of transaction to plan
+     * @return true if transaction appended successfully
+     */
+    public boolean makePlanBasedOnTransaction(long transactionId) {
+        return appendPlan(new Plan(LocalDate.now().toString(), DEFAULT_PLAN_NAME, Period.parse(DEFAULT_PLAN_PERIOD).toString(), getTransactionById(transactionId))) != null;
     }
 
+    /**
+     * Root use case for managing current balance
+     * @param planId — chosen ID of plan to repeat now
+     */
+    public void managePlans(long planId) {
+        displayPlans();
+        executePlanNow(planId);
+    }
     public void managePlans() {
-        log.info(displayPlans());
-        Scanner scanner = new Scanner(System.in);
-        boolean execute = scanner.nextBoolean();
-        long planId = scanner.nextLong();
-        if (execute)
-            executePlanNow(planId);
+        displayPlans();
     }
 
-    public List<Plan> displayPlans() {
-        return getAllPlan();
+    /**
+     * Displays all written plans
+     * @return formatted string of them
+     */
+    public String displayPlans() {
+        List<Plan> list = getAllPlan();
+        List<String> strings = list.stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
+        return String.join("\n", strings);
     }
 
-    public Transaction executePlanNow(long planId) {
-        return appendTransaction(getPlanById(planId).getTransaction());
+    /**
+     * Append transaction of selected plan
+     * @param planId — chosen plan ID to execute now
+     * @return true if plan appended successfully
+     */
+    public boolean executePlanNow(long planId) {
+        return appendTransaction(getPlanById(planId).getTransaction()) != null;
     }
 }

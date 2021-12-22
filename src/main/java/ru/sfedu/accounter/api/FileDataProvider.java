@@ -11,15 +11,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DataProviderFile extends AbstractDataProvider{
+public abstract class FileDataProvider extends AbstractDataProvider implements IDataProvider {
 
-    public DataProviderFile() throws IOException {
+    public FileDataProvider() throws IOException {
     }
 
+    /**
+     * Reads bean list from file.
+     * @param bean — class, that needed to read
+     * @param <T> — generic class of list entries
+     * @return list of read beans
+     */
     protected abstract <T> List<T> read(Class<T> bean);
 
+    /**
+     * Writes list of any beans to file.
+     * @param list — list of beans to write
+     * @param <T> — generic class of list entries
+     * @return reading Result (Success/Warning/Error and message)
+     */
     protected abstract <T> Result write(List<T> list);
 
+    /**
+     * Generates full file name by filePath, bean and fileExtension.
+     * @param filePath — path to file declared in enviroment.properties
+     * @param bean — bean to work with
+     * @param fileExtension — file extension declared in enviroment.properties
+     * @param <T> — generic class of bean
+     * @return full filename string
+     */
     protected <T> String classToFullFileName(String filePath, Class<T> bean, String fileExtension) {
         String fileName = bean.getSimpleName();
         if (!bean.getSuperclass().equals(Object.class))
@@ -27,16 +47,19 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return filePath + fileName + fileExtension;
     }
 
+    /**
+     * Creates File variable to read from/write in. Creates real file if not exists.
+     */
     protected File initFile(String fullFileName) throws IOException {
         File file = new File(fullFileName);
         if (!file.exists()) {
             file.getParentFile().mkdirs();
             file.createNewFile();
-            return file;
         }
         return file;
     }
 
+    @Override
     public List<Balance> getAllBalance() {
         List<Balance> list = new ArrayList<>();
         try {
@@ -46,11 +69,13 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return list;
     }
 
+    @Override
     public Balance getBalanceById(long id) {
         List<Balance> list = getAllBalance().stream().filter(a -> a.getId() == id).toList();
         return list.isEmpty() ? null : list.get(0);
     }
 
+    @Override
     public Balance appendBalance(Balance balance) {
         try {
             if (getBalanceById(balance.getId()) != null)
@@ -63,6 +88,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return balance;
     }
 
+    @Override
     public Result deleteBalance(long id) {
         Balance balance = getBalanceById(id);
         if (balance == null) {
@@ -74,6 +100,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return write(list);
     }
 
+    @Override
     public Result updateBalance(Balance balance) {
         long id = balance.getId();
         if (getBalanceById(id) == null) {
@@ -88,6 +115,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 
+    @Override
     public List<Plan> getAllPlan() {
         List<Plan> list = new ArrayList<>();
         try {
@@ -97,11 +125,13 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return list;
     }
 
+    @Override
     public Plan getPlanById(long id) {
         List<Plan> list = getAllPlan().stream().filter(a -> a.getId() == id).toList();
         return list.isEmpty() ? null : list.get(0);
     }
 
+    @Override
     public Plan appendPlan(Plan plan) {
         try {
             if (getPlanById(plan.getId()) != null)
@@ -114,6 +144,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return plan;
     }
 
+    @Override
     public Result deletePlan(long id) {
         Plan plan = getPlanById(id);
         if (plan == null) {
@@ -125,6 +156,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return write(list);
     }
 
+    @Override
     public Result updatePlan(Plan plan) {
         long id = plan.getId();
         if (getPlanById(id) == null) {
@@ -139,6 +171,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 
+    @Override
     public List<Transaction> getAllTransaction() {
         List<Transaction> list = new ArrayList<>();
         try {
@@ -148,11 +181,13 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return list;
     }
 
+    @Override
     public Transaction getTransactionById(long id) {
         List<Transaction> list = getAllTransaction().stream().filter(a -> a.getId() == id).toList();
         return list.isEmpty() ? null : list.get(0);
     }
 
+    @Override
     public Transaction appendTransaction(Transaction transaction) {
         try {
             if (getTransactionById(transaction.getId()) != null)
@@ -165,6 +200,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return transaction;
     }
 
+    @Override
     public Result deleteTransaction(long id) {
         Transaction transaction = getTransactionById(id);
         if (transaction == null) {
@@ -176,6 +212,7 @@ public abstract class DataProviderFile extends AbstractDataProvider{
         return write(list);
     }
 
+    @Override
     public Result updateTransaction(Transaction transaction) {
         long id = transaction.getId();
         if (getTransactionById(id) == null) {

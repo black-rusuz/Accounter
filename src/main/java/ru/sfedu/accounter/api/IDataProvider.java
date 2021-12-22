@@ -26,4 +26,5 @@ public interface IDataProvider {
     Transaction appendTransaction(Transaction transaction);
     Result deleteTransaction(long id);
     Result updateTransaction(Transaction transaction);
+
 }

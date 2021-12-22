@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataProviderCsv extends DataProviderFile implements IDataProvider {
+public class DataProviderCsv extends FileDataProvider {
     private final String CSV_PATH = ConfigurationUtil.getConfigurationEntry(Constants.CSV_PATH);
     private final String CSV_EXTENSION = ConfigurationUtil.getConfigurationEntry(Constants.CSV_EXTENSION);
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataProviderXml extends DataProviderFile implements IDataProvider {
+public class DataProviderXml extends FileDataProvider {
     private final String XML_PATH = ConfigurationUtil.getConfigurationEntry(Constants.XML_PATH);
     private final String XML_EXTENSION = ConfigurationUtil.getConfigurationEntry(Constants.XML_EXTENSION);
 

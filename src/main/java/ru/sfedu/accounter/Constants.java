@@ -4,6 +4,8 @@ public class Constants {
 
     // General
     public static final String APP_NAME = "APP_NAME";
+    public static final String DEFAULT_PLAN_NAME = "DEFAULT_PLAN_NAME";
+    public static final String DEFAULT_PLAN_PERIOD = "DEFAULT_PLAN_PERIOD";
 
     // MongoDB
     public static final String MONGO_DB_DEFAULT_ACTOR = "MONGO_DB_DEFAULT_ACTOR";
@@ -33,6 +35,28 @@ public class Constants {
     // Internal
     public static final String ENVIROMENT_VARIABLE = "props";
 
+    public static final String CLI_INVALID_DATA_PROVIDER = "Invalid DataProvider";
+    public static final String CLI_INVALID_ARGUMENT = "Invalid argument";
+    public static final String CLI_FEW_ARGUMENTS = "Too few arguments";
+
+    public static final String XML = "XML";
+    public static final String JDBC = "JDBC";
+    public static final String CSV = "CSV";
+
+    public static final String MANAGE = "MANAGE";
+    public static final String GET = "GET";
+    public static final String ALL = "ALL";
+    public static final String APPEND = "APPEND";
+    public static final String DELETE = "DELETE";
+    public static final String UPDATE = "UPDATE";
+
+    public static final String BALANCE = "BALANCE";
+    public static final String PLANS = "PLANS";
+    public static final String TRANSACTIONS = "TRANSACTIONS";
+
+    public static final String REPEAT = "REPEAT";
+    public static final String PLAN = "PLAN";
+
     public static final String METHOD_NAME_WRITE = "Write";
     public static final String METHOD_NAME_APPEND = "Append";
     public static final String METHOD_NAME_DELETE = "Delete";
@@ -41,4 +65,5 @@ public class Constants {
     public static final String RESULT_MESSAGE_WRITING_SUCCESS = "Records wrote successfully";
     public static final String RESULT_MESSAGE_WRITING_ERROR = "Error while writing: ";
     public static final String RESULT_MESSAGE_NOT_FOUND = "Record with this ID not found";
+
 }

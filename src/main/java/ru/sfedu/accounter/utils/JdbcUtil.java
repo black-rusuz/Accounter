@@ -72,14 +72,14 @@ public class JdbcUtil {
     public static String deleteFromTableById(String tableName, long id) {
         return String.format(DELETE_FROM_TABLE_BY_ID, tableName, id);
     }
-    public static String updateTableSet(String tableName, LinkedHashMap<String, Object> set, long id) {
-        return String.format(UPDATE_TABLE_SET, tableName, mapToString(set), id);
+    public static String updateTableSet(String tableName, LinkedHashMap<String, Object> map, long id) {
+        return String.format(UPDATE_TABLE_SET, tableName, mapToString(map), id);
     }
 
-    private static String mapToString(LinkedHashMap<String, Object> set) {
+    private static String mapToString(LinkedHashMap<String, Object> map) {
         StringBuilder mapAsString = new StringBuilder();
-        for(String key: set.keySet()) {
-            mapAsString.append(key).append(" = '").append(set.get(key)).append("', ");
+        for(String key: map.keySet()) {
+            mapAsString.append(key).append(" = '").append(map.get(key)).append("', ");
         }
         mapAsString.deleteCharAt(mapAsString.length() - 2);
         return mapAsString.toString();
