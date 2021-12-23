@@ -1,5 +1,6 @@
 package ru.sfedu.accounter.model.beans;
 
+import com.opencsv.bean.CsvBindByName;
 import org.simpleframework.xml.Element;
 import ru.sfedu.accounter.model.enums.IncomeCategory;
 
@@ -18,7 +19,8 @@ public class Income extends Transaction implements Serializable {
     //
 
     @Element
-    private IncomeCategory incomeCategory;
+    @CsvBindByName
+    private IncomeCategory category;
 
     //
     // Constructors
@@ -27,22 +29,18 @@ public class Income extends Transaction implements Serializable {
     public Income() {
     }
 
-    public Income(String time, double value, String name, Balance newBalance, IncomeCategory incomeCategory) {
+    public Income(double value, String name, IncomeCategory category) {
         setId();
-        setTime(time);
         setValue(value);
         setName(name);
-        setNewBalance(newBalance);
-        setIncomeCategory(incomeCategory);
+        setCategory(category);
     }
 
-    public Income(long id, String time, double value, String name, Balance newBalance, IncomeCategory incomeCategory) {
+    public Income(long id, double value, String name, IncomeCategory category) {
         setId(id);
-        setTime(time);
         setValue(value);
         setName(name);
-        setNewBalance(newBalance);
-        setIncomeCategory(incomeCategory);
+        setCategory(category);
     }
 
     //
@@ -59,8 +57,8 @@ public class Income extends Transaction implements Serializable {
      *
      * @param newVar the new value of incomeCategory
      */
-    public void setIncomeCategory(IncomeCategory newVar) {
-        incomeCategory = newVar;
+    public void setCategory(IncomeCategory newVar) {
+        category = newVar;
     }
 
     /**
@@ -68,8 +66,8 @@ public class Income extends Transaction implements Serializable {
      *
      * @return the value of incomeCategory
      */
-    public IncomeCategory getIncomeCategory() {
-        return incomeCategory;
+    public IncomeCategory getCategory() {
+        return category;
     }
 
     //
@@ -82,26 +80,22 @@ public class Income extends Transaction implements Serializable {
         if (!(o instanceof Income income)) return false;
         return getId() == income.getId()
                 && Double.compare(income.getValue(), getValue()) == 0
-                && Objects.equals(getTime(), income.getTime())
                 && Objects.equals(getName(), income.getName())
-                && Objects.equals(getNewBalance(), income.getNewBalance())
-                && getIncomeCategory() == income.getIncomeCategory();
+                && getCategory() == income.getCategory();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTime(), getValue(), getName(), getNewBalance(), getIncomeCategory());
+        return Objects.hash(getId(), getValue(), getName(), getCategory());
     }
 
     @Override
     public String toString() {
         return "Income{" +
                 "id=" + getId() +
-                ", time='" + getTime() + '\'' +
                 ", value=" + getValue() +
                 ", name='" + getName() + '\'' +
-                ", newBalance=" + getNewBalance() +
-                ", incomeCategory=" + getIncomeCategory() +
+                ", incomeCategory=" + getCategory() +
                 '}';
     }
 }

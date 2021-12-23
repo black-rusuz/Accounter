@@ -1,5 +1,7 @@
 package ru.sfedu.accounter.model.beans;
 
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvRecurse;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -17,18 +19,15 @@ public class Plan implements Serializable {
     //
 
     @Attribute
+    @CsvBindByName
     private long id;
 
     @Element
-    private String startDate;
+    @CsvBindByName
+    private long period;
 
     @Element
-    private String name;
-
-    @Element
-    private String period;
-
-    @Element
+    @CsvRecurse
     private Transaction transaction;
 
     //
@@ -38,18 +37,14 @@ public class Plan implements Serializable {
     public Plan() {
     }
 
-    public Plan(String startDate, String name, String period, Transaction transaction) {
+    public Plan(long period, Transaction transaction) {
         setId();
-        setStartDate(startDate);
-        setName(name);
         setPeriod(period);
         setTransaction(transaction);
     }
 
-    public Plan(long id, String startDate, String name, String period, Transaction transaction) {
+    public Plan(long id, long period, Transaction transaction) {
         setId(id);
-        setStartDate(startDate);
-        setName(name);
         setPeriod(period);
         setTransaction(transaction);
     }
@@ -89,47 +84,11 @@ public class Plan implements Serializable {
     }
 
     /**
-     * Set the value of startDate
-     *
-     * @param newVar the new value of startDate
-     */
-    public void setStartDate(String newVar) {
-        startDate = newVar;
-    }
-
-    /**
-     * Get the value of startDate
-     *
-     * @return the value of startDate
-     */
-    public String getStartDate() {
-        return startDate;
-    }
-
-    /**
-     * Set the value of name
-     *
-     * @param newVar the new value of name
-     */
-    public void setName(String newVar) {
-        name = newVar;
-    }
-
-    /**
-     * Get the value of name
-     *
-     * @return the value of name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * Set the value of period
      *
      * @param newVar the new value of period
      */
-    public void setPeriod(String newVar) {
+    public void setPeriod(long newVar) {
         period = newVar;
     }
 
@@ -138,7 +97,7 @@ public class Plan implements Serializable {
      *
      * @return the value of period
      */
-    public String getPeriod() {
+    public long getPeriod() {
         return period;
     }
 
@@ -169,25 +128,21 @@ public class Plan implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Plan plan)) return false;
         return getId() == plan.getId()
-                && Objects.equals(getStartDate(), plan.getStartDate())
-                && Objects.equals(getName(), plan.getName())
-                && Objects.equals(getPeriod(), plan.getPeriod())
+                && getPeriod() == plan.getPeriod()
                 && Objects.equals(getTransaction(), plan.getTransaction());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getStartDate(), getName(), getPeriod(), getTransaction());
+        return Objects.hash(getId(), getPeriod(), getTransaction());
     }
 
     @Override
     public String toString() {
         return "Plan{" +
-                "id=" + getId() +
-                ", startDate='" + getStartDate() + '\'' +
-                ", name='" + getName() + '\'' +
-                ", period='" + getPeriod() + '\'' +
-                ", transaction=" + getTransaction() +
+                "id=" + id +
+                ", period=" + period +
+                ", transaction=" + transaction +
                 '}';
     }
 }

@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class DataProviderJdbc extends AbstractDataProvider implements IDataProvider {
-    String hostname = ConfigurationUtil.getConfigurationEntry(Constants.H2_HOSTNAME);
-    String username = ConfigurationUtil.getConfigurationEntry(Constants.H2_USERNAME);
-    String password = ConfigurationUtil.getConfigurationEntry(Constants.H2_PASSWORD);
+public class DataProviderJdbc extends AbstractDataProvider {
+    private final String hostname = ConfigurationUtil.getConfigurationEntry(Constants.H2_HOSTNAME);
+    private final String username = ConfigurationUtil.getConfigurationEntry(Constants.H2_USERNAME);
+    private final String password = ConfigurationUtil.getConfigurationEntry(Constants.H2_PASSWORD);
 
     public DataProviderJdbc() throws IOException, SQLException {
         initDb();
@@ -38,8 +38,7 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         while (resultSet.next()) {
             Balance balance = new Balance(
                     resultSet.getLong(1),
-                    resultSet.getString(2),
-                    resultSet.getDouble(3));
+                    resultSet.getDouble(2));
             list.add(balance);
         }
 
@@ -58,10 +57,8 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         while (resultSet.next()) {
             Plan plan = new Plan(
                     resultSet.getLong(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3),
-                    resultSet.getString(4),
-                    getTransactionById(resultSet.getLong(5)));
+                    resultSet.getLong(2),
+                    getTransactionById(resultSet.getLong(4)));
             list.add(plan);
         }
 
@@ -78,23 +75,20 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         ResultSet resultSet = statement.executeQuery(sql);
 
         while (resultSet.next()) {
-            Transaction transaction = new Transaction() {};
-            if (resultSet.getString(7).isBlank())
+            Transaction transaction = new Transaction() {
+            };
+            if (resultSet.getString(5).isBlank())
                 transaction = new Income(
                         resultSet.getLong(1),
-                        resultSet.getString(2),
-                        resultSet.getDouble(3),
-                        resultSet.getString(4),
-                        getBalanceById(resultSet.getLong(5)),
-                        IncomeCategory.valueOf(resultSet.getString(6)));
-            if (resultSet.getString(6).isBlank())
+                        resultSet.getDouble(2),
+                        resultSet.getString(3),
+                        IncomeCategory.valueOf(resultSet.getString(4)));
+            if (resultSet.getString(4).isBlank())
                 transaction = new Outcome(
                         resultSet.getLong(1),
-                        resultSet.getString(2),
-                        resultSet.getDouble(3),
-                        resultSet.getString(4),
-                        getBalanceById(resultSet.getLong(5)),
-                        OutcomeCategory.valueOf(resultSet.getString(7)));
+                        resultSet.getDouble(2),
+                        resultSet.getString(3),
+                        OutcomeCategory.valueOf(resultSet.getString(5)));
             list.add(transaction);
         }
 
@@ -136,20 +130,15 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
 
     @Override
     public Balance appendBalance(Balance balance) {
-        try {
-            if (getBalanceById(balance.getId()) != null)
-                balance.setId();
-        } catch (Exception ignored) {
-        }
+        if (getBalanceById(balance.getId()) != null)
+            balance.setId();
         try {
             List<String> list = new ArrayList<>();
             list.add(String.valueOf(balance.getId()));
-            list.add(String.valueOf(balance.getTime()));
             list.add(String.valueOf(balance.getValue()));
             write(JdbcUtil.insertIntoTableValues(balance.getClass().getSimpleName(), list));
         } catch (Exception e) {
             sendLogs(Constants.METHOD_NAME_APPEND, balance, Result.State.Error);
-            return new Balance();
         }
         sendLogs(Constants.METHOD_NAME_APPEND, balance, Result.State.Success);
         return balance;
@@ -180,8 +169,8 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         try {
             LinkedHashMap<String, Object> map = new LinkedHashMap<>();
             map.put(JdbcUtil.COLUMN_NAME_ID, balance.getId());
-            map.put(JdbcUtil.COLUMN_NAME_TIME, balance.getTime());
             map.put(JdbcUtil.COLUMN_NAME_VALUE, balance.getValue());
+            map.put(JdbcUtil.COLUMN_NAME_TRANSACTION, balance.getValue());
             write(JdbcUtil.updateTableSet(balance.getClass().getSimpleName(), map, id));
         } catch (Exception e) {
             sendLogs(Constants.METHOD_NAME_UPDATE, balance, Result.State.Error);
@@ -223,14 +212,11 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         try {
             List<String> list = new ArrayList<>();
             list.add(String.valueOf(plan.getId()));
-            list.add(String.valueOf(plan.getStartDate()));
-            list.add(String.valueOf(plan.getName()));
             list.add(String.valueOf(plan.getPeriod()));
             list.add(String.valueOf(plan.getTransaction().getId()));
             write(JdbcUtil.insertIntoTableValues(plan.getClass().getSimpleName(), list));
         } catch (Exception e) {
             sendLogs(Constants.METHOD_NAME_APPEND, plan, Result.State.Error);
-            return new Plan();
         }
         sendLogs(Constants.METHOD_NAME_APPEND, plan, Result.State.Success);
         return plan;
@@ -261,8 +247,6 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         try {
             LinkedHashMap<String, Object> map = new LinkedHashMap<>();
             map.put(JdbcUtil.COLUMN_NAME_ID, plan.getId());
-            map.put(JdbcUtil.COLUMN_NAME_START_DATE, plan.getStartDate());
-            map.put(JdbcUtil.COLUMN_NAME_NAME, plan.getName());
             map.put(JdbcUtil.COLUMN_NAME_PERIOD, plan.getPeriod());
             map.put(JdbcUtil.COLUMN_NAME_TRANSACTION, plan.getTransaction().getId());
             write(JdbcUtil.updateTableSet(plan.getClass().getSimpleName(), map, id));
@@ -286,7 +270,8 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
 
     @Override
     public Transaction getTransactionById(long id) {
-        Transaction transaction = new Transaction() {};
+        Transaction transaction = new Transaction() {
+        };
         try {
             List<Transaction> list = readTransaction(JdbcUtil.selectFromTableById(transaction.getClass().getSimpleName(), id));
             if (!list.isEmpty())
@@ -306,22 +291,19 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         try {
             List<String> list = new ArrayList<>();
             list.add(String.valueOf(transaction.getId()));
-            list.add(String.valueOf(transaction.getTime()));
             list.add(String.valueOf(transaction.getValue()));
             list.add(String.valueOf(transaction.getName()));
-            list.add(String.valueOf(transaction.getNewBalance().getId()));
             if (transaction.getClass().equals(Income.class)) {
-                list.add(String.valueOf(((Income) transaction).getIncomeCategory()));
+                list.add(String.valueOf(((Income) transaction).getCategory()));
                 list.add("");
             }
             if (transaction.getClass().equals(Outcome.class)) {
                 list.add("");
-                list.add(String.valueOf(((Outcome) transaction).getOutcomeCategory()));
+                list.add(String.valueOf(((Outcome) transaction).getCategory()));
             }
             write(JdbcUtil.insertIntoTableValues(transaction.getClass().getSimpleName(), list));
         } catch (Exception e) {
             sendLogs(Constants.METHOD_NAME_APPEND, transaction, Result.State.Error);
-            return new Transaction(){};
         }
         sendLogs(Constants.METHOD_NAME_APPEND, transaction, Result.State.Success);
         return transaction;
@@ -352,17 +334,15 @@ public class DataProviderJdbc extends AbstractDataProvider implements IDataProvi
         try {
             LinkedHashMap<String, Object> map = new LinkedHashMap<>();
             map.put(JdbcUtil.COLUMN_NAME_ID, transaction.getId());
-            map.put(JdbcUtil.COLUMN_NAME_TIME, transaction.getTime());
             map.put(JdbcUtil.COLUMN_NAME_VALUE, transaction.getValue());
             map.put(JdbcUtil.COLUMN_NAME_NAME, transaction.getName());
-            map.put(JdbcUtil.COLUMN_NAME_NEW_BALANCE, transaction.getNewBalance().getId());
             if (transaction.getClass().equals(Income.class)) {
-                map.put(JdbcUtil.COLUMN_NAME_INCOME_CATEGORY, ((Income) transaction).getIncomeCategory());
+                map.put(JdbcUtil.COLUMN_NAME_INCOME_CATEGORY, ((Income) transaction).getCategory());
                 map.put(JdbcUtil.COLUMN_NAME_OUTCOME_CATEGORY, "");
             }
             if (transaction.getClass().equals(Outcome.class)) {
                 map.put(JdbcUtil.COLUMN_NAME_INCOME_CATEGORY, "");
-                map.put(JdbcUtil.COLUMN_NAME_OUTCOME_CATEGORY, ((Outcome) transaction).getOutcomeCategory());
+                map.put(JdbcUtil.COLUMN_NAME_OUTCOME_CATEGORY, ((Outcome) transaction).getCategory());
             }
             write(JdbcUtil.updateTableSet(transaction.getClass().getSimpleName(), map, id));
         } catch (Exception e) {

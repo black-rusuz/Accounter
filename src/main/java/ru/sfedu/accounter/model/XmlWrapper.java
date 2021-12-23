@@ -15,10 +15,10 @@ import java.util.List;
 public class XmlWrapper<T> implements Serializable {
 
     @ElementListUnion({
-            @ElementList(entry = "Balance", inline = true, type = Balance.class),
-            @ElementList(entry = "Plan", inline = true, type = Plan.class),
-            @ElementList(entry = "Income", inline = true, type = Income.class),
-            @ElementList(entry = "Outcome", inline = true, type = Outcome.class),
+            @ElementList(entry = "Balance", inline = true, required = false, type = Balance.class),
+            @ElementList(entry = "Plan", inline = true, required = false, type = Plan.class),
+            @ElementList(entry = "Income", inline = true, required = false, type = Income.class),
+            @ElementList(entry = "Outcome", inline = true, required = false, type = Outcome.class),
     })
     private List<T> list;
 

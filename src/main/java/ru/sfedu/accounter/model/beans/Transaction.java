@@ -1,5 +1,6 @@
 package ru.sfedu.accounter.model.beans;
 
+import com.opencsv.bean.CsvBindByName;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -17,19 +18,16 @@ abstract public class Transaction implements Serializable {
     //
 
     @Attribute
+    @CsvBindByName
     private long id;
 
     @Element
-    private String time;
-
-    @Element
+    @CsvBindByName
     private double value;
 
     @Element
+    @CsvBindByName
     private String name;
-
-    @Element
-    private Balance newBalance;
 
     //
     // Constructors
@@ -73,24 +71,6 @@ abstract public class Transaction implements Serializable {
     }
 
     /**
-     * Set the value of time
-     *
-     * @param newVar the new value of time
-     */
-    public void setTime(String newVar) {
-        time = newVar;
-    }
-
-    /**
-     * Get the value of time
-     *
-     * @return the value of time
-     */
-    public String getTime() {
-        return time;
-    }
-
-    /**
      * Set the value of value
      *
      * @param newVar the new value of value
@@ -126,24 +106,6 @@ abstract public class Transaction implements Serializable {
         return name;
     }
 
-    /**
-     * Set the value of newBalance
-     *
-     * @param newVar the new value of newBalance
-     */
-    public void setNewBalance(Balance newVar) {
-        newBalance = newVar;
-    }
-
-    /**
-     * Get the value of newBalance
-     *
-     * @return the value of newBalance
-     */
-    public Balance getNewBalance() {
-        return newBalance;
-    }
-
     //
     // Other methods
     //
@@ -154,24 +116,20 @@ abstract public class Transaction implements Serializable {
         if (!(o instanceof Transaction transaction)) return false;
         return getId() == transaction.getId()
                 && Double.compare(transaction.getValue(), getValue()) == 0
-                && Objects.equals(getTime(), transaction.getTime())
-                && Objects.equals(getName(), transaction.getName())
-                && Objects.equals(getNewBalance(), transaction.getNewBalance());
+                && Objects.equals(getName(), transaction.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTime(), getValue(), getName(), getNewBalance());
+        return Objects.hash(getId(), getValue(), getName());
     }
 
     @Override
     public String toString() {
         return "Transaction{" +
                 "id=" + getId() +
-                ", time='" + getTime() + '\'' +
                 ", value=" + getValue() +
                 ", name='" + getName() + '\'' +
-                ", newBalance=" + getNewBalance() +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package ru.sfedu.accounter.model.beans;
 
+import com.opencsv.bean.CsvBindByName;
 import org.simpleframework.xml.Element;
 import ru.sfedu.accounter.model.enums.OutcomeCategory;
 
@@ -18,7 +19,8 @@ public class Outcome extends Transaction implements Serializable {
     //
 
     @Element
-    private OutcomeCategory outcomeCategory;
+    @CsvBindByName
+    private OutcomeCategory category;
 
     //
     // Constructors
@@ -27,22 +29,18 @@ public class Outcome extends Transaction implements Serializable {
     public Outcome() {
     }
 
-    public Outcome(String time, double value, String name, Balance newBalance, OutcomeCategory outcomeCategory) {
+    public Outcome(double value, String name, OutcomeCategory category) {
         setId();
-        setTime(time);
         setValue(value);
         setName(name);
-        setNewBalance(newBalance);
-        setOutcomeCategory(outcomeCategory);
+        setCategory(category);
     }
 
-    public Outcome(long id, String time, double value, String name, Balance newBalance, OutcomeCategory outcomeCategory) {
+    public Outcome(long id, double value, String name, OutcomeCategory category) {
         setId(id);
-        setTime(time);
         setValue(value);
         setName(name);
-        setNewBalance(newBalance);
-        setOutcomeCategory(outcomeCategory);
+        setCategory(category);
     }
 
     //
@@ -59,8 +57,8 @@ public class Outcome extends Transaction implements Serializable {
      *
      * @param newVar the new value of outcomeCategory
      */
-    public void setOutcomeCategory(OutcomeCategory newVar) {
-        outcomeCategory = newVar;
+    public void setCategory(OutcomeCategory newVar) {
+        category = newVar;
     }
 
     /**
@@ -68,8 +66,8 @@ public class Outcome extends Transaction implements Serializable {
      *
      * @return the value of outcomeCategory
      */
-    public OutcomeCategory getOutcomeCategory() {
-        return outcomeCategory;
+    public OutcomeCategory getCategory() {
+        return category;
     }
 
     //
@@ -82,26 +80,22 @@ public class Outcome extends Transaction implements Serializable {
         if (!(o instanceof Outcome outcome)) return false;
         return getId() == outcome.getId()
                 && Double.compare(outcome.getValue(), getValue()) == 0
-                && Objects.equals(getTime(), outcome.getTime())
                 && Objects.equals(getName(), outcome.getName())
-                && Objects.equals(getNewBalance(), outcome.getNewBalance())
-                && getOutcomeCategory() == outcome.getOutcomeCategory();
+                && getCategory() == outcome.getCategory();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOutcomeCategory());
+        return Objects.hash(getCategory());
     }
 
     @Override
     public String toString() {
         return "Outcome{" +
                 "id=" + getId() +
-                ", time='" + getTime() + '\'' +
                 ", value=" + getValue() +
                 ", name='" + getName() + '\'' +
-                ", newBalance=" + getNewBalance() +
-                ", outcomeCategory=" + outcomeCategory +
+                ", outcomeCategory=" + category +
                 '}';
     }
 }

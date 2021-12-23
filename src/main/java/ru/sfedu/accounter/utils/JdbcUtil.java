@@ -1,27 +1,18 @@
 package ru.sfedu.accounter.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class JdbcUtil {
-    protected static final Logger log = LogManager.getLogger(JdbcUtil.class);
-
     // SOME CONSTANTS USED ONLY FOR SQL. NOT GOOD, BUT LEGAL
     public static final String COLUMN_NAME_ID = "id";
-    public static final String COLUMN_NAME_TIME = "time";
     public static final String COLUMN_NAME_VALUE = "cost";        // Because "value" is reserved word in SQL
-
-    public static final String COLUMN_NAME_START_DATE = "start_date";
     public static final String COLUMN_NAME_NAME = "name";
-    public static final String COLUMN_NAME_PERIOD = "period";
-    public static final String COLUMN_NAME_TRANSACTION = "transaction_id";
-
-    public static final String COLUMN_NAME_NEW_BALANCE = "new_balance_id";
     public static final String COLUMN_NAME_INCOME_CATEGORY = "income_category";
     public static final String COLUMN_NAME_OUTCOME_CATEGORY = "outcome_category";
+
+    public static final String COLUMN_NAME_PERIOD = "period";
+    public static final String COLUMN_NAME_TRANSACTION = "transaction_id";
 
     public static final String COLUMN_TYPE_PK = " PRIMARY KEY";
     public static final String COLUMN_TYPE_LONG = " LONG";
@@ -31,24 +22,20 @@ public class JdbcUtil {
     public static final String CREATE_TABLE_BALANCE =
             "CREATE TABLE IF NOT EXISTS balance(" +
                     COLUMN_NAME_ID + COLUMN_TYPE_LONG + COLUMN_TYPE_PK + ", " +
-                    COLUMN_NAME_TIME + COLUMN_TYPE_STRING + ", " +
-                    COLUMN_NAME_VALUE + COLUMN_TYPE_DOUBLE +
+                    COLUMN_NAME_VALUE + COLUMN_TYPE_DOUBLE + ", " +
+                    COLUMN_NAME_TRANSACTION + COLUMN_TYPE_LONG +
                     ");";
     public static final String CREATE_TABLE_PLAN =
             "CREATE TABLE IF NOT EXISTS plan(" +
                     COLUMN_NAME_ID + COLUMN_TYPE_LONG + COLUMN_TYPE_PK + ", " +
-                    COLUMN_NAME_START_DATE + COLUMN_TYPE_STRING + ", " +
-                    COLUMN_NAME_NAME + COLUMN_TYPE_STRING + ", " +
                     COLUMN_NAME_PERIOD + COLUMN_TYPE_STRING + ", " +
                     COLUMN_NAME_TRANSACTION + COLUMN_TYPE_LONG +
                     ");";
     public static final String CREATE_TABLE_TRANSACTION =
             "CREATE TABLE IF NOT EXISTS transaction(" +
                     COLUMN_NAME_ID + COLUMN_TYPE_LONG + COLUMN_TYPE_PK + ", " +
-                    COLUMN_NAME_TIME + COLUMN_TYPE_STRING + ", " +
                     COLUMN_NAME_VALUE + COLUMN_TYPE_DOUBLE + ", " +
                     COLUMN_NAME_NAME + COLUMN_TYPE_STRING + ", " +
-                    COLUMN_NAME_NEW_BALANCE + COLUMN_TYPE_LONG + ", " +
                     COLUMN_NAME_INCOME_CATEGORY + COLUMN_TYPE_STRING + ", " +
                     COLUMN_NAME_OUTCOME_CATEGORY + COLUMN_TYPE_STRING +
                     ");";

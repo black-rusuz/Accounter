@@ -1,5 +1,6 @@
 package ru.sfedu.accounter.model.beans;
 
+import com.opencsv.bean.CsvBindByName;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -17,12 +18,11 @@ public class Balance implements Serializable {
     //
 
     @Attribute
+    @CsvBindByName
     private long id;
 
-    @Element
-    private String time;
-
-    @Element
+    @Attribute
+    @CsvBindByName
     private double value;
 
     //
@@ -32,15 +32,13 @@ public class Balance implements Serializable {
     public Balance() {
     }
 
-    public Balance(String time, double value) {
+    public Balance(double value) {
         setId();
-        setTime(time);
         setValue(value);
     }
 
-    public Balance(long id, String time, double value) {
+    public Balance(long id, double value) {
         setId(id);
-        setTime(time);
         setValue(value);
     }
 
@@ -79,24 +77,6 @@ public class Balance implements Serializable {
     }
 
     /**
-     * Set the value of time
-     *
-     * @param newVar the new value of time
-     */
-    public void setTime(String newVar) {
-        time = newVar;
-    }
-
-    /**
-     * Get the value of time
-     *
-     * @return the value of time
-     */
-    public String getTime() {
-        return time;
-    }
-
-    /**
      * Set the value of value
      *
      * @param newVar the new value of value
@@ -123,21 +103,19 @@ public class Balance implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Balance balance)) return false;
         return getId() == balance.getId()
-                && Double.compare(balance.getValue(), getValue()) == 0
-                && Objects.equals(getTime(), balance.getTime());
+                && Double.compare(balance.getValue(), getValue()) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTime(), getValue());
+        return Objects.hash(getId(), getValue());
     }
 
     @Override
     public String toString() {
         return "Balance{" +
-                "id=" + getId() +
-                ", time='" + getTime() + '\'' +
-                ", value=" + getValue() +
+                "id=" + id +
+                ", value=" + value +
                 '}';
     }
 }
