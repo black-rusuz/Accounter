@@ -26,7 +26,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
     }
 
     /**
-     * Sends logs to MongoDB cluster declared in enviroment.properties
+     * Sends logs to MongoDB cluster declared in environment.properties
      *
      * @param methodName — method that called sending
      * @param bean       — last bean working with

@@ -34,10 +34,11 @@ public abstract class FileDataProvider extends AbstractDataProvider implements I
 
     /**
      * Generates full file name by filePath, bean and fileExtension.
-     * @param filePath — path to file declared in enviroment.properties
-     * @param bean — bean to work with
-     * @param fileExtension — file extension declared in enviroment.properties
-     * @param <T> — generic class of bean
+     *
+     * @param filePath      path to file declared in environment.properties
+     * @param bean          bean to work with
+     * @param fileExtension file extension declared in environment.properties
+     * @param <T>           generic class of bean
      * @return full filename string
      */
     protected <T> String classToFullFileName(String filePath, Class<T> bean, String fileExtension) {
