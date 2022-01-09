@@ -18,7 +18,7 @@ public class Main {
         AbstractDataProvider dataProvider = getDataProvider(args[0]);
         switch (args[2].toUpperCase()) {
             case (Constants.BALANCE) -> dataProvider.manageBalance(args[3], Long.parseLong(args[4]));
-            case (Constants.PLANS) -> {
+            case (Constants.PLAN) -> {
                 if (args[3] != null) {
                     dataProvider.managePlans(Long.parseLong(args[3]));
                     break;

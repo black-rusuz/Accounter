@@ -30,7 +30,7 @@ public class MongoUtil {
                     .build();
             return MongoClients.create(settings);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return null;
     }
@@ -45,7 +45,7 @@ public class MongoUtil {
             if(!insertOneResult.wasAcknowledged())
                 throw new IllegalArgumentException();
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage());
         }
     }
 

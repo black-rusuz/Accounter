@@ -1,6 +1,7 @@
 /.idea
 /target
 /logs
+/out
 
 debug.log
 Accounter.iml
