@@ -29,20 +29,22 @@ public class DataProviderCsv extends FileDataProvider {
             FileReader fileReader = new FileReader(file);
             list = new CsvToBeanBuilder<T>(fileReader).withType(bean).build().parse();
             fileReader.close();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
         return list;
     }
 
     @Override
-    protected <T> Result write(List<T> list) {
+    protected <T> Result write(List<T> list, Class<T> bean) {
         try {
-            File file = initFile(classToFullFileName(CSV_PATH, list.get(0).getClass(), CSV_EXTENSION));
+            File file = initFile(classToFullFileName(CSV_PATH, bean, CSV_EXTENSION));
             FileWriter fileWriter = new FileWriter(file);
             StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(fileWriter).build();
             beanToCsv.write(list);
             fileWriter.close();
         } catch (Exception e) {
+            log.error(e.getMessage());
             sendLogs(Constants.METHOD_NAME_WRITE, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Error);
             return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR + e.getMessage());
         }

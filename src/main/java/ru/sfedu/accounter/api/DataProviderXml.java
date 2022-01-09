@@ -29,20 +29,22 @@ public class DataProviderXml extends FileDataProvider {
             FileReader fileReader = new FileReader(file);
             list = new Persister().read(XmlWrapper.class, fileReader).getList();
             fileReader.close();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
         return list;
     }
 
     @Override
-    protected <T> Result write(List<T> list) {
+    protected <T> Result write(List<T> list, Class<T> bean) {
         try {
-            File file = initFile(classToFullFileName(XML_PATH, list.get(0).getClass(), XML_EXTENSION));
+            File file = initFile(classToFullFileName(XML_PATH, bean, XML_EXTENSION));
             FileWriter fileWriter = new FileWriter(file);
             Serializer serializer = new Persister();
             serializer.write(new XmlWrapper<>(list), fileWriter);
             fileWriter.close();
         } catch (Exception e) {
+            log.error(e.getMessage());
             sendLogs(Constants.METHOD_NAME_WRITE, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Error);
             return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR + e.getMessage());
         }
