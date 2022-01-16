@@ -1,14 +1,14 @@
 package ru.sfedu.accounter.model.enums;
 
 public enum OutcomeCategory {
-    Transport,
-    Supermarket,
-    Food,
-    Clothes,
-    Subscription,
-    Debt,
-    Online,
-    Services,
-    Home,
-    Other,
+    TRANSPORT,
+    SUPERMARKET,
+    FOOD,
+    CLOTHES,
+    SUBSCRIPTION,
+    DEBT_OUT,
+    ONLINE,
+    SERVICES,
+    HOME,
+    OUTCOME,
 }

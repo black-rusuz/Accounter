@@ -29,7 +29,7 @@ public class Result {
 
     @Override
     public String toString() {
-        return "Result{state=" + state + ", message=: " + message + "}";
+        return state + ": " + message;
     }
 
     @Override

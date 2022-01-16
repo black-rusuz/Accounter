@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class DataProviderCsvTest extends AbstractDataProviderTest {
+public class DataProviderCsvTest extends IDataProviderTest {
 
     @Override
     @BeforeEach

@@ -25,10 +25,13 @@ public class DataProviderXml extends FileDataProvider {
     protected <T> List<T> read(Class<T> bean) {
         List<T> list = new ArrayList<>();
         try {
-            File file = initFile(classToFullFileName(XML_PATH, bean, XML_EXTENSION));
-            FileReader fileReader = new FileReader(file);
-            list = new Persister().read(XmlWrapper.class, fileReader).getList();
-            fileReader.close();
+            File file = initFile(getName(XML_PATH, bean, XML_EXTENSION));
+            if (file.length() > 0) {
+                FileReader fileReader = new FileReader(file);
+                XmlWrapper<T> xmlWrapper = new Persister().read(XmlWrapper.class, fileReader);
+                list = xmlWrapper.getList();
+                fileReader.close();
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -38,7 +41,7 @@ public class DataProviderXml extends FileDataProvider {
     @Override
     protected <T> Result write(List<T> list, Class<T> bean) {
         try {
-            File file = initFile(classToFullFileName(XML_PATH, bean, XML_EXTENSION));
+            File file = initFile(getName(XML_PATH, bean, XML_EXTENSION));
             FileWriter fileWriter = new FileWriter(file);
             Serializer serializer = new Persister();
             serializer.write(new XmlWrapper<>(list), fileWriter);

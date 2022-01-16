@@ -1,5 +1,8 @@
 package ru.sfedu.accounter.api;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -25,10 +28,13 @@ public class DataProviderCsv extends FileDataProvider {
     protected <T> List<T> read(Class<T> bean) {
         List<T> list = new ArrayList<>();
         try {
-            File file = initFile(classToFullFileName(CSV_PATH, bean, CSV_EXTENSION));
-            FileReader fileReader = new FileReader(file);
-            list = new CsvToBeanBuilder<T>(fileReader).withType(bean).build().parse();
-            fileReader.close();
+            File file = initFile(getName(CSV_PATH, bean, CSV_EXTENSION));
+            if (file.length() > 0) {
+                CSVReader csvReader = new CSVReader(new FileReader(file));
+                CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(csvReader).withType(bean).build();
+                list = csvToBean.parse();
+                csvReader.close();
+            }
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -38,11 +44,11 @@ public class DataProviderCsv extends FileDataProvider {
     @Override
     protected <T> Result write(List<T> list, Class<T> bean) {
         try {
-            File file = initFile(classToFullFileName(CSV_PATH, bean, CSV_EXTENSION));
-            FileWriter fileWriter = new FileWriter(file);
-            StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(fileWriter).build();
+            File file = initFile(getName(CSV_PATH, bean, CSV_EXTENSION));
+            CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
+            StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(csvWriter).build();
             beanToCsv.write(list);
-            fileWriter.close();
+            csvWriter.close();
         } catch (Exception e) {
             log.error(e.getMessage());
             sendLogs(Constants.METHOD_NAME_WRITE, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Error);

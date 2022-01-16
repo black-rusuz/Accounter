@@ -18,15 +18,15 @@ abstract public class Transaction implements Serializable {
     //
 
     @Attribute
-    @CsvBindByName
+    @CsvBindByName(column = "transaction_id")
     private long id;
 
     @Element
-    @CsvBindByName
+    @CsvBindByName(column = "transaction_value")
     private double value;
 
     @Element
-    @CsvBindByName
+    @CsvBindByName(column = "transaction_name")
     private String name;
 
     //

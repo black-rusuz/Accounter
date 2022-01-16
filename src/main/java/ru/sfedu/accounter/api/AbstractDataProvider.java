@@ -10,9 +10,7 @@ import ru.sfedu.accounter.utils.ConfigurationUtil;
 import ru.sfedu.accounter.utils.MongoUtil;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -28,9 +26,9 @@ public abstract class AbstractDataProvider implements IDataProvider {
     /**
      * Sends logs to MongoDB cluster declared in environment.properties
      *
-     * @param methodName — method that called sending
-     * @param bean       — last bean working with
-     * @param state      — method result
+     * @param methodName method that called sending
+     * @param bean       last bean working with
+     * @param state      method result
      */
     protected void sendLogs(String methodName, Object bean, Result.State state) {
         HistoryContent historyContent = new HistoryContent(
@@ -41,28 +39,30 @@ public abstract class AbstractDataProvider implements IDataProvider {
                 methodName,
                 MongoUtil.objectToString(bean),
                 state);
-        MongoUtil.saveToLog(historyContent);
+        // TODO: Раскомментировать
+        //MongoUtil.saveToLog(historyContent);
     }
 
 
-    private final String DEFAULT_PLAN_NAME = ConfigurationUtil.getConfigurationEntry(Constants.DEFAULT_PLAN_NAME);
-    private final String DEFAULT_PLAN_PERIOD = ConfigurationUtil.getConfigurationEntry(Constants.DEFAULT_PLAN_PERIOD);
 
+    // TODO: Сделать дефолтные значения
+    private final String DEFAULT_PLAN_NAME = ConfigurationUtil.getConfigurationEntry(Constants.DEFAULT_PLAN_NAME);
+    private final long DEFAULT_PLAN_PERIOD = 1L;
+
+    // TODO: Пофиксить функции, таблицу детализации, добавить логгирование и чота ещё
     /**
      * Root use case for managing current balance
      *
-     * @param action        — what you want to do next: repeat or plan transaction
-     * @param transactionId — chosen ID of transaction to apply your action
+     * @param action        what you want to do next: repeat or plan transaction
+     * @param transactionId ID of chosen transaction to apply your action
      */
     public void manageBalance(String action, long transactionId) {
         calculateBalance();
         displayIncomesAndOutcomes();
-        if (action.equalsIgnoreCase(Constants.REPEAT)) {
+        if (action.equalsIgnoreCase(Constants.REPEAT))
             repeatTransaction(transactionId);
-        }
-        if (action.equalsIgnoreCase(Constants.PLAN)) {
+        if (action.equalsIgnoreCase(Constants.PLAN))
             makePlanBasedOnTransaction(transactionId);
-        }
     }
 
     /**
@@ -79,7 +79,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
             if (transaction.getClass().equals(Outcome.class))
                 balanceValue -= transaction.getValue();
         }
-        Balance balance = new Balance(LocalDateTime.now().toString(), balanceValue);
+        Balance balance = new Balance(balanceValue);
         appendBalance(balance);
         return balance.getValue();
     }
@@ -87,7 +87,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
     /**
      * Displays all written transactions
      *
-     * @return formatted string of them
+     * @return list of all transactions
      */
     public String displayIncomesAndOutcomes() {
         List<Transaction> list = getAllTransaction();
@@ -100,7 +100,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
     /**
      * Repeats selected transaction
      *
-     * @param transactionId — chosen ID of transaction to repeat
+     * @param transactionId chosen ID of transaction to repeat
      * @return true if transaction appended successfully
      */
     public boolean repeatTransaction(long transactionId) {
@@ -110,16 +110,17 @@ public abstract class AbstractDataProvider implements IDataProvider {
     /**
      * Creates plan based on selected transaction
      *
-     * @param transactionId — chosen ID of transaction to plan
+     * @param transactionId chosen ID of transaction to plan
      * @return true if transaction appended successfully
      */
     public boolean makePlanBasedOnTransaction(long transactionId) {
-        return appendPlan(new Plan(LocalDate.now().toString(), DEFAULT_PLAN_NAME, Period.parse(DEFAULT_PLAN_PERIOD).toString(), getTransactionById(transactionId))) != null;
+        return appendPlan(new Plan(1L, getTransactionById(transactionId))) != null;
     }
 
     /**
      * Root use case for managing current balance
-     * @param planId — chosen ID of plan to repeat now
+     *
+     * @param planId chosen ID of plan to repeat now
      */
     public void managePlans(long planId) {
         displayPlans();
@@ -131,6 +132,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
 
     /**
      * Displays all written plans
+     *
      * @return formatted string of them
      */
     public String displayPlans() {
@@ -143,7 +145,8 @@ public abstract class AbstractDataProvider implements IDataProvider {
 
     /**
      * Append transaction of selected plan
-     * @param planId — chosen plan ID to execute now
+     *
+     * @param planId chosen plan ID to execute now
      * @return true if plan appended successfully
      */
     public boolean executePlanNow(long planId) {

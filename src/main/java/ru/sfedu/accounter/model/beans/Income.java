@@ -19,7 +19,7 @@ public class Income extends Transaction implements Serializable {
     //
 
     @Element
-    @CsvBindByName
+    @CsvBindByName(column = "income_category")
     private IncomeCategory category;
 
     //

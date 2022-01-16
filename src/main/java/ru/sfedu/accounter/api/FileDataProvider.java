@@ -43,11 +43,8 @@ public abstract class FileDataProvider extends AbstractDataProvider {
      * @param <T>           generic class of bean
      * @return full filename string
      */
-    protected <T> String classToFullFileName(String filePath, Class<T> bean, String fileExtension) {
-        String fileName = bean.getSimpleName();
-        if (!bean.getSuperclass().equals(Object.class))
-            fileName = bean.getSuperclass().getSimpleName();
-        return filePath + fileName + fileExtension;
+    protected <T> String getName(String filePath, Class<T> bean, String fileExtension) {
+        return filePath + bean.getSimpleName() + fileExtension;
     }
 
     /**

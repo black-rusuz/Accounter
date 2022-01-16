@@ -11,13 +11,28 @@ import ru.sfedu.accounter.model.Result;
 import ru.sfedu.accounter.model.beans.Balance;
 import ru.sfedu.accounter.model.beans.Plan;
 import ru.sfedu.accounter.model.beans.Transaction;
+import ru.sfedu.accounter.utils.SampleData;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public abstract class AbstractDataProviderTest extends TestBase {
+public abstract class IDataProviderTest extends SampleData {
     protected IDataProvider dataProvider;
+    protected static final Logger log = LogManager.getLogger(IDataProviderTest.class);
+
+    public void cleanUp() {
+        dataProvider.deleteBalance(b1.getId());
+        dataProvider.deleteBalance(b2.getId());
+
+        dataProvider.deleteTransaction(t1.getId());
+        dataProvider.deleteTransaction(t2.getId());
+        dataProvider.deleteTransaction(t3.getId());
+        dataProvider.deleteTransaction(t4.getId());
+
+        dataProvider.deletePlan(p1.getId());
+        dataProvider.deletePlan(p2.getId());
+    }
 
     @BeforeEach
     public void setUp() throws IOException, SQLException {
@@ -26,16 +41,7 @@ public abstract class AbstractDataProviderTest extends TestBase {
 
     @AfterEach
     public void tearDown() {
-        dataProvider.deleteBalance(b1.getId());
-        dataProvider.deleteBalance(b2.getId());
-
-        dataProvider.deletePlan(p1.getId());
-        dataProvider.deletePlan(p2.getId());
-
-        dataProvider.deleteTransaction(t1.getId());
-        dataProvider.deleteTransaction(t2.getId());
-        dataProvider.deleteTransaction(t3.getId());
-        dataProvider.deleteTransaction(t4.getId());
+        cleanUp();
     }
 
     @Test
@@ -61,7 +67,7 @@ public abstract class AbstractDataProviderTest extends TestBase {
 
     @Test
     public void testGetBalanceByIdNegative() {
-        Assertions.assertEquals(new Balance(), dataProvider.getBalanceById(1L));
+        Assertions.assertEquals(new Balance(), dataProvider.getBalanceById(0));
     }
 
     @Test
@@ -84,12 +90,12 @@ public abstract class AbstractDataProviderTest extends TestBase {
     @Test
     public void testDeleteBalanceNegative() {
         Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        Assertions.assertEquals(result, dataProvider.deleteBalance(b1.getId()));
+        Assertions.assertEquals(result, dataProvider.deleteBalance(0));
     }
 
     @Test
     public void testUpdateBalancePositive() {
-        dataProvider.appendBalance(b1);
+        b1 = dataProvider.appendBalance(b1);
         b1.setValue(500);
         Result result = new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
         Assertions.assertEquals(result, dataProvider.updateBalance(b1));
@@ -124,7 +130,7 @@ public abstract class AbstractDataProviderTest extends TestBase {
 
     @Test
     public void testGetPlanByIdNegative() {
-        Assertions.assertEquals(new Plan(), dataProvider.getPlanById(1L));
+        Assertions.assertEquals(new Plan(), dataProvider.getPlanById(0));
     }
 
     @Test
@@ -147,12 +153,12 @@ public abstract class AbstractDataProviderTest extends TestBase {
     @Test
     public void testDeletePlanNegative() {
         Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        Assertions.assertEquals(result, dataProvider.deletePlan(p1.getId()));
+        Assertions.assertEquals(result, dataProvider.deletePlan(0));
     }
 
     @Test
     public void testUpdatePlanPositive() {
-        dataProvider.appendPlan(p1);
+        p1 = dataProvider.appendPlan(p1);
         p1.setPeriod(500L);
         Result result = new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
         Assertions.assertEquals(result, dataProvider.updatePlan(p1));
@@ -187,8 +193,7 @@ public abstract class AbstractDataProviderTest extends TestBase {
 
     @Test
     public void testGetTransactionByIdNegative() {
-        Assertions.assertEquals(new Transaction() {
-        }, dataProvider.getTransactionById(1L));
+        Assertions.assertEquals(new Transaction() {}, dataProvider.getTransactionById(0));
     }
 
     @Test
@@ -211,12 +216,12 @@ public abstract class AbstractDataProviderTest extends TestBase {
     @Test
     public void testDeleteTransactionNegative() {
         Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        Assertions.assertEquals(result, dataProvider.deleteTransaction(t1.getId()));
+        Assertions.assertEquals(result, dataProvider.deleteTransaction(0));
     }
 
     @Test
     public void testUpdateTransactionPositive() {
-        dataProvider.appendTransaction(t1);
+        t1 = dataProvider.appendTransaction(t1);
         t1.setValue(500);
         Result result = new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
         Assertions.assertEquals(result, dataProvider.updateTransaction(t1));

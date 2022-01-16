@@ -1,9 +1,10 @@
 package ru.sfedu.accounter.model.beans;
 
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvRecurse;
+import com.opencsv.bean.CsvCustomBindByName;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import ru.sfedu.accounter.utils.TransactionConverter;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,15 +20,15 @@ public class Plan implements Serializable {
     //
 
     @Attribute
-    @CsvBindByName
+    @CsvBindByName(column = "plan_id")
     private long id;
 
     @Element
-    @CsvBindByName
+    @CsvBindByName(column = "plan_period")
     private long period;
 
     @Element
-    @CsvRecurse
+    @CsvCustomBindByName(converter = TransactionConverter.class)
     private Transaction transaction;
 
     //

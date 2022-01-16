@@ -19,7 +19,7 @@ public class Outcome extends Transaction implements Serializable {
     //
 
     @Element
-    @CsvBindByName
+    @CsvBindByName(column = "outcome_category")
     private OutcomeCategory category;
 
     //

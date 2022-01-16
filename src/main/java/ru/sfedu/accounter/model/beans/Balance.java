@@ -18,11 +18,11 @@ public class Balance implements Serializable {
     //
 
     @Attribute
-    @CsvBindByName
+    @CsvBindByName(column = "balance_id")
     private long id;
 
     @Attribute
-    @CsvBindByName
+    @CsvBindByName(column = "balance_value")
     private double value;
 
     //

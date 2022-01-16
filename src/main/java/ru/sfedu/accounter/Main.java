@@ -13,6 +13,7 @@ import java.sql.SQLException;
 public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
 
+    // TODO: Пофиксить CLI
     public static void main(String[] args) throws SQLException, IOException {
         checkArgumentsCount(args);
         AbstractDataProvider dataProvider = getDataProvider(args[0]);
