@@ -22,10 +22,10 @@ public class DataProviderXml extends FileDataProvider {
     }
 
     @Override
-    protected <T> List<T> read(Class<T> bean) {
+    protected <T> List<T> read(Class<T> type) {
         List<T> list = new ArrayList<>();
         try {
-            File file = initFile(getName(XML_PATH, bean, XML_EXTENSION));
+            File file = initFile(getName(XML_PATH, type, XML_EXTENSION));
             if (file.length() > 0) {
                 FileReader fileReader = new FileReader(file);
                 XmlWrapper<T> xmlWrapper = new Persister().read(XmlWrapper.class, fileReader);
@@ -39,19 +39,19 @@ public class DataProviderXml extends FileDataProvider {
     }
 
     @Override
-    protected <T> Result write(List<T> list, Class<T> bean) {
+    protected <T> Result write(List<T> list, Class<T> type, String methodName) {
         try {
-            File file = initFile(getName(XML_PATH, bean, XML_EXTENSION));
+            File file = initFile(getName(XML_PATH, type, XML_EXTENSION));
             FileWriter fileWriter = new FileWriter(file);
             Serializer serializer = new Persister();
             serializer.write(new XmlWrapper<>(list), fileWriter);
             fileWriter.close();
         } catch (Exception e) {
             log.error(e.getMessage());
-            sendLogs(Constants.METHOD_NAME_WRITE, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Error);
+            sendLogs(methodName, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Error);
             return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR + e.getMessage());
         }
-        sendLogs(Constants.METHOD_NAME_WRITE, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Success);
+        sendLogs(methodName, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Success);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 }

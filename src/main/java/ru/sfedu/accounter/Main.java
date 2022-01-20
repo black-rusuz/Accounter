@@ -21,10 +21,8 @@ public class Main {
             case (Constants.BALANCE) -> dataProvider.manageBalance(args[3], Long.parseLong(args[4]));
             case (Constants.PLAN) -> {
                 if (args[3] != null) {
-                    dataProvider.managePlans(Long.parseLong(args[3]));
                     break;
                 }
-                dataProvider.managePlans();
             }
             default -> {
                 log.error(Constants.CLI_INVALID_ARGUMENT);

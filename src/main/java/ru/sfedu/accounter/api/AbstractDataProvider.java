@@ -12,9 +12,8 @@ import ru.sfedu.accounter.utils.MongoUtil;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public abstract class AbstractDataProvider implements IDataProvider {
     protected static final Logger log = LogManager.getLogger(AbstractDataProvider.class);
@@ -43,58 +42,58 @@ public abstract class AbstractDataProvider implements IDataProvider {
         //MongoUtil.saveToLog(historyContent);
     }
 
-
-
-    // TODO: Сделать дефолтные значения
-    private final String DEFAULT_PLAN_NAME = ConfigurationUtil.getConfigurationEntry(Constants.DEFAULT_PLAN_NAME);
-    private final long DEFAULT_PLAN_PERIOD = 1L;
+    // TODO: Сделать функции перевода ms в Period и выводить красиво
+    private final long DEFAULT_PLAN_PERIOD = (long) 1000 * 60 * 60 * 24 * 30;       // One month
 
     // TODO: Пофиксить функции, таблицу детализации, добавить логгирование и чота ещё
+
     /**
      * Root use case for managing current balance
      *
      * @param action        what you want to do next: repeat or plan transaction
      * @param transactionId ID of chosen transaction to apply your action
+     * @return list of balances history
      */
-    public void manageBalance(String action, long transactionId) {
+    public List<Balance> manageBalance(String action, long transactionId) {
+        List<Balance> balancesHistory = getAllBalance();
         calculateBalance();
         displayIncomesAndOutcomes();
         if (action.equalsIgnoreCase(Constants.REPEAT))
             repeatTransaction(transactionId);
         if (action.equalsIgnoreCase(Constants.PLAN))
             makePlanBasedOnTransaction(transactionId);
+        return balancesHistory;
     }
 
     /**
      * Calculates current balance using all written transactions and appends it to Balance list
      *
-     * @return current balance value
+     * @return Optional of new balance
      */
-    public double calculateBalance() {
-        List<Transaction> list = getAllTransaction();
+    public Optional<Balance> calculateBalance() {
+        List<Transaction> transactions = getAllTransaction();
         double balanceValue = 0;
-        for (Transaction transaction : list) {
+        for (Transaction transaction : transactions) {
             if (transaction.getClass().equals(Income.class))
                 balanceValue += transaction.getValue();
             if (transaction.getClass().equals(Outcome.class))
                 balanceValue -= transaction.getValue();
         }
-        Balance balance = new Balance(balanceValue);
-        appendBalance(balance);
-        return balance.getValue();
+        Balance newBalance = appendBalance(new Balance(balanceValue));
+        log.info(Constants.CLI_CURRENT_BALANCE + newBalance.getValue());
+        return Optional.of(newBalance);
     }
 
     /**
      * Displays all written transactions
      *
-     * @return list of all transactions
+     * @return list of all existing transactions
      */
-    public String displayIncomesAndOutcomes() {
-        List<Transaction> list = getAllTransaction();
-        List<String> strings = list.stream()
-                .map(object -> Objects.toString(object, null))
-                .collect(Collectors.toList());
-        return String.join("\n", strings);
+    public List<Transaction> displayIncomesAndOutcomes() {
+        List<Transaction> transactions = getAllTransaction();
+        // TODO: Выводить красиво
+        log.info(Constants.CLI_ALL_TRANSACTIONS + transactions);
+        return transactions;
     }
 
     /**
@@ -103,31 +102,37 @@ public abstract class AbstractDataProvider implements IDataProvider {
      * @param transactionId chosen ID of transaction to repeat
      * @return true if transaction appended successfully
      */
-    public boolean repeatTransaction(long transactionId) {
-        return appendTransaction(getTransactionById(transactionId)) != null;
+    public Optional<Transaction> repeatTransaction(long transactionId) {
+        Transaction transaction = getTransactionById(transactionId);
+        transaction = appendTransaction(transaction);
+        return Optional.of(transaction);
     }
 
     /**
      * Creates plan based on selected transaction
      *
      * @param transactionId chosen ID of transaction to plan
-     * @return true if transaction appended successfully
+     * @return Optional of new plan
      */
-    public boolean makePlanBasedOnTransaction(long transactionId) {
-        return appendPlan(new Plan(1L, getTransactionById(transactionId))) != null;
+    public Optional<Plan> makePlanBasedOnTransaction(long transactionId) {
+        Transaction transaction = getTransactionById(transactionId);
+        Plan newPlan = new Plan(DEFAULT_PLAN_PERIOD, transaction);
+        newPlan = appendPlan(newPlan);
+        return Optional.of(newPlan);
     }
 
     /**
      * Root use case for managing current balance
      *
-     * @param planId chosen ID of plan to repeat now
+     * @param planId  ID of chosen plan
+     * @param execute if true plan will be executed now
+     * @return List of all existing plans
      */
-    public void managePlans(long planId) {
-        displayPlans();
-        executePlanNow(planId);
-    }
-    public void managePlans() {
-        displayPlans();
+    public List<Plan> managePlans(long planId, boolean execute) {
+        List<Plan> plans = displayPlans();
+        if (execute)
+            executePlanNow(planId);
+        return plans;
     }
 
     /**
@@ -135,21 +140,22 @@ public abstract class AbstractDataProvider implements IDataProvider {
      *
      * @return formatted string of them
      */
-    public String displayPlans() {
-        List<Plan> list = getAllPlan();
-        List<String> strings = list.stream()
-                .map(object -> Objects.toString(object, null))
-                .collect(Collectors.toList());
-        return String.join("\n", strings);
+    public List<Plan> displayPlans() {
+        List<Plan> plans = getAllPlan();
+        // TODO: Выводить красиво
+        log.info(Constants.CLI_ALL_PLANS + plans);
+        return plans;
     }
 
     /**
      * Append transaction of selected plan
      *
      * @param planId chosen plan ID to execute now
-     * @return true if plan appended successfully
+     * @return Optional of transaction of executed plan
      */
-    public boolean executePlanNow(long planId) {
-        return appendTransaction(getPlanById(planId).getTransaction()) != null;
+    public Optional<Transaction> executePlanNow(long planId) {
+        Transaction transaction = getPlanById(planId).getTransaction();
+        transaction = appendTransaction(transaction);
+        return Optional.of(transaction);
     }
 }

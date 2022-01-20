@@ -19,11 +19,11 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     /**
      * Reads bean list from file.
      *
-     * @param bean class that needed to read
+     * @param type class that needed to read
      * @param <T>  generic class of list entries
      * @return list of read beans
      */
-    protected abstract <T> List<T> read(Class<T> bean);
+    protected abstract <T> List<T> read(Class<T> type);
 
     /**
      * Writes list of any beans to file.
@@ -32,19 +32,19 @@ public abstract class FileDataProvider extends AbstractDataProvider {
      * @param <T>  generic class of list entries
      * @return reading Result (Success/Warning/Error and message)
      */
-    protected abstract <T> Result write(List<T> list, Class<T> bean);
+    protected abstract <T> Result write(List<T> list, Class<T> type, String methodName);
 
     /**
      * Generates full file name by filePath, bean and fileExtension.
      *
      * @param filePath      path to file declared in environment.properties
-     * @param bean          bean to work with
+     * @param type          bean to work with
      * @param fileExtension file extension declared in environment.properties
      * @param <T>           generic class of bean
      * @return full filename string
      */
-    protected <T> String getName(String filePath, Class<T> bean, String fileExtension) {
-        return filePath + bean.getSimpleName() + fileExtension;
+    protected <T> String getName(String filePath, Class<T> type, String fileExtension) {
+        return filePath + type.getSimpleName() + fileExtension;
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             balance.setId();
         List<Balance> list = getAllBalance();
         list.add(balance);
-        write(list, Balance.class);
+        write(list, Balance.class, Constants.METHOD_NAME_APPEND);
         return balance;
     }
 
@@ -87,7 +87,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         List<Balance> list = getAllBalance();
         list.removeIf(a -> (a.getId() == id));
-        return write(list, Balance.class);
+        return write(list, Balance.class, Constants.METHOD_NAME_DELETE);
     }
 
     @Override
@@ -118,7 +118,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             plan.setId();
         List<Plan> list = getAllPlan();
         list.add(plan);
-        write(list, Plan.class);
+        write(list, Plan.class, Constants.METHOD_NAME_APPEND);
         return plan;
     }
 
@@ -128,7 +128,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         List<Plan> list = getAllPlan();
         list.removeIf(a -> (a.getId() == id));
-        return write(list, Plan.class);
+        return write(list, Plan.class, Constants.METHOD_NAME_DELETE);
     }
 
     @Override
@@ -160,7 +160,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             transaction.setId();
         List<Transaction> list = getAllTransaction();
         list.add(transaction);
-        write(list, Transaction.class);
+        write(list, Transaction.class, Constants.METHOD_NAME_APPEND);
         return transaction;
     }
 
@@ -170,7 +170,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         List<Transaction> list = getAllTransaction();
         list.removeIf(a -> (a.getId() == id));
-        return write(list, Transaction.class);
+        return write(list, Transaction.class, Constants.METHOD_NAME_DELETE);
     }
 
     @Override

@@ -25,13 +25,13 @@ public class DataProviderCsv extends FileDataProvider {
     }
 
     @Override
-    protected <T> List<T> read(Class<T> bean) {
+    protected <T> List<T> read(Class<T> type) {
         List<T> list = new ArrayList<>();
         try {
-            File file = initFile(getName(CSV_PATH, bean, CSV_EXTENSION));
+            File file = initFile(getName(CSV_PATH, type, CSV_EXTENSION));
             if (file.length() > 0) {
                 CSVReader csvReader = new CSVReader(new FileReader(file));
-                CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(csvReader).withType(bean).build();
+                CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(csvReader).withType(type).build();
                 list = csvToBean.parse();
                 csvReader.close();
             }
@@ -42,19 +42,19 @@ public class DataProviderCsv extends FileDataProvider {
     }
 
     @Override
-    protected <T> Result write(List<T> list, Class<T> bean) {
+    protected <T> Result write(List<T> list, Class<T> type, String methodName) {
         try {
-            File file = initFile(getName(CSV_PATH, bean, CSV_EXTENSION));
+            File file = initFile(getName(CSV_PATH, type, CSV_EXTENSION));
             CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
             StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(csvWriter).build();
             beanToCsv.write(list);
             csvWriter.close();
         } catch (Exception e) {
             log.error(e.getMessage());
-            sendLogs(Constants.METHOD_NAME_WRITE, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Error);
+            sendLogs(methodName, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Error);
             return new Result(Result.State.Error, Constants.RESULT_MESSAGE_WRITING_ERROR + e.getMessage());
         }
-        sendLogs(Constants.METHOD_NAME_WRITE, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Success);
+        sendLogs(methodName, list.size() > 0 ? list.get(list.size() - 1) : null, Result.State.Success);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 }

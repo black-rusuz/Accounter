@@ -4,8 +4,6 @@ public class Constants {
 
     // General
     public static final String APP_NAME = "APP_NAME";
-    public static final String DEFAULT_PLAN_NAME = "DEFAULT_PLAN_NAME";
-    public static final String DEFAULT_PLAN_PERIOD = "DEFAULT_PLAN_PERIOD";
 
     // MongoDB
     public static final String MONGO_DB_DEFAULT_ACTOR = "MONGO_DB_DEFAULT_ACTOR";
@@ -36,7 +34,6 @@ public class Constants {
     public static final String RESULT_MESSAGE_WRITING_ERROR = "Error while writing: ";
     public static final String RESULT_MESSAGE_NOT_FOUND = "Record with this ID not found";
 
-    public static final String METHOD_NAME_WRITE = "Write";
     public static final String METHOD_NAME_APPEND = "Append";
     public static final String METHOD_NAME_DELETE = "Delete";
     public static final String METHOD_NAME_UPDATE = "Update";
@@ -45,6 +42,10 @@ public class Constants {
     public static final String CLI_INVALID_DATA_PROVIDER = "Invalid DataProvider";
     public static final String CLI_INVALID_ARGUMENT = "Invalid argument";
     public static final String CLI_FEW_ARGUMENTS = "Too few arguments";
+
+    public static final String CLI_CURRENT_BALANCE = "Current balance: ";
+    public static final String CLI_ALL_TRANSACTIONS = "All your transactions: \n";
+    public static final String CLI_ALL_PLANS = "All your plans: \n";
 
     public static final String LOADSAMPLEDATA = "LOADSAMPLEDATA";
 
