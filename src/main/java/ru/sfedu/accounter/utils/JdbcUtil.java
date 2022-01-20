@@ -8,7 +8,6 @@ import ru.sfedu.accounter.model.beans.Income;
 import ru.sfedu.accounter.model.beans.Plan;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class JdbcUtil {
     private static final Logger log = LogManager.getLogger(JdbcUtil.class);

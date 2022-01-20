@@ -27,7 +27,7 @@ public class Plan implements Serializable {
     @CsvBindByName(column = "plan_period")
     private long period;
 
-    @Element
+    @Element(type = Transaction.class)
     @CsvCustomBindByName(converter = TransactionConverter.class)
     private Transaction transaction;
 
