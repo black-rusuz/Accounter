@@ -122,7 +122,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
     }
 
     /**
-     * Root use case for managing current balance
+     * Root use case for managing existing plans
      *
      * @param planId  ID of chosen plan
      * @param execute if true plan will be executed now
