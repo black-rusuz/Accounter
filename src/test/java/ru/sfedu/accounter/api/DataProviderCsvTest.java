@@ -10,6 +10,6 @@ public class DataProviderCsvTest extends IDataProviderTest {
     @BeforeEach
     public void setUp() throws IOException {
         super.setUp();
-        dataProvider = new DataProviderCsv();
+        dataProvider = new DataProviderXml();
     }
 }

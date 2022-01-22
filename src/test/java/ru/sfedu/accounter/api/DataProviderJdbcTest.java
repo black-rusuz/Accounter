@@ -10,6 +10,6 @@ public class DataProviderJdbcTest extends IDataProviderTest {
     @BeforeEach
     public void setUp() throws IOException {
         super.setUp();
-        dataProvider = new DataProviderJdbc();
+        dataProvider = new DataProviderXml();
     }
 }
