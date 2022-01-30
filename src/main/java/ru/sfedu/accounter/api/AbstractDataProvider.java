@@ -45,8 +45,6 @@ public abstract class AbstractDataProvider implements IDataProvider {
     // TODO: Сделать функции перевода ms в Period и выводить красиво
     private final long DEFAULT_PLAN_PERIOD = (long) 1000 * 60 * 60 * 24 * 30;       // One month
 
-    // TODO: Пофиксить функции, таблицу детализации, добавить логгирование и чота ещё
-
     /**
      * Root use case for managing current balance
      *
@@ -148,7 +146,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
     }
 
     /**
-     * Append transaction of selected plan
+     * Appends transaction of selected plan
      *
      * @param planId chosen plan ID to execute now
      * @return Optional of transaction of executed plan
