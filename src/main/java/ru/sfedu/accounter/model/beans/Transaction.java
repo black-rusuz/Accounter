@@ -27,7 +27,7 @@ public abstract class Transaction implements Serializable {
 
     @Element
     @CsvBindByPosition(position = 2)
-    private String name;
+    private String name = "";
 
     //
     // Constructors

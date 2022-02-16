@@ -10,6 +10,6 @@ public class DataProviderJdbcTest extends CrudTest {
     @BeforeEach
     public void setUp() throws IOException {
         super.setUp();
-        dataProvider = new DataProviderXml();
+        dataProvider = new DataProviderJdbc();
     }
 }

@@ -17,116 +17,141 @@ public class DataProviderJdbc extends AbstractDataProvider {
     private final String hostname = ConfigurationUtil.getConfigurationEntry(Constants.H2_HOSTNAME);
     private final String username = ConfigurationUtil.getConfigurationEntry(Constants.H2_USERNAME);
     private final String password = ConfigurationUtil.getConfigurationEntry(Constants.H2_PASSWORD);
+    private final JdbcUtil jdbcUtil = new JdbcUtil();
 
     public DataProviderJdbc() throws IOException {
-        write(JdbcUtil.CREATE_TABLE_BALANCE);
-        write(JdbcUtil.CREATE_TABLE_PLAN);
-        write(JdbcUtil.CREATE_TABLE_TRANSACTION);
+        try {
+            write(jdbcUtil.CREATE_TABLE_BALANCE);
+            write(jdbcUtil.CREATE_TABLE_INCOME);
+            write(jdbcUtil.CREATE_TABLE_OUTCOME);
+            write(jdbcUtil.CREATE_TABLE_PLAN);
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private <T> List<T> read(Class<T> type, String sql) {
+        List<T> list = new ArrayList<>();
+        try {
+            Connection connection = DriverManager.getConnection(hostname, username, password);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            list = getData(type, resultSet);
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+        }
+        return list;
     }
 
     private <T> List<T> read(Class<T> type) {
-        List<T> list = new ArrayList<>();
-        try {
-            Connection connection = DriverManager.getConnection(hostname, username, password);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(JdbcUtil.selectAllFromTable(type.getSimpleName()));
-            list = getData(resultSet, type);
-            resultSet.close();
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
-        return list;
+        return read(type, jdbcUtil.selectAllFromTable(type.getSimpleName()));
     }
 
     private <T> List<T> read(Class<T> type, long id) {
-        List<T> list = new ArrayList<>();
-        try {
-            Connection connection = DriverManager.getConnection(hostname, username, password);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(JdbcUtil.selectFromTableById(type.getSimpleName(), id));
-            list = getData(resultSet, type);
-            resultSet.close();
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            log.error(e.getMessage());
+        return read(type, jdbcUtil.selectFromTableById(type.getSimpleName(), id));
+    }
+
+    private <T> List<T> getData(Class<T> type, ResultSet resultSet) throws SQLException {
+        List list = new ArrayList<>();
+        if (Balance.class.equals(type))
+            list = getBalance(resultSet);
+        else if (Income.class.equals(type))
+            list = getIncome(resultSet);
+        else if (Outcome.class.equals(type))
+            list = getOutcome(resultSet);
+        else if (Plan.class.equals(type))
+            list = getPlan(resultSet);
+        return list;
+    }
+
+    private List<Balance> getBalance(ResultSet resultSet) throws SQLException {
+        List<Balance> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Balance balance = new Balance();
+            balance.setId(resultSet.getLong(1));
+            balance.setValue(resultSet.getDouble(2));
+            list.add(balance);
         }
         return list;
     }
 
-    private <T> List<T> getData(ResultSet resultSet, Class<T> type) throws SQLException {
-        List list = new ArrayList<>();
-        if (type.equals(Balance.class)) {
-            while (resultSet.next()) {
-                Balance balance = new Balance();
-                balance.setId(resultSet.getLong(1));
-                balance.setValue(resultSet.getDouble(2));
-                list.add(balance);
-            }
-        } else if (type.equals(Transaction.class)) {
-            while (resultSet.next()) {
+    private List<Income> getIncome(ResultSet resultSet) throws SQLException {
+        List<Income> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Income income = new Income();
+            income.setId(resultSet.getLong(1));
+            income.setValue(resultSet.getDouble(2));
+            income.setName(resultSet.getString(3));
+            income.setCategory(IncomeCategory.valueOf(resultSet.getString(4)));
+            list.add(income);
+        }
+        return list;
+    }
+
+    private List<Outcome> getOutcome(ResultSet resultSet) throws SQLException {
+        List<Outcome> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Outcome outcome = new Outcome();
+            outcome.setId(resultSet.getLong(1));
+            outcome.setValue(resultSet.getDouble(2));
+            outcome.setName(resultSet.getString(3));
+            outcome.setCategory(OutcomeCategory.valueOf(resultSet.getString(4)));
+            list.add(outcome);
+        }
+        return list;
+    }
+
+    private List<Plan> getPlan(ResultSet resultSet) throws SQLException {
+        List<Plan> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Plan plan = new Plan();
+            plan.setId(resultSet.getLong(1));
+            plan.setPeriod(resultSet.getLong(2));
+            String[] parsed = resultSet.getString(3).split(jdbcUtil.INNER_DELIMITER);
+            Transaction transaction = new Transaction() {};
+            try {
+                transaction = new Income();
+                transaction.setId(Long.parseLong(parsed[0]));
+                transaction.setValue(Double.parseDouble(parsed[1]));
+                transaction.setName(parsed[2]);
+                ((Income) transaction).setCategory(IncomeCategory.valueOf(parsed[3]));
+            } catch (Exception ignored) {
                 try {
-                    Income income = new Income();
-                    income.setId(resultSet.getLong(1));
-                    income.setValue(resultSet.getDouble(2));
-                    income.setName(resultSet.getString(3));
-                    income.setCategory(IncomeCategory.valueOf(resultSet.getString(4)));
-                    list.add(income);
-                } catch (Exception ignored) {
-                    try {
-                        Outcome outcome = new Outcome();
-                        outcome.setId(resultSet.getLong(1));
-                        outcome.setValue(resultSet.getDouble(2));
-                        outcome.setName(resultSet.getString(3));
-                        outcome.setCategory(OutcomeCategory.valueOf(resultSet.getString(4)));
-                        list.add(outcome);
-                    } catch (Exception ignored1) {
-                    }
+                    transaction = new Outcome();
+                    transaction.setId(Long.parseLong(parsed[0]));
+                    transaction.setValue(Double.parseDouble(parsed[1]));
+                    transaction.setName(parsed[2]);
+                    ((Outcome) transaction).setCategory(OutcomeCategory.valueOf(parsed[3]));
+                } catch (Exception ignored1) {
                 }
             }
-        } else if (type.equals(Plan.class)) {
-            while (resultSet.next()) {
-                Plan plan = new Plan();
-                plan.setId(resultSet.getLong(1));
-                plan.setPeriod(resultSet.getLong(2));
-                plan.setTransaction(getTransactionById(resultSet.getLong(3)));
-                list.add(plan);
-            }
+            plan.setTransaction(transaction);
+            list.add(plan);
         }
         return list;
     }
 
-    private void write(String sql) {
-        try {
-            Connection connection = DriverManager.getConnection(hostname, username, password);
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sql);
-            connection.close();
-            statement.close();
-        } catch (SQLException e) {
-            log.error(e.getMessage());
-        }
+    private void write(String sql) throws SQLException {
+        Connection connection = DriverManager.getConnection(hostname, username, password);
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
+        connection.close();
+        statement.close();
     }
 
     private <T> Result write(String methodName, T bean, long id) {
-        String tableName = bean.getClass().getSuperclass().equals(Object.class)
-                ? bean.getClass().getSimpleName()
-                : bean.getClass().getSuperclass().getSimpleName();
+        String tableName = bean.getClass().getSimpleName();
         String sql = switch (methodName) {
-            case Constants.METHOD_NAME_APPEND -> JdbcUtil.insertIntoTableValues(tableName, bean);
-            case Constants.METHOD_NAME_DELETE -> JdbcUtil.deleteFromTableById(tableName, id);
-            case Constants.METHOD_NAME_UPDATE -> JdbcUtil.updateTableSet(tableName, bean, id);
+            case Constants.METHOD_NAME_APPEND -> jdbcUtil.insertIntoTableValues(tableName, bean);
+            case Constants.METHOD_NAME_DELETE -> jdbcUtil.deleteFromTableById(tableName, id);
+            case Constants.METHOD_NAME_UPDATE -> jdbcUtil.updateTableSet(tableName, bean, id);
             default -> "";
         };
-
         try {
-            Connection connection = DriverManager.getConnection(hostname, username, password);
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sql);
-            connection.close();
-            statement.close();
+            write(sql);
         } catch (SQLException e) {
             log.error(e.getMessage());
             sendLogs(methodName, bean, Result.State.Error);
@@ -172,6 +197,76 @@ public class DataProviderJdbc extends AbstractDataProvider {
     }
 
     @Override
+    public List<Income> getAllIncome() {
+        return read(Income.class);
+    }
+
+    @Override
+    public Income getIncomeById(long id) {
+        List<Income> list = read(Income.class, id);
+        return list.isEmpty() ? new Income() : list.get(0);
+    }
+
+    @Override
+    public Income appendIncome(Income income) {
+        long id = income.getId();
+        if (getIncomeById(id).getId() != 0)
+            income.setId();
+        write(Constants.METHOD_NAME_APPEND, income, income.getId());
+        return income;
+    }
+
+    @Override
+    public Result deleteIncome(long id) {
+        if (getIncomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        return write(Constants.METHOD_NAME_DELETE, getIncomeById(id), id);
+    }
+
+    @Override
+    public Result updateIncome(Income income) {
+        long id = income.getId();
+        if (getIncomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        return write(Constants.METHOD_NAME_UPDATE, income, income.getId());
+    }
+
+    @Override
+    public List<Outcome> getAllOutcome() {
+        return read(Outcome.class);
+    }
+
+    @Override
+    public Outcome getOutcomeById(long id) {
+        List<Outcome> list = read(Outcome.class, id);
+        return list.isEmpty() ? new Outcome() : list.get(0);
+    }
+
+    @Override
+    public Outcome appendOutcome(Outcome outcome) {
+        long id = outcome.getId();
+        if (getOutcomeById(id).getId() != 0)
+            outcome.setId();
+        write(Constants.METHOD_NAME_APPEND, outcome, outcome.getId());
+        return outcome;
+    }
+
+    @Override
+    public Result deleteOutcome(long id) {
+        if (getOutcomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        return write(Constants.METHOD_NAME_DELETE, getOutcomeById(id), id);
+    }
+
+    @Override
+    public Result updateOutcome(Outcome outcome) {
+        long id = outcome.getId();
+        if (getOutcomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        return write(Constants.METHOD_NAME_UPDATE, outcome, outcome.getId());
+    }
+
+    @Override
     public List<Plan> getAllPlan() {
         return read(Plan.class);
     }
@@ -204,40 +299,5 @@ public class DataProviderJdbc extends AbstractDataProvider {
         if (getPlanById(id).getId() == 0)
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         return write(Constants.METHOD_NAME_UPDATE, plan, plan.getId());
-    }
-
-    @Override
-    public List<Transaction> getAllTransaction() {
-        return read(Transaction.class);
-    }
-
-    @Override
-    public Transaction getTransactionById(long id) {
-        List<Transaction> list = read(Transaction.class, id);
-        return list.isEmpty() ? new Transaction(){} : list.get(0);
-    }
-
-    @Override
-    public Transaction appendTransaction(Transaction transaction) {
-        long id = transaction.getId();
-        if (getTransactionById(id).getId() != 0)
-            transaction.setId();
-        write(Constants.METHOD_NAME_APPEND, transaction, transaction.getId());
-        return transaction;
-    }
-
-    @Override
-    public Result deleteTransaction(long id) {
-        if (getTransactionById(id).getId() == 0)
-            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        return write(Constants.METHOD_NAME_DELETE, getTransactionById(id), id);
-    }
-
-    @Override
-    public Result updateTransaction(Transaction transaction) {
-        long id = transaction.getId();
-        if (getTransactionById(id).getId() == 0)
-            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        return write(Constants.METHOD_NAME_UPDATE, transaction, transaction.getId());
     }
 }

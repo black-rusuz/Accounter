@@ -29,7 +29,7 @@ public class Plan implements Serializable {
 
     @Element(type = Transaction.class)
     @CsvCustomBindByPosition(position = 2, converter = TransactionConverter.class)
-    private Transaction transaction;
+    private Transaction transaction = new Transaction() {};
 
     //
     // Constructors

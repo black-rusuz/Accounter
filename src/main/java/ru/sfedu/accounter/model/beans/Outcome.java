@@ -20,7 +20,7 @@ public class Outcome extends Transaction implements Serializable {
 
     @Element
     @CsvBindByPosition(position = 3)
-    private OutcomeCategory category;
+    private OutcomeCategory category = OutcomeCategory.OUTCOME;
 
     //
     // Constructors

@@ -20,7 +20,7 @@ public class Income extends Transaction implements Serializable {
 
     @Element
     @CsvBindByPosition(position = 3)
-    private IncomeCategory category;
+    private IncomeCategory category = IncomeCategory.INCOME;
 
     //
     // Constructors
