@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <mainClass>ru.sfedu.accounter.Main</mainClass>
+        <mainClass>ru.sfedu.accounter.Accounter</mainClass>
     </properties>
 
     <build>
@@ -26,7 +26,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>ru.sfedu.accounter.Main</mainClass>
+                            <mainClass>ru.sfedu.accounter.Accounter</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

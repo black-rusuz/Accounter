@@ -15,12 +15,33 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class AbstractDataProvider implements IDataProvider {
+public abstract class AbstractDataProvider {
     protected static final Logger log = LogManager.getLogger(AbstractDataProvider.class);
-    private final String MONGO_DB_DEFAULT_ACTOR = ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_DEFAULT_ACTOR);
+    private final Boolean MONGO_DB_ENABLE_LOGGING = Boolean.parseBoolean(
+            ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_ENABLE_LOGGING));
+    private final String MONGO_DB_DEFAULT_ACTOR =
+            ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_DEFAULT_ACTOR);
 
     protected AbstractDataProvider() throws IOException {
     }
+
+    public abstract List<Balance> getAllBalance();
+    public abstract Balance getBalanceById(long id);
+    public abstract Balance appendBalance(Balance balance);
+    public abstract Result deleteBalance(long id);
+    public abstract Result updateBalance(Balance balance);
+
+    public abstract List<Plan> getAllPlan();
+    public abstract Plan getPlanById(long id);
+    public abstract Plan appendPlan(Plan plan);
+    public abstract Result deletePlan(long id);
+    public abstract Result updatePlan(Plan plan);
+
+    public abstract List<Transaction> getAllTransaction();
+    public abstract Transaction getTransactionById(long id);
+    public abstract Transaction appendTransaction(Transaction transaction);
+    public abstract Result deleteTransaction(long id);
+    public abstract Result updateTransaction(Transaction transaction);
 
     /**
      * Sends logs to MongoDB cluster declared in environment.properties
@@ -38,8 +59,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
                 methodName,
                 MongoUtil.objectToString(bean),
                 state);
-        // TODO: Раскомментировать
-        //MongoUtil.saveToLog(historyContent);
+        if (MONGO_DB_ENABLE_LOGGING) MongoUtil.saveToLog(historyContent);
     }
 
     // TODO: Сделать функции перевода ms в Period и выводить красиво
@@ -128,8 +148,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
      */
     public List<Plan> managePlans(long planId, boolean execute) {
         List<Plan> plans = displayPlans();
-        if (execute)
-            executePlanNow(planId);
+        if (execute) executePlanNow(planId);
         return plans;
     }
 

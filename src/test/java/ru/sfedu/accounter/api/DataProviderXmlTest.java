@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 
-public class DataProviderXmlTest extends IDataProviderTest {
+public class DataProviderXmlTest extends CrudTest {
 
     @Override
     @BeforeEach

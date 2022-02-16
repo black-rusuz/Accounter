@@ -1,11 +1,11 @@
 package ru.sfedu.accounter;
 
 public class Constants {
-
     // General
     public static final String APP_NAME = "APP_NAME";
 
     // MongoDB
+    public static final String MONGO_DB_ENABLE_LOGGING = "MONGO_DB_ENABLE_LOGGING";
     public static final String MONGO_DB_DEFAULT_ACTOR = "MONGO_DB_DEFAULT_ACTOR";
     public static final String MONGO_DB_CONNECTION_STRING = "MONGO_DB_CONNECTION_STRING";
     public static final String MONGO_DB_DATABASE = "MONGO_DB_DATABASE";
@@ -40,7 +40,7 @@ public class Constants {
 
     // CLI
     public static final String CLI_ERROR_INVALID_DATA_PROVIDER = "Invalid data provider";
-    public static final String CLI_ERROR_INVALID_ARGUMENT = "Invalid argument";
+    public static final String CLI_ERROR_INVALID_ARGUMENTS = "Invalid number of arguments";
     public static final String CLI_ERROR_FEW_ARGUMENTS = "Too few arguments";
     public static final String CLI_ERROR_NOTHING_FOUND = "Nothing found";
 
@@ -52,8 +52,8 @@ public class Constants {
     public static final String JDBC = "JDBC";
     public static final String CSV = "CSV";
 
-    public static final String MANAGEBALANCE = "MANAGEBALANCE";
-    public static final String MANAGEPLANS = "MANAGEPLANS";
+    public static final String MANAGE_BALANCE = "MANAGEBALANCE";
+    public static final String MANAGE_PLANS = "MANAGEPLANS";
 
     public static final String REPEAT = "REPEAT";
     public static final String PLAN = "PLAN";

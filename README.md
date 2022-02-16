@@ -28,24 +28,29 @@ Course project for SFedU. This API provides some tools for control your money.
 - ```XML```
 - ```JDBC```
 
-## Run commands examples
+## Run commands constructor
 ### 1. Start with this:
-```
-java -jar ./Accounter.jar
-```
+```java -jar```
 ### 2. Continue with these (if needed):
-- ```[-Dprops=<your .properties file>]```
-- ```[-Dlog4j2.configurationFile=<your log4j2 file>]```
-### 3. End with one of these:
+- ```-Dprops=<your .properties file>```
+- ```-Dlog4j2.configurationFile=<your log4j2 file>```
+### 3. Specify .jar file:
+``` ./Accounter.jar```
+### 4. End with any of these:
 - ```XML MANAGEBALANCE```
-- ```XML MANAGEBALANCE repeat 1```
-- ```XML MANAGEBALANCE plan 1```
+- ```CSV MANAGEBALANCE repeat <transactionId>```
+- ```JDBC MANAGEBALANCE plan <transactionId>```
 - ```XML MANAGEPLANS```
-- ```XML MANAGEPLANS 1```
-- ```XML MANAGEPLANS 1 true```
+- ```CSV MANAGEPLANS <planId>```
+- ```JDBC MANAGEPLANS <planId> true```
+
+### For example:
+- ```java -jar ./Accounter.jar XML MANAGEBALANCE REPEAT 123```
+- ```java -jar -Dprops="environment.properties" ./Accounter.jar CSV MANAGEPLANS```
+- ```java -jar -Dprops="environment.properties" -Dlog4j2.configurationFile=log4j2.xml ./Accounter.jar JDBC MANAGEPLANS 123 TRUE```
 
 ## TODO's:
-- To make more beautiful (tabular?) outputs with date and time
+- Make more beautiful (tabular?) outputs with date and time
 
 ## Known issues (*):
 - DataProviders for CSV and JSBC aren't perfect. Need to fix ```CsvConverters``` and ```JdbcUtil```
