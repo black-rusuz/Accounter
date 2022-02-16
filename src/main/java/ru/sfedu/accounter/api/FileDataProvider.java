@@ -3,8 +3,9 @@ package ru.sfedu.accounter.api;
 import ru.sfedu.accounter.Constants;
 import ru.sfedu.accounter.model.Result;
 import ru.sfedu.accounter.model.beans.Balance;
+import ru.sfedu.accounter.model.beans.Income;
+import ru.sfedu.accounter.model.beans.Outcome;
 import ru.sfedu.accounter.model.beans.Plan;
-import ru.sfedu.accounter.model.beans.Transaction;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,6 +102,88 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     }
 
     @Override
+    public List<Income> getAllIncome() {
+        return read(Income.class) != null ? read(Income.class) : new ArrayList<>();
+    }
+
+    @Override
+    public Income getIncomeById(long id) {
+        List<Income> list = getAllIncome().stream().filter(a -> a.getId() == id).toList();
+        return list.isEmpty() ? new Income() : list.get(0);
+    }
+
+    @Override
+    public Income appendIncome(Income income) {
+        long id = income.getId();
+        if (getIncomeById(id).getId() != 0)
+            income.setId();
+        List<Income> list = getAllIncome();
+        list.add(income);
+        write(list, Income.class, Constants.METHOD_NAME_APPEND);
+        return income;
+    }
+
+    @Override
+    public Result deleteIncome(long id) {
+        if (getIncomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        List<Income> list = getAllIncome();
+        list.removeIf(a -> (a.getId() == id));
+        return write(list, Income.class, Constants.METHOD_NAME_DELETE);
+    }
+
+    @Override
+    public Result updateIncome(Income income) {
+        long id = income.getId();
+        if (getIncomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        deleteIncome(id);
+        appendIncome(income);
+        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+    }
+
+    @Override
+    public List<Outcome> getAllOutcome() {
+        return read(Outcome.class) != null ? read(Outcome.class) : new ArrayList<>();
+    }
+
+    @Override
+    public Outcome getOutcomeById(long id) {
+        List<Outcome> list = getAllOutcome().stream().filter(a -> a.getId() == id).toList();
+        return list.isEmpty() ? new Outcome() : list.get(0);
+    }
+
+    @Override
+    public Outcome appendOutcome(Outcome outcome) {
+        long id = outcome.getId();
+        if (getOutcomeById(id).getId() != 0)
+            outcome.setId();
+        List<Outcome> list = getAllOutcome();
+        list.add(outcome);
+        write(list, Outcome.class, Constants.METHOD_NAME_APPEND);
+        return outcome;
+    }
+
+    @Override
+    public Result deleteOutcome(long id) {
+        if (getOutcomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        List<Outcome> list = getAllOutcome();
+        list.removeIf(a -> (a.getId() == id));
+        return write(list, Outcome.class, Constants.METHOD_NAME_DELETE);
+    }
+
+    @Override
+    public Result updateOutcome(Outcome outcome) {
+        long id = outcome.getId();
+        if (getOutcomeById(id).getId() == 0)
+            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        deleteOutcome(id);
+        appendOutcome(outcome);
+        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+    }
+
+    @Override
     public List<Plan> getAllPlan() {
         return read(Plan.class) != null ? read(Plan.class) : new ArrayList<>();
     }
@@ -138,48 +221,6 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         deletePlan(id);
         appendPlan(plan);
-        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
-    }
-
-    @Override
-    public List<Transaction> getAllTransaction() {
-        return read(Transaction.class) != null ? read(Transaction.class) : new ArrayList<>();
-    }
-
-    @Override
-    public Transaction getTransactionById(long id) {
-        List<Transaction> list = getAllTransaction().stream().filter(a -> a.getId() == id).toList();
-        return list.isEmpty() ? new Transaction() {
-        } : list.get(0);
-    }
-
-    @Override
-    public Transaction appendTransaction(Transaction transaction) {
-        long id = transaction.getId();
-        if (getTransactionById(id).getId() != 0)
-            transaction.setId();
-        List<Transaction> list = getAllTransaction();
-        list.add(transaction);
-        write(list, Transaction.class, Constants.METHOD_NAME_APPEND);
-        return transaction;
-    }
-
-    @Override
-    public Result deleteTransaction(long id) {
-        if (getTransactionById(id).getId() == 0)
-            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        List<Transaction> list = getAllTransaction();
-        list.removeIf(a -> (a.getId() == id));
-        return write(list, Transaction.class, Constants.METHOD_NAME_DELETE);
-    }
-
-    @Override
-    public Result updateTransaction(Transaction transaction) {
-        long id = transaction.getId();
-        if (getTransactionById(id).getId() == 0)
-            return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        deleteTransaction(id);
-        appendTransaction(transaction);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 }

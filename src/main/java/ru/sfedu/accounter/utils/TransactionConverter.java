@@ -14,10 +14,20 @@ public class TransactionConverter extends AbstractBeanField<Transaction, String>
     protected Transaction convert(String s) {
         String[] parsed = s.split(fieldsDelimiter);
         try {
-            return new Income(Long.parseLong(parsed[0]), Long.parseLong(parsed[1]), parsed[2], IncomeCategory.valueOf(parsed[3]));
+            Income income = new Income();
+            income.setId(Long.parseLong(parsed[0]));
+            income.setValue(Double.parseDouble(parsed[1]));
+            income.setName(parsed[2]);
+            income.setCategory(IncomeCategory.valueOf(parsed[3]));
+            return income;
         } catch (Exception ignored) {
             try {
-                return new Outcome(Long.parseLong(parsed[0]), Long.parseLong(parsed[1]), parsed[2], OutcomeCategory.valueOf(parsed[3]));
+                Outcome outcome = new Outcome();
+                outcome.setId(Long.parseLong(parsed[0]));
+                outcome.setValue(Double.parseDouble(parsed[1]));
+                outcome.setName(parsed[2]);
+                outcome.setCategory(OutcomeCategory.valueOf(parsed[3]));
+                return outcome;
             } catch (Exception ignored1) {
             }
         }
@@ -29,16 +39,16 @@ public class TransactionConverter extends AbstractBeanField<Transaction, String>
     public String convertToWrite(Object object) {
         if (object.getClass().equals(Income.class)) {
             Income income = (Income) object;
-            return income.getId() + fieldsDelimiter +
-                    income.getValue() + fieldsDelimiter +
-                    income.getName() + fieldsDelimiter +
-                    income.getCategory();
+            return income.getId() + fieldsDelimiter
+                    + income.getValue() + fieldsDelimiter
+                    + income.getName() + fieldsDelimiter
+                    + income.getCategory();
         } else if (object.getClass().equals(Outcome.class)) {
             Outcome outcome = (Outcome) object;
-            return outcome.getId() + fieldsDelimiter +
-                    outcome.getValue() + fieldsDelimiter +
-                    outcome.getName() + fieldsDelimiter +
-                    outcome.getCategory();
+            return outcome.getId() + fieldsDelimiter
+                    + outcome.getValue() + fieldsDelimiter
+                    + outcome.getName() + fieldsDelimiter
+                    + outcome.getCategory();
         } else return "";
     }
 }

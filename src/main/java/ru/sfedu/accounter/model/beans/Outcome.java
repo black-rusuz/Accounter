@@ -1,6 +1,6 @@
 package ru.sfedu.accounter.model.beans;
 
-import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Element;
 import ru.sfedu.accounter.model.enums.OutcomeCategory;
 
@@ -19,7 +19,7 @@ public class Outcome extends Transaction implements Serializable {
     //
 
     @Element
-    @CsvBindByName(column = "outcome_category")
+    @CsvBindByPosition(position = 3)
     private OutcomeCategory category;
 
     //
@@ -86,16 +86,15 @@ public class Outcome extends Transaction implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCategory());
+        return Objects.hash(getId(), getValue(), getName(), getCategory());
     }
 
     @Override
     public String toString() {
-        return "Outcome{" +
-                "id=" + getId() +
-                ", value=" + getValue() +
-                ", name='" + getName() + '\'' +
-                ", outcomeCategory=" + category +
-                '}';
+        return String.format("| %13d | %12s | %-20s | %-12s |",
+                getId(),
+                String.format("%.2f", getValue()),
+                getName(),
+                getCategory());
     }
 }

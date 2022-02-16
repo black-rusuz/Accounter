@@ -1,7 +1,5 @@
 package ru.sfedu.accounter.api;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +12,6 @@ import java.util.List;
 
 public class UseCaseTest extends SampleData {
     public AbstractDataProvider dataProvider = new DataProviderXml();
-    public static final Logger log = LogManager.getLogger(UseCaseTest.class);
 
     public UseCaseTest() throws IOException {
     }
@@ -29,10 +26,11 @@ public class UseCaseTest extends SampleData {
         b1 = dataProvider.appendBalance(b1);
         b2 = dataProvider.appendBalance(b2);
 
-        t1 = dataProvider.appendTransaction(t1);
-        t2 = dataProvider.appendTransaction(t2);
-        t3 = dataProvider.appendTransaction(t3);
-        t4 = dataProvider.appendTransaction(t4);
+        i1 = dataProvider.appendIncome(i1);
+        i2 = dataProvider.appendIncome(i2);
+
+        o1 = dataProvider.appendOutcome(o1);
+        o2 = dataProvider.appendOutcome(o2);
 
         p1 = dataProvider.appendPlan(p1);
         p2 = dataProvider.appendPlan(p2);
@@ -47,10 +45,11 @@ public class UseCaseTest extends SampleData {
         dataProvider.deleteBalance(b1.getId());
         dataProvider.deleteBalance(b2.getId());
 
-        dataProvider.deleteTransaction(t1.getId());
-        dataProvider.deleteTransaction(t2.getId());
-        dataProvider.deleteTransaction(t3.getId());
-        dataProvider.deleteTransaction(t4.getId());
+        dataProvider.deleteIncome(i1.getId());
+        dataProvider.deleteIncome(i2.getId());
+
+        dataProvider.deleteOutcome(o1.getId());
+        dataProvider.deleteOutcome(o2.getId());
 
         dataProvider.deletePlan(p1.getId());
         dataProvider.deletePlan(p2.getId());
@@ -74,8 +73,8 @@ public class UseCaseTest extends SampleData {
 
     @Test
     public void calculateBalanceTestPositive() {
-        List<Transaction> expectedTransactions = List.of(t1, t2, t3, t4);
         double expectedBalanceValue = 0;
+        List<Transaction> expectedTransactions = List.of(i1, i2, o1, o2);
         for (Transaction transaction : expectedTransactions) {
             if (transaction.getClass().equals(Income.class))
                 expectedBalanceValue += transaction.getValue();
@@ -90,7 +89,7 @@ public class UseCaseTest extends SampleData {
 
     @Test
     public void calculateBalanceTestNegative() {
-        List<Transaction> expectedTransactions = List.of(t1, t2, t3);
+        List<Transaction> expectedTransactions = List.of(i1, i2, o1);
         double expectedBalanceValue = 0;
         for (Transaction transaction : expectedTransactions) {
             if (transaction.getClass().equals(Income.class))
@@ -106,48 +105,48 @@ public class UseCaseTest extends SampleData {
 
     @Test
     public void displayIncomesAndOutcomesTestPositive() {
-        List<Transaction> expectedTransactions = List.of(t1, t2, t3, t4);
+        List<Transaction> expectedTransactions = List.of(i1, o1, i2, o2);
         List<Transaction> actualTransactions = dataProvider.displayIncomesAndOutcomes();
         Assertions.assertEquals(expectedTransactions, actualTransactions);
     }
 
     @Test
     public void displayIncomesAndOutcomesTestNegative() {
-        List<Transaction> expectedTransactions = List.of(t1, t2, t3);
+        List<Transaction> expectedTransactions = List.of(i1, i2, o1);
         List<Transaction> actualTransactions = dataProvider.displayIncomesAndOutcomes();
         Assertions.assertNotEquals(expectedTransactions, actualTransactions);
     }
 
     @Test
     public void repeatTransactionTestPositive() {
-        Transaction actualTransaction = dataProvider.repeatTransaction(t1.getId()).get();
-        Transaction expectedTransaction = t1;
+        Transaction actualTransaction = dataProvider.repeatTransaction(i1.getId()).get();
+        Transaction expectedTransaction = i1;
         expectedTransaction.setId(actualTransaction.getId());
         Assertions.assertEquals(expectedTransaction, actualTransaction);
-        dataProvider.deleteTransaction(dataProvider.getAllTransaction().get(0).getId());
+        dataProvider.deleteIncome(dataProvider.getAllIncome().get(0).getId());
     }
 
     @Test
     public void repeatTransactionTestNegative() {
-        Transaction actualTransaction = dataProvider.repeatTransaction(t1.getId()).get();
-        Transaction expectedTransaction = t2;
+        Transaction actualTransaction = dataProvider.repeatTransaction(i1.getId()).get();
+        Transaction expectedTransaction = i2;
         expectedTransaction.setId(actualTransaction.getId());
         Assertions.assertNotEquals(expectedTransaction, actualTransaction);
-        dataProvider.deleteTransaction(dataProvider.getAllTransaction().get(1).getId());
+        dataProvider.deleteIncome(dataProvider.getAllIncome().get(1).getId());
     }
 
     @Test
     public void makePlanBasedOnTransactionTestPositive() {
-        Plan actualPlan = dataProvider.makePlanBasedOnTransaction(t1.getId()).get();
-        Plan expectedPlan = new Plan(actualPlan.getId(), (long) 1000 * 60 * 60 * 24 * 30, dataProvider.getTransactionById(t1.getId()));
+        Plan actualPlan = dataProvider.makePlanBasedOnTransaction(i1.getId()).get();
+        Plan expectedPlan = new Plan(actualPlan.getId(), (long) 1000 * 60 * 60 * 24 * 30, dataProvider.getIncomeById(i1.getId()));
         Assertions.assertEquals(expectedPlan, actualPlan);
         dataProvider.deletePlan(actualPlan.getId());
     }
 
     @Test
     public void makePlanBasedOnTransactionTestNegative() {
-        Plan actualPlan = dataProvider.makePlanBasedOnTransaction(t1.getId()).get();
-        Plan expectedPlan = new Plan(actualPlan.getId(), (long) 1000 * 60 * 60 * 24 * 30, dataProvider.getTransactionById(t2.getId()));
+        Plan actualPlan = dataProvider.makePlanBasedOnTransaction(i1.getId()).get();
+        Plan expectedPlan = new Plan(actualPlan.getId(), (long) 1000 * 60 * 60 * 24 * 30, dataProvider.getIncomeById(i2.getId()));
         Assertions.assertNotEquals(expectedPlan, actualPlan);
         dataProvider.deletePlan(actualPlan.getId());
     }
@@ -186,7 +185,8 @@ public class UseCaseTest extends SampleData {
         Transaction actualTransaction = dataProvider.executePlanNow(p1.getId()).get();
         expectedTransaction.setId(actualTransaction.getId());
         Assertions.assertEquals(expectedTransaction, actualTransaction);
-        dataProvider.deleteTransaction(dataProvider.getAllTransaction().get(0).getId());
+        dataProvider.deleteIncome(dataProvider.getAllIncome().get(0).getId());
+        dataProvider.deleteOutcome(dataProvider.getAllOutcome().get(0).getId());
     }
 
     @Test
@@ -195,6 +195,7 @@ public class UseCaseTest extends SampleData {
         Transaction actualTransaction = dataProvider.executePlanNow(p2.getId()).get();
         expectedTransaction.setId(actualTransaction.getId());
         Assertions.assertNotEquals(expectedTransaction, actualTransaction);
-        dataProvider.deleteTransaction(dataProvider.getAllTransaction().get(0).getId());
+        dataProvider.deleteIncome(dataProvider.getAllIncome().get(0).getId());
+        dataProvider.deleteOutcome(dataProvider.getAllOutcome().get(2).getId());
     }
 }

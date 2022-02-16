@@ -1,6 +1,6 @@
 package ru.sfedu.accounter.model.beans;
 
-import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -18,11 +18,11 @@ public class Balance implements Serializable {
     //
 
     @Attribute
-    @CsvBindByName(column = "balance_id")
+    @CsvBindByPosition(position = 0)
     private long id;
 
     @Attribute
-    @CsvBindByName(column = "balance_value")
+    @CsvBindByPosition(position = 1)
     private double value;
 
     //
@@ -113,9 +113,8 @@ public class Balance implements Serializable {
 
     @Override
     public String toString() {
-        return "Balance{" +
-                "id=" + id +
-                ", value=" + value +
-                '}';
+        return String.format("| %13d | %12s |",
+                getId(),
+                String.format("%.2f", getValue()));
     }
 }

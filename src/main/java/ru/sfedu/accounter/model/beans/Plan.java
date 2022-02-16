@@ -1,7 +1,7 @@
 package ru.sfedu.accounter.model.beans;
 
-import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvCustomBindByName;
+import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvCustomBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import ru.sfedu.accounter.utils.TransactionConverter;
@@ -20,15 +20,15 @@ public class Plan implements Serializable {
     //
 
     @Attribute
-    @CsvBindByName(column = "plan_id")
+    @CsvBindByPosition(position = 0)
     private long id;
 
     @Element
-    @CsvBindByName(column = "plan_period")
+    @CsvBindByPosition(position = 1)
     private long period;
 
     @Element(type = Transaction.class)
-    @CsvCustomBindByName(converter = TransactionConverter.class)
+    @CsvCustomBindByPosition(position = 2, converter = TransactionConverter.class)
     private Transaction transaction;
 
     //
@@ -140,10 +140,9 @@ public class Plan implements Serializable {
 
     @Override
     public String toString() {
-        return "Plan{" +
-                "id=" + id +
-                ", period=" + period +
-                ", transaction=" + transaction +
-                '}';
+        return String.format("| %13d | %10d %-76s",
+                getId(),
+                getPeriod(),
+                getTransaction());
     }
 }

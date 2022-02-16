@@ -1,6 +1,6 @@
 package ru.sfedu.accounter.model.beans;
 
-import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
@@ -11,22 +11,22 @@ import java.util.Objects;
  * Class Transaction
  */
 @Element
-abstract public class Transaction implements Serializable {
+public abstract class Transaction implements Serializable {
 
     //
     // Fields
     //
 
     @Attribute
-    @CsvBindByName(column = "transaction_id")
+    @CsvBindByPosition(position = 0)
     private long id;
 
     @Element
-    @CsvBindByName(column = "transaction_value")
+    @CsvBindByPosition(position = 1)
     private double value;
 
     @Element
-    @CsvBindByName(column = "transaction_name")
+    @CsvBindByPosition(position = 2)
     private String name;
 
     //
@@ -126,10 +126,9 @@ abstract public class Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return "Transaction{" +
-                "id=" + getId() +
-                ", value=" + getValue() +
-                ", name='" + getName() + '\'' +
-                '}';
+        return String.format("| %13d | %12s | %-20s |",
+                getId(),
+                getValue(),
+                getName());
     }
 }

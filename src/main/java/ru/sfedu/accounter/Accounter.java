@@ -85,10 +85,11 @@ public class Accounter {
         dataProvider.appendBalance(sampleData.b1);
         dataProvider.appendBalance(sampleData.b2);
 
-        dataProvider.appendTransaction(sampleData.t1);
-        dataProvider.appendTransaction(sampleData.t2);
-        dataProvider.appendTransaction(sampleData.t3);
-        dataProvider.appendTransaction(sampleData.t4);
+        dataProvider.appendIncome(sampleData.i1);
+        dataProvider.appendIncome(sampleData.i2);
+
+        dataProvider.appendOutcome(sampleData.o1);
+        dataProvider.appendOutcome(sampleData.o2);
 
         dataProvider.appendPlan(sampleData.p1);
         dataProvider.appendPlan(sampleData.p2);

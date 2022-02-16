@@ -10,6 +10,6 @@ public class DataProviderCsvTest extends CrudTest {
     @BeforeEach
     public void setUp() throws IOException {
         super.setUp();
-        dataProvider = new DataProviderXml();
+        dataProvider = new DataProviderCsv();
     }
 }

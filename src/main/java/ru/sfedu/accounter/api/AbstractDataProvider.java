@@ -11,9 +11,8 @@ import ru.sfedu.accounter.utils.MongoUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractDataProvider {
     protected static final Logger log = LogManager.getLogger(AbstractDataProvider.class);
@@ -31,17 +30,23 @@ public abstract class AbstractDataProvider {
     public abstract Result deleteBalance(long id);
     public abstract Result updateBalance(Balance balance);
 
+    public abstract List<Income> getAllIncome();
+    public abstract Income getIncomeById(long id);
+    public abstract Income appendIncome(Income income);
+    public abstract Result deleteIncome(long id);
+    public abstract Result updateIncome(Income income);
+
+    public abstract List<Outcome> getAllOutcome();
+    public abstract Outcome getOutcomeById(long id);
+    public abstract Outcome appendOutcome(Outcome outcome);
+    public abstract Result deleteOutcome(long id);
+    public abstract Result updateOutcome(Outcome outcome);
+
     public abstract List<Plan> getAllPlan();
     public abstract Plan getPlanById(long id);
     public abstract Plan appendPlan(Plan plan);
     public abstract Result deletePlan(long id);
     public abstract Result updatePlan(Plan plan);
-
-    public abstract List<Transaction> getAllTransaction();
-    public abstract Transaction getTransactionById(long id);
-    public abstract Transaction appendTransaction(Transaction transaction);
-    public abstract Result deleteTransaction(long id);
-    public abstract Result updateTransaction(Transaction transaction);
 
     /**
      * Sends logs to MongoDB cluster declared in environment.properties
@@ -89,14 +94,11 @@ public abstract class AbstractDataProvider {
      * @return Optional of new balance
      */
     public Optional<Balance> calculateBalance() {
-        List<Transaction> transactions = getAllTransaction();
         double balanceValue = 0;
-        for (Transaction transaction : transactions) {
-            if (transaction.getClass().equals(Income.class))
-                balanceValue += transaction.getValue();
-            if (transaction.getClass().equals(Outcome.class))
-                balanceValue -= transaction.getValue();
-        }
+        for (Income income : getAllIncome())
+            balanceValue += income.getValue();
+        for (Outcome outcome : getAllOutcome())
+            balanceValue -= outcome.getValue();
         Balance newBalance = appendBalance(new Balance(balanceValue));
         log.info(Constants.CLI_CURRENT_BALANCE + newBalance.getValue());
         return Optional.of(newBalance);
@@ -108,9 +110,14 @@ public abstract class AbstractDataProvider {
      * @return list of all existing transactions
      */
     public List<Transaction> displayIncomesAndOutcomes() {
-        List<Transaction> transactions = getAllTransaction();
-        // TODO: Выводить красиво
-        log.info(Constants.CLI_ALL_TRANSACTIONS + transactions);
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.addAll(getAllIncome());
+        transactions.addAll(getAllOutcome());
+        transactions.sort(Comparator.comparing(Transaction::getId));
+        log.info(Constants.CLI_ALL_TRANSACTIONS
+                + transactions.stream()
+                .map(Transaction::toString)
+                .collect(Collectors.joining("\n")));
         return transactions;
     }
 
@@ -121,8 +128,15 @@ public abstract class AbstractDataProvider {
      * @return true if transaction appended successfully
      */
     public Optional<Transaction> repeatTransaction(long transactionId) {
-        Transaction transaction = getTransactionById(transactionId);
-        transaction = appendTransaction(transaction);
+        Transaction transaction = new Transaction() {
+        };
+        if (!getIncomeById(transactionId).equals(new Income())) {
+            transaction = getIncomeById(transactionId);
+            transaction = appendIncome((Income) transaction);
+        } else if (!getOutcomeById(transactionId).equals(new Outcome())) {
+            transaction = getOutcomeById(transactionId);
+            transaction = appendOutcome((Outcome) transaction);
+        }
         return Optional.of(transaction);
     }
 
@@ -133,7 +147,16 @@ public abstract class AbstractDataProvider {
      * @return Optional of new plan
      */
     public Optional<Plan> makePlanBasedOnTransaction(long transactionId) {
-        Transaction transaction = getTransactionById(transactionId);
+        Transaction transaction = new Transaction() {
+        };
+        if (!getIncomeById(transactionId).equals(new Income()))
+            transaction = getIncomeById(transactionId);
+        else if (!getOutcomeById(transactionId).equals(new Outcome()))
+            transaction = getOutcomeById(transactionId);
+        else {
+            log.error(Constants.RESULT_MESSAGE_NOT_FOUND);
+            System.exit(0);
+        }
         Plan newPlan = new Plan(DEFAULT_PLAN_PERIOD, transaction);
         newPlan = appendPlan(newPlan);
         return Optional.of(newPlan);
@@ -159,8 +182,10 @@ public abstract class AbstractDataProvider {
      */
     public List<Plan> displayPlans() {
         List<Plan> plans = getAllPlan();
-        // TODO: Выводить красиво
-        log.info(Constants.CLI_ALL_PLANS + plans);
+        log.info(Constants.CLI_ALL_PLANS
+                + plans.stream()
+                .map(Plan::toString)
+                .collect(Collectors.joining("\n")));
         return plans;
     }
 
@@ -172,7 +197,10 @@ public abstract class AbstractDataProvider {
      */
     public Optional<Transaction> executePlanNow(long planId) {
         Transaction transaction = getPlanById(planId).getTransaction();
-        transaction = appendTransaction(transaction);
+        if (transaction.getClass().equals(Income.class))
+            transaction = appendIncome((Income) transaction);
+        else if (transaction.getClass().equals(Outcome.class))
+            transaction = appendOutcome((Outcome) transaction);
         return Optional.of(transaction);
     }
 }
