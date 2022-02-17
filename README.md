@@ -3,8 +3,8 @@
 Course project for SFedU. This API provides some tools for control your money.
 
 ### Version 0.2:
-- Refactoring for all DataProviders done *
-- Tests for all DataProviders' CRUD are ready with the cleanest code **
+- Refactoring for all DataProviders done
+- Tests for all DataProviders' CRUD are ready with the cleanest code
 - Added tests for Use Cases methods
 - Added good CLI for Use Cases (but not for CRUD);
 
@@ -50,8 +50,9 @@ Course project for SFedU. This API provides some tools for control your money.
 - ```java -jar -Dprops="environment.properties" -Dlog4j2.configurationFile=log4j2.xml ./Accounter.jar JDBC MANAGEPLANS 123 TRUE```
 
 ## TODO's:
-- Make more beautiful (tabular?) outputs with date and time
+- Maybe make CRUD for CLI?
 
 ## Known issues (*):
-- DataProviders for CSV and JSBC aren't perfect. Need to fix ```CsvConverters``` and ```JdbcUtil```
-- Cheating in tests for passing them
+(づ｡◕‿‿◕)づ
+
+All known fixed.

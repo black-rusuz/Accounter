@@ -60,13 +60,13 @@ public class DataProviderJdbc extends AbstractDataProvider {
 
     private <T> List<T> getData(Class<T> type, ResultSet resultSet) throws SQLException {
         List list = new ArrayList<>();
-        if (Balance.class.equals(type))
+        if (type.equals(Balance.class))
             list = getBalance(resultSet);
-        else if (Income.class.equals(type))
+        else if (type.equals(Income.class))
             list = getIncome(resultSet);
-        else if (Outcome.class.equals(type))
+        else if (type.equals(Outcome.class))
             list = getOutcome(resultSet);
-        else if (Plan.class.equals(type))
+        else if (type.equals(Plan.class))
             list = getPlan(resultSet);
         return list;
     }
@@ -137,6 +137,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
             case Constants.METHOD_NAME_UPDATE -> jdbcUtil.updateTableSet(tableName, bean, id);
             default -> "";
         };
+
         try {
             write(sql);
         } catch (SQLException e) {

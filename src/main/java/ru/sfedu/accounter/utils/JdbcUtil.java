@@ -23,10 +23,6 @@ public class JdbcUtil {
     private final String DELETE_FROM_TABLE_BY_ID = "DELETE FROM %s WHERE id = %d;";
     private final String UPDATE_TABLE_SET = "UPDATE %s SET %s WHERE id = %d;";
 
-    // Reserved words
-    private final String VALUE = "value";
-    private final String SIZE = "size";
-    private final String TRANSACTION = "transaction";
 
     public String selectAllFromTable(String tableName) {
         return String.format(SELECT_ALL_FROM_TABLE, tableName);
@@ -51,6 +47,12 @@ public class JdbcUtil {
         String set = mapToUpdateString(map);
         return String.format(UPDATE_TABLE_SET, tableName, set, id);
     }
+
+
+    // Reserved words
+    private final String VALUE = "value";
+    private final String SIZE = "size";
+    private final String TRANSACTION = "transaction";
 
     private String mapToInsertString(LinkedHashMap<String, Object> set) {
         StringBuilder stringBuilder = new StringBuilder().append(SQL_QUOTE);
