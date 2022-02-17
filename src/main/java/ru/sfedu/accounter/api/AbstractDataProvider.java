@@ -20,6 +20,7 @@ public abstract class AbstractDataProvider {
             ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_ENABLE_LOGGING));
     private final String MONGO_DB_DEFAULT_ACTOR =
             ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_DEFAULT_ACTOR);
+    private final long DEFAULT_PLAN_PERIOD = (long) 1000 * 60 * 60 * 24 * 30;       // One month
 
     protected AbstractDataProvider() throws IOException {
     }
@@ -66,9 +67,6 @@ public abstract class AbstractDataProvider {
                 state);
         if (MONGO_DB_ENABLE_LOGGING) MongoUtil.saveToLog(historyContent);
     }
-
-    // TODO: Сделать функции перевода ms в Period и выводить красиво
-    private final long DEFAULT_PLAN_PERIOD = (long) 1000 * 60 * 60 * 24 * 30;       // One month
 
     /**
      * Root use case for managing current balance

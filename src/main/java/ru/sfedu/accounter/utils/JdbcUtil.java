@@ -1,17 +1,11 @@
 package ru.sfedu.accounter.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import ru.sfedu.accounter.model.beans.Balance;
-import ru.sfedu.accounter.model.beans.Income;
-import ru.sfedu.accounter.model.beans.Outcome;
-import ru.sfedu.accounter.model.beans.Plan;
+import ru.sfedu.accounter.model.beans.*;
 
 import java.util.LinkedHashMap;
 
 public class JdbcUtil {
-    private final Logger log = LogManager.getLogger(JdbcUtil.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     // SOME CONSTANTS USED ONLY FOR SQL. NOT GOOD, BUT LEGAL
@@ -30,7 +24,6 @@ public class JdbcUtil {
     private final String UPDATE_TABLE_SET = "UPDATE %s SET %s WHERE id = %d;";
 
     // Reserved words
-    public final String INNER_DELIMITER = "::";
     private final String VALUE = "value";
     private final String SIZE = "size";
     private final String TRANSACTION = "transaction";
@@ -62,16 +55,11 @@ public class JdbcUtil {
     private String mapToInsertString(LinkedHashMap<String, Object> set) {
         StringBuilder stringBuilder = new StringBuilder().append(SQL_QUOTE);
         for (String key : set.keySet()) {
-            if (key.equals(TRANSACTION)) {
-                LinkedHashMap<String, Object> inner = (LinkedHashMap<String, Object>) set.get(TRANSACTION);
-                StringBuilder innerStringBuilder = new StringBuilder();
-                for (String innerKey : inner.keySet())
-                    innerStringBuilder.append(inner.get(innerKey)).append(INNER_DELIMITER);
-                innerStringBuilder.deleteCharAt(innerStringBuilder.length() - 2);
-                innerStringBuilder.deleteCharAt(innerStringBuilder.length() - 1);
-                stringBuilder.append(innerStringBuilder).append(SQL_DELIMITER);
-            } else
-                stringBuilder.append(set.get(key)).append(SQL_DELIMITER);
+            if (key.equals(TRANSACTION))
+                stringBuilder.append(innerTransactionMapToString((LinkedHashMap<String, Object>) set.get(key)));
+            else
+                stringBuilder.append(set.get(key));
+            stringBuilder.append(SQL_DELIMITER);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 3);
         stringBuilder.deleteCharAt(stringBuilder.length() - 2);
@@ -86,11 +74,29 @@ public class JdbcUtil {
                 stringBuilder.append(SIZE);
             else
                 stringBuilder.append(key);
-            stringBuilder.append(SQL_QUOTE_START).append(set.get(key)).append(SQL_QUOTE_END);
+            stringBuilder.append(SQL_QUOTE_START);
+            if (key.equals(TRANSACTION))
+                stringBuilder.append(innerTransactionMapToString((LinkedHashMap<String, Object>) set.get(key)));
+            else
+                stringBuilder.append(set.get(key));
+            stringBuilder.append(SQL_QUOTE_END);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 2);
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         return stringBuilder.toString();
+    }
+
+    private String innerTransactionMapToString(LinkedHashMap<String, Object> set) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String key : set.keySet())
+            stringBuilder.append(set.get(key)).append(TransactionConverter.fieldsDelimiter);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 2);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        return stringBuilder.toString();
+    }
+
+    public Transaction stringToInnerTransaction(String string) {
+        return new TransactionConverter().convert(string);
     }
 
 

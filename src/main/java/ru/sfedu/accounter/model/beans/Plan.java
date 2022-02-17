@@ -29,7 +29,8 @@ public class Plan implements Serializable {
 
     @Element(type = Transaction.class)
     @CsvCustomBindByPosition(position = 2, converter = TransactionConverter.class)
-    private Transaction transaction = new Transaction() {};
+    private Transaction transaction = new Transaction() {
+    };
 
     //
     // Constructors
@@ -140,9 +141,9 @@ public class Plan implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("| %13d | %10d %-76s",
+        return String.format("| %13d | %8s %-76s",
                 getId(),
-                getPeriod(),
+                getPeriod() / 1000 / 60 / 60 / 24 + " DAYS",
                 getTransaction());
     }
 }

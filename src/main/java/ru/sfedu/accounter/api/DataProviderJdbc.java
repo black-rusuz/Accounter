@@ -2,7 +2,10 @@ package ru.sfedu.accounter.api;
 
 import ru.sfedu.accounter.Constants;
 import ru.sfedu.accounter.model.Result;
-import ru.sfedu.accounter.model.beans.*;
+import ru.sfedu.accounter.model.beans.Balance;
+import ru.sfedu.accounter.model.beans.Income;
+import ru.sfedu.accounter.model.beans.Outcome;
+import ru.sfedu.accounter.model.beans.Plan;
 import ru.sfedu.accounter.model.enums.IncomeCategory;
 import ru.sfedu.accounter.model.enums.OutcomeCategory;
 import ru.sfedu.accounter.utils.ConfigurationUtil;
@@ -14,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderJdbc extends AbstractDataProvider {
+    private final JdbcUtil jdbcUtil = new JdbcUtil();
     private final String hostname = ConfigurationUtil.getConfigurationEntry(Constants.H2_HOSTNAME);
     private final String username = ConfigurationUtil.getConfigurationEntry(Constants.H2_USERNAME);
     private final String password = ConfigurationUtil.getConfigurationEntry(Constants.H2_PASSWORD);
-    private final JdbcUtil jdbcUtil = new JdbcUtil();
 
     public DataProviderJdbc() throws IOException {
         try {
@@ -30,6 +33,14 @@ public class DataProviderJdbc extends AbstractDataProvider {
         }
     }
 
+    private <T> List<T> read(Class<T> type) {
+        return read(type, jdbcUtil.selectAllFromTable(type.getSimpleName()));
+    }
+
+    private <T> List<T> read(Class<T> type, long id) {
+        return read(type, jdbcUtil.selectFromTableById(type.getSimpleName(), id));
+    }
+
     private <T> List<T> read(Class<T> type, String sql) {
         List<T> list = new ArrayList<>();
         try {
@@ -37,6 +48,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             list = getData(type, resultSet);
+            log.debug(sql);
             resultSet.close();
             statement.close();
             connection.close();
@@ -44,14 +56,6 @@ public class DataProviderJdbc extends AbstractDataProvider {
             log.error(e.getMessage());
         }
         return list;
-    }
-
-    private <T> List<T> read(Class<T> type) {
-        return read(type, jdbcUtil.selectAllFromTable(type.getSimpleName()));
-    }
-
-    private <T> List<T> read(Class<T> type, long id) {
-        return read(type, jdbcUtil.selectFromTableById(type.getSimpleName(), id));
     }
 
     private <T> List<T> getData(Class<T> type, ResultSet resultSet) throws SQLException {
@@ -110,25 +114,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
             Plan plan = new Plan();
             plan.setId(resultSet.getLong(1));
             plan.setPeriod(resultSet.getLong(2));
-            String[] parsed = resultSet.getString(3).split(jdbcUtil.INNER_DELIMITER);
-            Transaction transaction = new Transaction() {};
-            try {
-                transaction = new Income();
-                transaction.setId(Long.parseLong(parsed[0]));
-                transaction.setValue(Double.parseDouble(parsed[1]));
-                transaction.setName(parsed[2]);
-                ((Income) transaction).setCategory(IncomeCategory.valueOf(parsed[3]));
-            } catch (Exception ignored) {
-                try {
-                    transaction = new Outcome();
-                    transaction.setId(Long.parseLong(parsed[0]));
-                    transaction.setValue(Double.parseDouble(parsed[1]));
-                    transaction.setName(parsed[2]);
-                    ((Outcome) transaction).setCategory(OutcomeCategory.valueOf(parsed[3]));
-                } catch (Exception ignored1) {
-                }
-            }
-            plan.setTransaction(transaction);
+            plan.setTransaction(jdbcUtil.stringToInnerTransaction(resultSet.getString(3)));
             list.add(plan);
         }
         return list;
@@ -138,6 +124,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
         Connection connection = DriverManager.getConnection(hostname, username, password);
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
+        log.debug(sql);
         connection.close();
         statement.close();
     }

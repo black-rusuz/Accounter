@@ -8,10 +8,10 @@ import ru.sfedu.accounter.model.enums.IncomeCategory;
 import ru.sfedu.accounter.model.enums.OutcomeCategory;
 
 public class TransactionConverter extends AbstractBeanField<Transaction, String> {
-    private final String fieldsDelimiter = "::";
+    public static final String fieldsDelimiter = "::";
 
     @Override
-    protected Transaction convert(String s) {
+    public Transaction convert(String s) {
         String[] parsed = s.split(fieldsDelimiter);
         try {
             Income income = new Income();
