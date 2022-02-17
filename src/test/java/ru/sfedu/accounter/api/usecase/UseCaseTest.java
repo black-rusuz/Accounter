@@ -1,23 +1,21 @@
-package ru.sfedu.accounter.api;
+package ru.sfedu.accounter.api.usecase;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.sfedu.accounter.api.AbstractDataProvider;
 import ru.sfedu.accounter.model.beans.*;
 import ru.sfedu.accounter.utils.SampleData;
 
 import java.io.IOException;
 import java.util.List;
 
-public class UseCaseTest extends SampleData {
-    public AbstractDataProvider dataProvider = new DataProviderXml();
-
-    public UseCaseTest() throws IOException {
-    }
+public abstract class UseCaseTest extends SampleData {
+    protected AbstractDataProvider dataProvider;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
         createObjects();
         loadSampleData();
     }

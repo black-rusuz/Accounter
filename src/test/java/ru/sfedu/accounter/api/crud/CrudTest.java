@@ -1,10 +1,11 @@
-package ru.sfedu.accounter.api;
+package ru.sfedu.accounter.api.crud;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.sfedu.accounter.Constants;
+import ru.sfedu.accounter.api.AbstractDataProvider;
 import ru.sfedu.accounter.model.Result;
 import ru.sfedu.accounter.model.beans.Balance;
 import ru.sfedu.accounter.model.beans.Income;
@@ -103,69 +104,6 @@ public abstract class CrudTest extends SampleData {
     public void testUpdateBalanceNegative() {
         Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         Assertions.assertEquals(result, dataProvider.updateBalance(b1));
-    }
-
-    @Test
-    public void testGetAllPlanPositive() {
-        List<Plan> list = List.of(p1, p2);
-        p1 = dataProvider.appendPlan(p1);
-        p2 = dataProvider.appendPlan(p2);
-        Assertions.assertEquals(list, dataProvider.getAllPlan());
-    }
-
-    @Test
-    public void testGetAllPlanNegative() {
-        List<Plan> list = List.of(p1, p2);
-        p1 = dataProvider.appendPlan(p1);
-        Assertions.assertNotEquals(list, dataProvider.getAllPlan());
-    }
-
-    @Test
-    public void testGetPlanByIdPositive() {
-        p1 = dataProvider.appendPlan(p1);
-        Assertions.assertEquals(p1, dataProvider.getPlanById(p1.getId()));
-    }
-
-    @Test
-    public void testGetPlanByIdNegative() {
-        Assertions.assertEquals(new Plan(), dataProvider.getPlanById(0));
-    }
-
-    @Test
-    public void testAppendPlanPositive() {
-        Assertions.assertEquals(p1, dataProvider.appendPlan(p1));
-    }
-
-    @Test
-    public void testAppendPlanNegative() {
-        Assertions.assertNotEquals(p1, dataProvider.appendPlan(p2));
-    }
-
-    @Test
-    public void testDeletePlanPositive() {
-        p1 = dataProvider.appendPlan(p1);
-        Result result = new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
-        Assertions.assertEquals(result, dataProvider.deletePlan(p1.getId()));
-    }
-
-    @Test
-    public void testDeletePlanNegative() {
-        Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        Assertions.assertEquals(result, dataProvider.deletePlan(0));
-    }
-
-    @Test
-    public void testUpdatePlanPositive() {
-        p1 = dataProvider.appendPlan(p1);
-        p1.setPeriod(500L);
-        Result result = new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
-        Assertions.assertEquals(result, dataProvider.updatePlan(p1));
-    }
-
-    @Test
-    public void testUpdatePlanNegative() {
-        Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
-        Assertions.assertEquals(result, dataProvider.updatePlan(p1));
     }
 
     @Test
@@ -292,5 +230,68 @@ public abstract class CrudTest extends SampleData {
     public void testUpdateOutcomeNegative() {
         Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         Assertions.assertEquals(result, dataProvider.updateOutcome(o1));
+    }
+
+    @Test
+    public void testGetAllPlanPositive() {
+        List<Plan> list = List.of(p1, p2);
+        p1 = dataProvider.appendPlan(p1);
+        p2 = dataProvider.appendPlan(p2);
+        Assertions.assertEquals(list, dataProvider.getAllPlan());
+    }
+
+    @Test
+    public void testGetAllPlanNegative() {
+        List<Plan> list = List.of(p1, p2);
+        p1 = dataProvider.appendPlan(p1);
+        Assertions.assertNotEquals(list, dataProvider.getAllPlan());
+    }
+
+    @Test
+    public void testGetPlanByIdPositive() {
+        p1 = dataProvider.appendPlan(p1);
+        Assertions.assertEquals(p1, dataProvider.getPlanById(p1.getId()));
+    }
+
+    @Test
+    public void testGetPlanByIdNegative() {
+        Assertions.assertEquals(new Plan(), dataProvider.getPlanById(0));
+    }
+
+    @Test
+    public void testAppendPlanPositive() {
+        Assertions.assertEquals(p1, dataProvider.appendPlan(p1));
+    }
+
+    @Test
+    public void testAppendPlanNegative() {
+        Assertions.assertNotEquals(p1, dataProvider.appendPlan(p2));
+    }
+
+    @Test
+    public void testDeletePlanPositive() {
+        p1 = dataProvider.appendPlan(p1);
+        Result result = new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        Assertions.assertEquals(result, dataProvider.deletePlan(p1.getId()));
+    }
+
+    @Test
+    public void testDeletePlanNegative() {
+        Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        Assertions.assertEquals(result, dataProvider.deletePlan(0));
+    }
+
+    @Test
+    public void testUpdatePlanPositive() {
+        p1 = dataProvider.appendPlan(p1);
+        p1.setPeriod(500L);
+        Result result = new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        Assertions.assertEquals(result, dataProvider.updatePlan(p1));
+    }
+
+    @Test
+    public void testUpdatePlanNegative() {
+        Result result = new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        Assertions.assertEquals(result, dataProvider.updatePlan(p1));
     }
 }
