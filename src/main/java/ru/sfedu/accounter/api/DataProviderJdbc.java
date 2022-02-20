@@ -171,16 +171,20 @@ public class DataProviderJdbc extends AbstractDataProvider {
 
     @Override
     public Result deleteBalance(long id) {
-        if (getBalanceById(id).getId() == 0)
+        if (getBalanceById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_DELETE, getBalanceById(id), id);
     }
 
     @Override
     public Result updateBalance(Balance balance) {
         long id = balance.getId();
-        if (getBalanceById(id).getId() == 0)
+        if (getBalanceById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_UPDATE, balance, balance.getId());
     }
 
@@ -198,7 +202,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
     @Override
     public Income appendIncome(Income income) {
         long id = income.getId();
-        if (getIncomeById(id).getId() != 0)
+        if (getIncomeById(id).getId() != 0 || getOutcomeById(id).getId() != 0)
             income.setId();
         write(Constants.METHOD_NAME_APPEND, income, income.getId());
         return income;
@@ -206,16 +210,20 @@ public class DataProviderJdbc extends AbstractDataProvider {
 
     @Override
     public Result deleteIncome(long id) {
-        if (getIncomeById(id).getId() == 0)
+        if (getIncomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_DELETE, getIncomeById(id), id);
     }
 
     @Override
     public Result updateIncome(Income income) {
         long id = income.getId();
-        if (getIncomeById(id).getId() == 0)
+        if (getIncomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_UPDATE, income, income.getId());
     }
 
@@ -233,7 +241,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
     @Override
     public Outcome appendOutcome(Outcome outcome) {
         long id = outcome.getId();
-        if (getOutcomeById(id).getId() != 0)
+        if (getOutcomeById(id).getId() != 0 || getIncomeById(id).getId() != 0)
             outcome.setId();
         write(Constants.METHOD_NAME_APPEND, outcome, outcome.getId());
         return outcome;
@@ -241,16 +249,20 @@ public class DataProviderJdbc extends AbstractDataProvider {
 
     @Override
     public Result deleteOutcome(long id) {
-        if (getOutcomeById(id).getId() == 0)
+        if (getOutcomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_DELETE, getOutcomeById(id), id);
     }
 
     @Override
     public Result updateOutcome(Outcome outcome) {
         long id = outcome.getId();
-        if (getOutcomeById(id).getId() == 0)
+        if (getOutcomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_UPDATE, outcome, outcome.getId());
     }
 
@@ -276,16 +288,20 @@ public class DataProviderJdbc extends AbstractDataProvider {
 
     @Override
     public Result deletePlan(long id) {
-        if (getPlanById(id).getId() == 0)
+        if (getPlanById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_DELETE, getPlanById(id), id);
     }
 
     @Override
     public Result updatePlan(Plan plan) {
         long id = plan.getId();
-        if (getPlanById(id).getId() == 0)
+        if (getPlanById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         return write(Constants.METHOD_NAME_UPDATE, plan, plan.getId());
     }
 }

@@ -91,7 +91,7 @@ public class Income extends Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("| %13d | %12s | %-20s | %-12s |",
+        return String.format("| %13d | + %12s | %-20s | %-12s |",
                 getId(),
                 String.format("%.2f", getValue()),
                 getName(),

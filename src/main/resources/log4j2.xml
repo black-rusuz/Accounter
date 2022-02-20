@@ -15,10 +15,10 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="ru.sfedu.accounter" level="debug">
+        <Logger name="ru.sfedu.accounter" level="info">
             <AppenderRef ref="ConsoleAppender" />
             <AppenderRef ref="FileAppender"/>
         </Logger>
-        <Root level="debug"/>
+        <Root level="info"/>
     </Loggers>
 </Configuration>

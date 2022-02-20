@@ -84,8 +84,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public Result deleteBalance(long id) {
-        if (getBalanceById(id).getId() == 0)
+        if (getBalanceById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         List<Balance> list = getAllBalance();
         list.removeIf(a -> (a.getId() == id));
         return write(list, Balance.class, Constants.METHOD_NAME_DELETE);
@@ -94,8 +96,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public Result updateBalance(Balance balance) {
         long id = balance.getId();
-        if (getBalanceById(id).getId() == 0)
+        if (getBalanceById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         deleteBalance(id);
         appendBalance(balance);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
@@ -115,7 +119,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public Income appendIncome(Income income) {
         long id = income.getId();
-        if (getIncomeById(id).getId() != 0)
+        if (getIncomeById(id).getId() != 0 || getOutcomeById(id).getId() != 0)
             income.setId();
         List<Income> list = getAllIncome();
         list.add(income);
@@ -125,8 +129,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public Result deleteIncome(long id) {
-        if (getIncomeById(id).getId() == 0)
+        if (getIncomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         List<Income> list = getAllIncome();
         list.removeIf(a -> (a.getId() == id));
         return write(list, Income.class, Constants.METHOD_NAME_DELETE);
@@ -135,8 +141,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public Result updateIncome(Income income) {
         long id = income.getId();
-        if (getIncomeById(id).getId() == 0)
+        if (getIncomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         deleteIncome(id);
         appendIncome(income);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
@@ -156,7 +164,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public Outcome appendOutcome(Outcome outcome) {
         long id = outcome.getId();
-        if (getOutcomeById(id).getId() != 0)
+        if (getOutcomeById(id).getId() != 0 || getIncomeById(id).getId() != 0)
             outcome.setId();
         List<Outcome> list = getAllOutcome();
         list.add(outcome);
@@ -166,8 +174,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public Result deleteOutcome(long id) {
-        if (getOutcomeById(id).getId() == 0)
+        if (getOutcomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         List<Outcome> list = getAllOutcome();
         list.removeIf(a -> (a.getId() == id));
         return write(list, Outcome.class, Constants.METHOD_NAME_DELETE);
@@ -176,8 +186,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public Result updateOutcome(Outcome outcome) {
         long id = outcome.getId();
-        if (getOutcomeById(id).getId() == 0)
+        if (getOutcomeById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         deleteOutcome(id);
         appendOutcome(outcome);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
@@ -207,8 +219,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public Result deletePlan(long id) {
-        if (getPlanById(id).getId() == 0)
+        if (getPlanById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         List<Plan> list = getAllPlan();
         list.removeIf(a -> (a.getId() == id));
         return write(list, Plan.class, Constants.METHOD_NAME_DELETE);
@@ -217,8 +231,10 @@ public abstract class FileDataProvider extends AbstractDataProvider {
     @Override
     public Result updatePlan(Plan plan) {
         long id = plan.getId();
-        if (getPlanById(id).getId() == 0)
+        if (getPlanById(id).getId() == 0) {
+            log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
+        }
         deletePlan(id);
         appendPlan(plan);
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);

@@ -76,13 +76,13 @@ public abstract class AbstractDataProvider {
      * @return list of balances history
      */
     public List<Balance> manageBalance(String action, long transactionId) {
-        List<Balance> balancesHistory = getAllBalance();
-        calculateBalance();
-        displayIncomesAndOutcomes();
         if (action.equalsIgnoreCase(Constants.REPEAT))
             repeatTransaction(transactionId);
         if (action.equalsIgnoreCase(Constants.PLAN))
             makePlanBasedOnTransaction(transactionId);
+        List<Balance> balancesHistory = getAllBalance();
+        calculateBalance();
+        displayIncomesAndOutcomes();
         return balancesHistory;
     }
 

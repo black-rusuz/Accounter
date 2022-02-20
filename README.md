@@ -31,7 +31,7 @@ Course project for SFedU. This API provides some tools for control your money.
 ## Run commands constructor
 ### 1. Start with this:
 ```java -jar```
-### 2. Continue with these (if needed):
+### 2. Specify environment.properties and log4j2 configuration file:
 - ```-Dprops=<your .properties file>```
 - ```-Dlog4j2.configurationFile=<your log4j2 file>```
 ### 3. Specify .jar file:
@@ -45,9 +45,9 @@ Course project for SFedU. This API provides some tools for control your money.
 - ```JDBC MANAGEPLANS <planId> true```
 
 ### For example:
-- ```java -jar ./Accounter.jar XML MANAGEBALANCE REPEAT 123```
-- ```java -jar -Dprops="environment.properties" ./Accounter.jar CSV MANAGEPLANS```
-- ```java -jar -Dprops="environment.properties" -Dlog4j2.configurationFile=log4j2.xml ./Accounter.jar JDBC MANAGEPLANS 123 TRUE```
+- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar XML MANAGEBALANCE REPEAT 123```
+- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar CSV MANAGEPLANS```
+- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar JDBC MANAGEPLANS 123 TRUE```
 
 ## TODO's:
 - Maybe make CRUD for CLI?

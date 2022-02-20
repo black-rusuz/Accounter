@@ -22,7 +22,8 @@ public class Accounter {
     public static void main(String[] args) throws IOException {
         checkArgumentsCount(args);
         dataProvider = getDataProvider(args[0]);
-        loadSampleData();
+        if (dataProvider.getAllBalance().size() <= 0)
+            loadSampleData();
 
         if (args[1].equalsIgnoreCase(Constants.MANAGE_BALANCE))
             if (args.length == 2)
