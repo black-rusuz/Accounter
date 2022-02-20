@@ -4,8 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.sfedu.accounter.api.AbstractDataProvider;
-import ru.sfedu.accounter.model.beans.*;
+import ru.sfedu.accounter.lab1.api.AbstractDataProvider;
+import ru.sfedu.accounter.lab1.model.beans.*;
 import ru.sfedu.accounter.utils.SampleData;
 
 import java.io.IOException;

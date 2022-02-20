@@ -1,7 +1,7 @@
 package ru.sfedu.accounter.api.crud;
 
 import org.junit.jupiter.api.BeforeEach;
-import ru.sfedu.accounter.api.DataProviderJdbc;
+import ru.sfedu.accounter.lab1.api.DataProviderJdbc;
 
 import java.io.IOException;
 

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.model.HistoryContent;
+import ru.sfedu.accounter.lab1.model.HistoryContent;
 
 import java.io.IOException;
 

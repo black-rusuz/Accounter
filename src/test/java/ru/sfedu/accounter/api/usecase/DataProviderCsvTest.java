@@ -1,7 +1,7 @@
 package ru.sfedu.accounter.api.usecase;
 
 import org.junit.jupiter.api.BeforeEach;
-import ru.sfedu.accounter.api.DataProviderCsv;
+import ru.sfedu.accounter.lab1.api.DataProviderCsv;
 
 import java.io.IOException;
 

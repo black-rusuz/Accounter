@@ -28,6 +28,7 @@ public class Constants {
 
     // Internal
     public static final String ENVIRONMENT_VARIABLE = "props";
+    public static final String HIBERNATE_VARIABLE = "hiber";
 
     // CRUD
     public static final String RESULT_MESSAGE_WRITING_SUCCESS = "Records wrote successfully";

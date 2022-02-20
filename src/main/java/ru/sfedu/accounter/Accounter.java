@@ -2,10 +2,10 @@ package ru.sfedu.accounter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.sfedu.accounter.api.AbstractDataProvider;
-import ru.sfedu.accounter.api.DataProviderCsv;
-import ru.sfedu.accounter.api.DataProviderJdbc;
-import ru.sfedu.accounter.api.DataProviderXml;
+import ru.sfedu.accounter.lab1.api.AbstractDataProvider;
+import ru.sfedu.accounter.lab1.api.DataProviderCsv;
+import ru.sfedu.accounter.lab1.api.DataProviderJdbc;
+import ru.sfedu.accounter.lab1.api.DataProviderXml;
 import ru.sfedu.accounter.utils.SampleData;
 
 import java.io.IOException;

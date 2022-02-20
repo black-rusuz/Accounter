@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.api.AbstractDataProvider;
-import ru.sfedu.accounter.model.Result;
-import ru.sfedu.accounter.model.beans.Balance;
-import ru.sfedu.accounter.model.beans.Income;
-import ru.sfedu.accounter.model.beans.Outcome;
-import ru.sfedu.accounter.model.beans.Plan;
+import ru.sfedu.accounter.lab1.api.AbstractDataProvider;
+import ru.sfedu.accounter.lab1.model.Result;
+import ru.sfedu.accounter.lab1.model.beans.Balance;
+import ru.sfedu.accounter.lab1.model.beans.Income;
+import ru.sfedu.accounter.lab1.model.beans.Outcome;
+import ru.sfedu.accounter.lab1.model.beans.Plan;
 import ru.sfedu.accounter.utils.SampleData;
 
 import java.io.IOException;

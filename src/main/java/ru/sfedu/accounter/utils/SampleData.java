@@ -1,11 +1,11 @@
 package ru.sfedu.accounter.utils;
 
-import ru.sfedu.accounter.model.beans.Balance;
-import ru.sfedu.accounter.model.beans.Income;
-import ru.sfedu.accounter.model.beans.Outcome;
-import ru.sfedu.accounter.model.beans.Plan;
-import ru.sfedu.accounter.model.enums.IncomeCategory;
-import ru.sfedu.accounter.model.enums.OutcomeCategory;
+import ru.sfedu.accounter.lab1.model.beans.Balance;
+import ru.sfedu.accounter.lab1.model.beans.Income;
+import ru.sfedu.accounter.lab1.model.beans.Outcome;
+import ru.sfedu.accounter.lab1.model.beans.Plan;
+import ru.sfedu.accounter.lab1.model.enums.IncomeCategory;
+import ru.sfedu.accounter.lab1.model.enums.OutcomeCategory;
 
 public class SampleData {
     public Balance b1;
