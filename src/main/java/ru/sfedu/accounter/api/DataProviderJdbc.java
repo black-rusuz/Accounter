@@ -46,8 +46,10 @@ public class DataProviderJdbc extends AbstractDataProvider {
             Connection connection = DriverManager.getConnection(hostname, username, password);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            list = getData(type, resultSet);
+
             log.debug(sql);
+            list = getData(type, resultSet);
+
             resultSet.close();
             statement.close();
             connection.close();
@@ -122,8 +124,10 @@ public class DataProviderJdbc extends AbstractDataProvider {
     private void write(String sql) throws SQLException {
         Connection connection = DriverManager.getConnection(hostname, username, password);
         Statement statement = connection.createStatement();
-        statement.executeUpdate(sql);
+
         log.debug(sql);
+        statement.executeUpdate(sql);
+
         connection.close();
         statement.close();
     }
@@ -133,7 +137,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
         String sql = switch (methodName) {
             case Constants.METHOD_NAME_APPEND -> JdbcUtil.insertIntoTableValues(tableName, bean);
             case Constants.METHOD_NAME_DELETE -> JdbcUtil.deleteFromTableById(tableName, id);
-            case Constants.METHOD_NAME_UPDATE -> JdbcUtil.updateTableSet(tableName, bean, id);
+            case Constants.METHOD_NAME_UPDATE -> JdbcUtil.updateTableSetById(tableName, bean, id);
             default -> "";
         };
 
