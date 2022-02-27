@@ -8,7 +8,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.lab1.model.beans.Balance;
+import ru.sfedu.accounter.lab2.model.Entity;
+import ru.sfedu.accounter.model.beans.Balance;
 
 import java.io.File;
 
@@ -26,6 +27,7 @@ public class HibernateUtil {
             ServiceRegistry serviceRegistry =
                     new StandardServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).build();
             MetadataSources metadataSources = new MetadataSources(serviceRegistry);
+            metadataSources.addAnnotatedClass(Entity.class);
             metadataSources.addAnnotatedClass(Balance.class);
             // TODO: этачо?
             // metadataSources.addResource("named-queries.hbm.xml");

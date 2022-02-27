@@ -1,4 +1,4 @@
-package ru.sfedu.accounter.lab1.model.beans;
+package ru.sfedu.accounter.model.beans;
 
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;

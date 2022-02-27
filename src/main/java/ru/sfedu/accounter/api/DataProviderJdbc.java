@@ -1,13 +1,13 @@
-package ru.sfedu.accounter.lab1.api;
+package ru.sfedu.accounter.api;
 
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.lab1.model.Result;
-import ru.sfedu.accounter.lab1.model.beans.Balance;
-import ru.sfedu.accounter.lab1.model.beans.Income;
-import ru.sfedu.accounter.lab1.model.beans.Outcome;
-import ru.sfedu.accounter.lab1.model.beans.Plan;
-import ru.sfedu.accounter.lab1.model.enums.IncomeCategory;
-import ru.sfedu.accounter.lab1.model.enums.OutcomeCategory;
+import ru.sfedu.accounter.model.Result;
+import ru.sfedu.accounter.model.beans.Balance;
+import ru.sfedu.accounter.model.beans.Income;
+import ru.sfedu.accounter.model.beans.Outcome;
+import ru.sfedu.accounter.model.beans.Plan;
+import ru.sfedu.accounter.model.enums.IncomeCategory;
+import ru.sfedu.accounter.model.enums.OutcomeCategory;
 import ru.sfedu.accounter.utils.ConfigurationUtil;
 import ru.sfedu.accounter.utils.JdbcUtil;
 

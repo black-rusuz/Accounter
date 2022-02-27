@@ -1,18 +1,18 @@
-package ru.sfedu.accounter.lab1.model.beans;
+package ru.sfedu.accounter.model.beans;
 
 import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Element;
-import ru.sfedu.accounter.lab1.model.enums.IncomeCategory;
+import ru.sfedu.accounter.model.enums.OutcomeCategory;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 
 /**
- * Class Income
+ * Class Outcome
  */
 @Element
-public class Income extends Transaction implements Serializable {
+public class Outcome extends Transaction implements Serializable {
 
     //
     // Fields
@@ -20,23 +20,23 @@ public class Income extends Transaction implements Serializable {
 
     @Element
     @CsvBindByPosition(position = 3)
-    private IncomeCategory category = IncomeCategory.INCOME;
+    private OutcomeCategory category = OutcomeCategory.OUTCOME;
 
     //
     // Constructors
     //
 
-    public Income() {
+    public Outcome() {
     }
 
-    public Income(double value, String name, IncomeCategory category) {
+    public Outcome(double value, String name, OutcomeCategory category) {
         setId();
         setValue(value);
         setName(name);
         setCategory(category);
     }
 
-    public Income(long id, double value, String name, IncomeCategory category) {
+    public Outcome(long id, double value, String name, OutcomeCategory category) {
         setId(id);
         setValue(value);
         setName(name);
@@ -53,20 +53,20 @@ public class Income extends Transaction implements Serializable {
     //
 
     /**
-     * Set the value of incomeCategory
+     * Set the value of outcomeCategory
      *
-     * @param newVar the new value of incomeCategory
+     * @param newVar the new value of outcomeCategory
      */
-    public void setCategory(IncomeCategory newVar) {
+    public void setCategory(OutcomeCategory newVar) {
         category = newVar;
     }
 
     /**
-     * Get the value of incomeCategory
+     * Get the value of outcomeCategory
      *
-     * @return the value of incomeCategory
+     * @return the value of outcomeCategory
      */
-    public IncomeCategory getCategory() {
+    public OutcomeCategory getCategory() {
         return category;
     }
 
@@ -77,11 +77,11 @@ public class Income extends Transaction implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Income income)) return false;
-        return getId() == income.getId()
-                && Double.compare(income.getValue(), getValue()) == 0
-                && Objects.equals(getName(), income.getName())
-                && getCategory() == income.getCategory();
+        if (!(o instanceof Outcome outcome)) return false;
+        return getId() == outcome.getId()
+                && Double.compare(outcome.getValue(), getValue()) == 0
+                && Objects.equals(getName(), outcome.getName())
+                && getCategory() == outcome.getCategory();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Income extends Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("| %13d | + %12s | %-20s | %-12s |",
+        return String.format("| %13d | - %12s | %-20s | %-12s |",
                 getId(),
                 String.format("%.2f", getValue()),
                 getName(),

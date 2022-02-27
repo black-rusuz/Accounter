@@ -1,4 +1,4 @@
-package ru.sfedu.accounter.lab1.model;
+package ru.sfedu.accounter.model;
 
 import java.io.Serializable;
 import java.util.Objects;

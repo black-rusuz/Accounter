@@ -1,12 +1,12 @@
-package ru.sfedu.accounter.lab1.model;
+package ru.sfedu.accounter.model;
 
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementListUnion;
 import org.simpleframework.xml.Root;
-import ru.sfedu.accounter.lab1.model.beans.Balance;
-import ru.sfedu.accounter.lab1.model.beans.Income;
-import ru.sfedu.accounter.lab1.model.beans.Outcome;
-import ru.sfedu.accounter.lab1.model.beans.Plan;
+import ru.sfedu.accounter.model.beans.Balance;
+import ru.sfedu.accounter.model.beans.Income;
+import ru.sfedu.accounter.model.beans.Outcome;
+import ru.sfedu.accounter.model.beans.Plan;
 
 import java.io.Serializable;
 import java.util.List;

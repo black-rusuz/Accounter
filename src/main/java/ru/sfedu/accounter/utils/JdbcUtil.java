@@ -1,7 +1,7 @@
 package ru.sfedu.accounter.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.sfedu.accounter.lab1.model.beans.*;
+import ru.sfedu.accounter.model.beans.Transaction;
 
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;

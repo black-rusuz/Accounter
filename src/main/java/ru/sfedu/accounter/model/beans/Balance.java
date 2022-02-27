@@ -1,21 +1,17 @@
-package ru.sfedu.accounter.lab1.model.beans;
+package ru.sfedu.accounter.model.beans;
 
 import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Class Balance
  */
-@Entity
-@Table
+@Entity @Embeddable
 @Element
 public class Balance implements Serializable {
 
@@ -23,13 +19,12 @@ public class Balance implements Serializable {
     // Fields
     //
 
-    @Id
-    @Column
+    @Id @GeneratedValue
     @Attribute
     @CsvBindByPosition(position = 0)
     private long id;
 
-    @Column
+    @Column(name = "size")
     @Attribute
     @CsvBindByPosition(position = 1)
     private double value;

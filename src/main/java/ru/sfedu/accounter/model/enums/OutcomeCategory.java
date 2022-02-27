@@ -1,4 +1,4 @@
-package ru.sfedu.accounter.lab1.model.enums;
+package ru.sfedu.accounter.model.enums;
 
 public enum OutcomeCategory {
     TRANSPORT,

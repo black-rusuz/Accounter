@@ -1,11 +1,11 @@
-package ru.sfedu.accounter.lab1.api;
+package ru.sfedu.accounter.api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.lab1.model.HistoryContent;
-import ru.sfedu.accounter.lab1.model.Result;
-import ru.sfedu.accounter.lab1.model.beans.*;
+import ru.sfedu.accounter.model.HistoryContent;
+import ru.sfedu.accounter.model.Result;
+import ru.sfedu.accounter.model.beans.*;
 import ru.sfedu.accounter.utils.ConfigurationUtil;
 import ru.sfedu.accounter.utils.MongoUtil;
 

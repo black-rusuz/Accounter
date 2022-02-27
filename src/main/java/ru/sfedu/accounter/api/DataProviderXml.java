@@ -1,10 +1,10 @@
-package ru.sfedu.accounter.lab1.api;
+package ru.sfedu.accounter.api;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.lab1.model.Result;
-import ru.sfedu.accounter.lab1.model.XmlWrapper;
+import ru.sfedu.accounter.model.Result;
+import ru.sfedu.accounter.model.XmlWrapper;
 import ru.sfedu.accounter.utils.ConfigurationUtil;
 
 import java.io.File;

@@ -1,11 +1,11 @@
 package ru.sfedu.accounter.utils;
 
 import com.opencsv.bean.AbstractBeanField;
-import ru.sfedu.accounter.lab1.model.beans.Income;
-import ru.sfedu.accounter.lab1.model.beans.Outcome;
-import ru.sfedu.accounter.lab1.model.beans.Transaction;
-import ru.sfedu.accounter.lab1.model.enums.IncomeCategory;
-import ru.sfedu.accounter.lab1.model.enums.OutcomeCategory;
+import ru.sfedu.accounter.model.beans.Income;
+import ru.sfedu.accounter.model.beans.Outcome;
+import ru.sfedu.accounter.model.beans.Transaction;
+import ru.sfedu.accounter.model.enums.IncomeCategory;
+import ru.sfedu.accounter.model.enums.OutcomeCategory;
 
 public class TransactionConverter extends AbstractBeanField<Transaction, String> {
     public static final String fieldsDelimiter = "::";
