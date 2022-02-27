@@ -46,7 +46,7 @@ public class ConfigurationUtil {
             if (file.exists())
                 nf = file;
             else
-                log.error("Your .properties file not found. Default loaded.");
+                log.error("Your environment configuration file not found. Default loaded.");
         }
         try (InputStream in = new FileInputStream(nf)) {
             configuration.load(in);
