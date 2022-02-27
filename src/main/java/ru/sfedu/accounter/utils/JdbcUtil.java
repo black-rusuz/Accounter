@@ -1,150 +1,182 @@
 package ru.sfedu.accounter.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.sfedu.accounter.model.beans.*;
+import ru.sfedu.accounter.model.beans.Transaction;
 
 import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
 
+@SuppressWarnings({"unchecked", "javadoc"})
 public class JdbcUtil {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     // SOME CONSTANTS USED ONLY FOR SQL. NOT GOOD, BUT LEGAL
-    private final String SQL_QUOTE = "'";
-    private final String SQL_COMMA = ", ";
-    private final String SQL_DELIMITER = "', '";
-    private final String SQL_QUOTE_START = " = '";
-    private final String SQL_QUOTE_END = "', ";
-    private final String SQL_STATEMENT_START = "(";
-    private final String SQL_STATEMENT_END = ");";
 
-    private final String SELECT_ALL_FROM_TABLE = "SELECT * FROM %s;";
-    private final String SELECT_FROM_TABLE_BY_ID = "SELECT * FROM %s WHERE id = %d;";
-    private final String INSERT_INTO_TABLE_VALUES = "INSERT INTO %s VALUES(%s);";
-    private final String DELETE_FROM_TABLE_BY_ID = "DELETE FROM %s WHERE id = %d;";
-    private final String UPDATE_TABLE_SET = "UPDATE %s SET %s WHERE id = %d;";
+    // ==============================
+    //              DML
+    // ==============================
+    private static final String SELECT_ALL_FROM_TABLE = "SELECT * FROM %s;";
+    private static final String SELECT_FROM_TABLE_BY_ID = "SELECT * FROM %s WHERE id = %d;";
+    private static final String INSERT_INTO_TABLE_VALUES = "INSERT INTO %s VALUES (%s);";
+    private static final String DELETE_FROM_TABLE_BY_ID = "DELETE FROM %s WHERE id = %d;";
+    private static final String UPDATE_TABLE_SET_BY_ID = "UPDATE %s SET %s WHERE id = %d;";
 
+    private static final String SQL_COMMA = ", ";
+    private static final String SQL_VALUE_WRAPPER = "'%s'";
+    private static final String SQL_KEY_VALUE_WRAPPER = "%s = '%s'";
 
-    public String selectAllFromTable(String tableName) {
+    /**
+     * @param tableName
+     * @return Native SQL command for getting all recordset
+     */
+    public static String selectAllFromTable(String tableName) {
         return String.format(SELECT_ALL_FROM_TABLE, tableName);
     }
 
-    public String selectFromTableById(String tableName, long id) {
+    /**
+     * @param tableName
+     * @param id
+     * @return Native SQL command for getting record by id
+     */
+    public static String selectFromTableById(String tableName, long id) {
         return String.format(SELECT_FROM_TABLE_BY_ID, tableName, id);
     }
 
-    public <T> String insertIntoTableValues(String tableName, T bean) {
+    /**
+     * @param tableName
+     * @param bean      Serializable (recommended)
+     * @return Native SQL command for appending record
+     */
+    public static <T> String insertIntoTableValues(String tableName, T bean) {
         LinkedHashMap<String, Object> map = objectMapper.convertValue(bean, LinkedHashMap.class);
-        String values = String.join(SQL_DELIMITER, mapToInsertString(map));
-        return String.format(INSERT_INTO_TABLE_VALUES, tableName, values);
+        return String.format(INSERT_INTO_TABLE_VALUES, tableName, mapToValues(map));
     }
 
-    public String deleteFromTableById(String tableName, long id) {
+    /**
+     * @param tableName
+     * @param id
+     * @return Native SQL command for deleting record
+     */
+    public static String deleteFromTableById(String tableName, long id) {
         return String.format(DELETE_FROM_TABLE_BY_ID, tableName, id);
     }
 
-    public <T> String updateTableSet(String tableName, T bean, long id) {
+    /**
+     * @param tableName
+     * @param bean      Serializable (recommended)
+     * @param id
+     * @return Native SQL command for updating recordset by id
+     */
+    public static <T> String updateTableSetById(String tableName, T bean, long id) {
         LinkedHashMap<String, Object> map = objectMapper.convertValue(bean, LinkedHashMap.class);
-        String set = mapToUpdateString(map);
-        return String.format(UPDATE_TABLE_SET, tableName, set, id);
+        return String.format(UPDATE_TABLE_SET_BY_ID, tableName, mapToKeyValues(map), id);
     }
 
+
+    // =========================
+    //          Helpers
+    // =========================
 
     // Reserved words
-    private final String VALUE = "value";
-    private final String SIZE = "size";
-    private final String TRANSACTION = "transaction";
+    private static final String VALUE = "value";
+    private static final String SIZE = "size";
+    private static final String TRANSACTION = "transaction";
 
-    private String mapToInsertString(LinkedHashMap<String, Object> set) {
-        StringBuilder stringBuilder = new StringBuilder().append(SQL_QUOTE);
-        for (String key : set.keySet()) {
-            if (key.equals(TRANSACTION))
-                stringBuilder.append(innerTransactionMapToString((LinkedHashMap<String, Object>) set.get(key)));
+    /**
+     * Generates String of VALUES() for bean converted to HashMap
+     *
+     * @param values objectMapper.convertValue(bean, LinkedHashMap.class)
+     * @return String of values separated by commas
+     */
+    private static String mapToValues(LinkedHashMap<String, Object> values) {
+        return values.entrySet().stream().map(e -> {
+            if (e.getKey().equals(TRANSACTION))
+                return String.format(SQL_VALUE_WRAPPER,
+                        innerTransactionMapToString((LinkedHashMap<String, Object>) e.getValue()));
             else
-                stringBuilder.append(set.get(key));
-            stringBuilder.append(SQL_DELIMITER);
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 3);
-        stringBuilder.deleteCharAt(stringBuilder.length() - 2);
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        return stringBuilder.toString();
+                return String.format(SQL_VALUE_WRAPPER, e.getValue());
+        }).collect(Collectors.joining(SQL_COMMA));
     }
 
-    private String mapToUpdateString(LinkedHashMap<String, Object> set) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String key : set.keySet()) {
-            if (key.equals(VALUE))
-                stringBuilder.append(SIZE);
+    /**
+     * Generates String of SET for bean converted to HashMap
+     *
+     * @param set objectMapper.convertValue(bean, LinkedHashMap.class)
+     * @return String of keys and values separated by commas
+     */
+    private static String mapToKeyValues(LinkedHashMap<String, Object> set) {
+        return set.entrySet().stream().map(e -> {
+            if (e.getKey().equals(VALUE))
+                return String.format(SQL_KEY_VALUE_WRAPPER, SIZE, e.getValue());
+            else if (e.getKey().equals(TRANSACTION))
+                return String.format(SQL_KEY_VALUE_WRAPPER,
+                        e.getKey(), innerTransactionMapToString((LinkedHashMap<String, Object>) e.getValue()));
             else
-                stringBuilder.append(key);
-            stringBuilder.append(SQL_QUOTE_START);
-            if (key.equals(TRANSACTION))
-                stringBuilder.append(innerTransactionMapToString((LinkedHashMap<String, Object>) set.get(key)));
-            else
-                stringBuilder.append(set.get(key));
-            stringBuilder.append(SQL_QUOTE_END);
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 2);
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        return stringBuilder.toString();
+                return String.format(SQL_KEY_VALUE_WRAPPER, e.getKey(), e.getValue());
+        }).collect(Collectors.joining(SQL_COMMA));
     }
 
-    private String innerTransactionMapToString(LinkedHashMap<String, Object> set) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String key : set.keySet())
-            stringBuilder.append(set.get(key)).append(TransactionConverter.fieldsDelimiter);
-        stringBuilder.deleteCharAt(stringBuilder.length() - 2);
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        return stringBuilder.toString();
+    /**
+     * Transforms Transaction converted to HashMap to String
+     *
+     * @param transactionMap
+     * @return String like 'id::value::name::category'
+     */
+    private static String innerTransactionMapToString(LinkedHashMap<String, Object> transactionMap) {
+        return transactionMap.values().stream().map(Object::toString)
+                .collect(Collectors.joining(TransactionConverter.fieldsDelimiter));
     }
 
-    public Transaction stringToInnerTransaction(String string) {
+    /**
+     * Transforms HashMap converted to String back to Transaction
+     *
+     * @param string like 'id::value::name::category'
+     * @return Transaction
+     */
+    public static Transaction stringToInnerTransaction(String string) {
         return new TransactionConverter().convert(string);
     }
 
 
-    private final String SQL_CREATE_TABLE_IF_NOT_EXISTS = "CREATE TABLE IF NOT EXISTS ";
+    // ==============================
+    //              DDL
+    // ==============================
+    private static final String SQL_CREATE_TABLE_IF_NOT_EXISTS = "CREATE TABLE IF NOT EXISTS %s (%s);";
 
-    private final String COLUMN_PRIMARY_KEY = " PRIMARY KEY";
-    private final String COLUMN_TYPE_LONG = " LONG";
-    private final String COLUMN_TYPE_STRING = " VARCHAR";
-    private final String COLUMN_TYPE_DOUBLE = " NUMERIC";
+    private static final String ID = "id";
+    private static final String COLUMN_PRIMARY_KEY = " PRIMARY KEY";
+    private static final String COLUMN_TYPE_LONG = " LONG";
+    private static final String COLUMN_TYPE_STRING = " VARCHAR";
+    private static final String COLUMN_TYPE_DOUBLE = " NUMERIC";
 
-    public final String CREATE_TABLE_BALANCE = mapToCreateTableString(new Balance());
-    public final String CREATE_TABLE_INCOME = mapToCreateTableString(new Income());
-    public final String CREATE_TABLE_OUTCOME = mapToCreateTableString(new Outcome());
-    public final String CREATE_TABLE_PLAN = mapToCreateTableString(new Plan());
+    /**
+     * @param bean Serializable (recommended)
+     *             NOT CLASS because need to know fields datatype
+     * @return Native SQL command for creating table
+     */
+    public static <T> String createTable(T bean) {
+        LinkedHashMap<String, Object> map = objectMapper.convertValue(bean, LinkedHashMap.class);
+        return String.format(SQL_CREATE_TABLE_IF_NOT_EXISTS, bean.getClass().getSimpleName(), mapToColumns(map));
+    }
 
-    private <T> String mapToCreateTableString(T bean) {
-        LinkedHashMap<String, Object> set = objectMapper.convertValue(bean, LinkedHashMap.class);
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(SQL_CREATE_TABLE_IF_NOT_EXISTS);
-        stringBuilder.append(bean.getClass().getSimpleName());
-        stringBuilder.append(SQL_STATEMENT_START);
-
-        int count = 0;
-        for (String key : set.keySet()) {
-            if (count == 0)
-                stringBuilder.append(key).append(COLUMN_TYPE_LONG).append(COLUMN_PRIMARY_KEY).append(SQL_COMMA);
-            else {
-                if (key.equals(VALUE))
-                    stringBuilder.append(SIZE);
-                else stringBuilder.append(key);
-                if (set.get(key).getClass() == Long.class)
-                    stringBuilder.append(COLUMN_TYPE_LONG);
-                else if (set.get(key).getClass() == String.class)
-                    stringBuilder.append(COLUMN_TYPE_STRING);
-                else if (set.get(key).getClass() == Double.class)
-                    stringBuilder.append(COLUMN_TYPE_DOUBLE);
-                else if (set.get(key).getClass() == LinkedHashMap.class)
-                    stringBuilder.append(COLUMN_TYPE_STRING);
-                stringBuilder.append(SQL_COMMA);
-            }
-            count++;
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 2);
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-
-        stringBuilder.append(SQL_STATEMENT_END);
-        return stringBuilder.toString();
+    /**
+     * Generates String of fields for table using bean converted to HashMap
+     *
+     * @param map objectMapper.convertValue(bean, LinkedHashMap.class)
+     * @return String of column names with datatypes separated by commas
+     */
+    private static String mapToColumns(LinkedHashMap<String, Object> map) {
+        return map.entrySet().stream().map(e -> {
+            if (e.getKey().equals(ID))
+                return e.getKey() + COLUMN_TYPE_LONG + COLUMN_PRIMARY_KEY;
+            else if (e.getKey().equals(VALUE))
+                return SIZE + COLUMN_TYPE_DOUBLE;
+            else if (e.getValue().getClass().equals(Long.class))
+                return e.getKey() + COLUMN_TYPE_LONG;
+            else if (e.getValue().getClass().equals(Double.class))
+                return e.getKey() + COLUMN_TYPE_DOUBLE;
+            else
+                return e.getKey() + COLUMN_TYPE_STRING;
+        }).collect(Collectors.joining(SQL_COMMA));
     }
 }

@@ -10,6 +10,5 @@ public class TestPlace extends SampleData {
 
     @Test
     public void test() {
-        log.warn("");
     }
 }

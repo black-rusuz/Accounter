@@ -17,28 +17,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderJdbc extends AbstractDataProvider {
-    private final JdbcUtil jdbcUtil = new JdbcUtil();
     private final String hostname = ConfigurationUtil.getConfigurationEntry(Constants.H2_HOSTNAME);
     private final String username = ConfigurationUtil.getConfigurationEntry(Constants.H2_USERNAME);
     private final String password = ConfigurationUtil.getConfigurationEntry(Constants.H2_PASSWORD);
 
     public DataProviderJdbc() throws IOException {
         try {
-            write(jdbcUtil.CREATE_TABLE_BALANCE);
-            write(jdbcUtil.CREATE_TABLE_INCOME);
-            write(jdbcUtil.CREATE_TABLE_OUTCOME);
-            write(jdbcUtil.CREATE_TABLE_PLAN);
+            write(JdbcUtil.createTable(new Balance()));
+            write(JdbcUtil.createTable(new Income()));
+            write(JdbcUtil.createTable(new Outcome()));
+            write(JdbcUtil.createTable(new Plan()));
         } catch (SQLException e) {
             log.error(e.getMessage());
         }
     }
 
     private <T> List<T> read(Class<T> type) {
-        return read(type, jdbcUtil.selectAllFromTable(type.getSimpleName()));
+        return read(type, JdbcUtil.selectAllFromTable(type.getSimpleName()));
     }
 
     private <T> List<T> read(Class<T> type, long id) {
-        return read(type, jdbcUtil.selectFromTableById(type.getSimpleName(), id));
+        return read(type, JdbcUtil.selectFromTableById(type.getSimpleName(), id));
     }
 
     private <T> List<T> read(Class<T> type, String sql) {
@@ -47,8 +46,10 @@ public class DataProviderJdbc extends AbstractDataProvider {
             Connection connection = DriverManager.getConnection(hostname, username, password);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            list = getData(type, resultSet);
+
             log.debug(sql);
+            list = getData(type, resultSet);
+
             resultSet.close();
             statement.close();
             connection.close();
@@ -114,7 +115,7 @@ public class DataProviderJdbc extends AbstractDataProvider {
             Plan plan = new Plan();
             plan.setId(resultSet.getLong(1));
             plan.setPeriod(resultSet.getLong(2));
-            plan.setTransaction(jdbcUtil.stringToInnerTransaction(resultSet.getString(3)));
+            plan.setTransaction(JdbcUtil.stringToInnerTransaction(resultSet.getString(3)));
             list.add(plan);
         }
         return list;
@@ -123,8 +124,10 @@ public class DataProviderJdbc extends AbstractDataProvider {
     private void write(String sql) throws SQLException {
         Connection connection = DriverManager.getConnection(hostname, username, password);
         Statement statement = connection.createStatement();
-        statement.executeUpdate(sql);
+
         log.debug(sql);
+        statement.executeUpdate(sql);
+
         connection.close();
         statement.close();
     }
@@ -132,9 +135,9 @@ public class DataProviderJdbc extends AbstractDataProvider {
     private <T> Result write(String methodName, T bean, long id) {
         String tableName = bean.getClass().getSimpleName();
         String sql = switch (methodName) {
-            case Constants.METHOD_NAME_APPEND -> jdbcUtil.insertIntoTableValues(tableName, bean);
-            case Constants.METHOD_NAME_DELETE -> jdbcUtil.deleteFromTableById(tableName, id);
-            case Constants.METHOD_NAME_UPDATE -> jdbcUtil.updateTableSet(tableName, bean, id);
+            case Constants.METHOD_NAME_APPEND -> JdbcUtil.insertIntoTableValues(tableName, bean);
+            case Constants.METHOD_NAME_DELETE -> JdbcUtil.deleteFromTableById(tableName, id);
+            case Constants.METHOD_NAME_UPDATE -> JdbcUtil.updateTableSetById(tableName, bean, id);
             default -> "";
         };
 

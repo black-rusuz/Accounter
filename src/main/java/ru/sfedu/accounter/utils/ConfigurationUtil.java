@@ -17,7 +17,6 @@ import java.util.Properties;
  * @author Boris Jmailov
  */
 public class ConfigurationUtil {
-
     private static final String DEFAULT_CONFIG_PATH = "./src/main/resources/environment.properties";
     private static final Properties configuration = new Properties();
     private static final Logger log = LogManager.getLogger(ConfigurationUtil.class);
@@ -47,7 +46,7 @@ public class ConfigurationUtil {
             if (file.exists())
                 nf = file;
             else
-                log.error("Your .properties file not found. Default loaded.");
+                log.error("Your environment configuration file not found. Default loaded.");
         }
         try (InputStream in = new FileInputStream(nf)) {
             configuration.load(in);

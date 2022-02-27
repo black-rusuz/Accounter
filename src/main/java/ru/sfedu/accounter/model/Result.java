@@ -3,6 +3,11 @@ package ru.sfedu.accounter.model;
 import java.util.Objects;
 
 public class Result {
+    public enum State {
+        Success,
+        Warning,
+        Error
+    }
     private State state;
     private String message;
 
@@ -42,11 +47,5 @@ public class Result {
     @Override
     public int hashCode() {
         return Objects.hash(getState(), getMessage());
-    }
-
-    public enum State {
-        Success,
-        Warning,
-        Error
     }
 }
