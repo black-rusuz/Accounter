@@ -2,7 +2,7 @@ package ru.sfedu.accounter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.sfedu.accounter.api.AbstractDataProvider;
+import ru.sfedu.accounter.api.IDataProvider;
 import ru.sfedu.accounter.api.DataProviderCsv;
 import ru.sfedu.accounter.api.DataProviderJdbc;
 import ru.sfedu.accounter.api.DataProviderXml;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class Accounter {
     private static final Logger log = LogManager.getLogger(Accounter.class);
-    private static AbstractDataProvider dataProvider;
+    private static IDataProvider dataProvider;
 
     /**
      * Main function for CLI
@@ -60,9 +60,9 @@ public class Accounter {
      * Function for getting DataProvider from source type
      *
      * @param dataProviderSource 'XML', 'CSV' or 'JDBC'
-     * @return AbstractDataProvider chosen inheritor
+     * @return IDataProvider chosen inheritor
      */
-    private static AbstractDataProvider getDataProvider(String dataProviderSource) throws IOException {
+    private static IDataProvider getDataProvider(String dataProviderSource) throws IOException {
         if (dataProviderSource.equalsIgnoreCase(Constants.XML))
             return new DataProviderXml();
         else if (dataProviderSource.equalsIgnoreCase(Constants.CSV))

@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractDataProvider {
-    protected static final Logger log = LogManager.getLogger(AbstractDataProvider.class);
+public abstract class AbstractDataProvider implements IDataProvider {
+    protected static final Logger log = LogManager.getLogger(IDataProvider.class);
     private final Boolean MONGO_DB_ENABLE_LOGGING = Boolean.parseBoolean(
             ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_ENABLE_LOGGING));
     private final String MONGO_DB_DEFAULT_ACTOR =
@@ -25,37 +25,6 @@ public abstract class AbstractDataProvider {
     protected AbstractDataProvider() throws IOException {
     }
 
-    public abstract List<Balance> getAllBalance();
-    public abstract Balance getBalanceById(long id);
-    public abstract Balance appendBalance(Balance balance);
-    public abstract Result deleteBalance(long id);
-    public abstract Result updateBalance(Balance balance);
-
-    public abstract List<Income> getAllIncome();
-    public abstract Income getIncomeById(long id);
-    public abstract Income appendIncome(Income income);
-    public abstract Result deleteIncome(long id);
-    public abstract Result updateIncome(Income income);
-
-    public abstract List<Outcome> getAllOutcome();
-    public abstract Outcome getOutcomeById(long id);
-    public abstract Outcome appendOutcome(Outcome outcome);
-    public abstract Result deleteOutcome(long id);
-    public abstract Result updateOutcome(Outcome outcome);
-
-    public abstract List<Plan> getAllPlan();
-    public abstract Plan getPlanById(long id);
-    public abstract Plan appendPlan(Plan plan);
-    public abstract Result deletePlan(long id);
-    public abstract Result updatePlan(Plan plan);
-
-    /**
-     * Sends logs to MongoDB cluster declared in environment.properties
-     *
-     * @param methodName method that called sending
-     * @param bean       last bean working with
-     * @param state      method result
-     */
     protected void sendLogs(String methodName, Object bean, Result.State state) {
         HistoryContent historyContent = new HistoryContent(
                 UUID.randomUUID(),
@@ -68,13 +37,7 @@ public abstract class AbstractDataProvider {
         if (MONGO_DB_ENABLE_LOGGING) MongoUtil.saveToLog(historyContent);
     }
 
-    /**
-     * Root use case for managing current balance
-     *
-     * @param action        what you want to do next: repeat or plan transaction
-     * @param transactionId ID of chosen transaction to apply your action
-     * @return list of balances history
-     */
+    @Override
     public List<Balance> manageBalance(String action, long transactionId) {
         if (action.equalsIgnoreCase(Constants.REPEAT))
             repeatTransaction(transactionId);
@@ -86,11 +49,7 @@ public abstract class AbstractDataProvider {
         return balancesHistory;
     }
 
-    /**
-     * Calculates current balance using all written transactions and appends it to Balance list
-     *
-     * @return Optional of new balance
-     */
+    @Override
     public Optional<Balance> calculateBalance() {
         double balanceValue = 0;
         for (Income income : getAllIncome())
@@ -102,11 +61,7 @@ public abstract class AbstractDataProvider {
         return Optional.of(newBalance);
     }
 
-    /**
-     * Displays all written transactions
-     *
-     * @return list of all existing transactions
-     */
+    @Override
     public List<Transaction> displayIncomesAndOutcomes() {
         List<Transaction> transactions = new ArrayList<>();
         transactions.addAll(getAllIncome());
@@ -119,12 +74,7 @@ public abstract class AbstractDataProvider {
         return transactions;
     }
 
-    /**
-     * Repeats selected transaction
-     *
-     * @param transactionId chosen ID of transaction to repeat
-     * @return true if transaction appended successfully
-     */
+    @Override
     public Optional<Transaction> repeatTransaction(long transactionId) {
         Transaction transaction = new Transaction() {
         };
@@ -138,12 +88,7 @@ public abstract class AbstractDataProvider {
         return Optional.of(transaction);
     }
 
-    /**
-     * Creates plan based on selected transaction
-     *
-     * @param transactionId chosen ID of transaction to plan
-     * @return Optional of new plan
-     */
+    @Override
     public Optional<Plan> makePlanBasedOnTransaction(long transactionId) {
         Transaction transaction = new Transaction() {
         };
@@ -160,24 +105,14 @@ public abstract class AbstractDataProvider {
         return Optional.of(newPlan);
     }
 
-    /**
-     * Root use case for managing existing plans
-     *
-     * @param planId  ID of chosen plan
-     * @param execute if true plan will be executed now
-     * @return List of all existing plans
-     */
+    @Override
     public List<Plan> managePlans(long planId, boolean execute) {
         List<Plan> plans = displayPlans();
         if (execute) executePlanNow(planId);
         return plans;
     }
 
-    /**
-     * Displays all written plans
-     *
-     * @return formatted string of them
-     */
+    @Override
     public List<Plan> displayPlans() {
         List<Plan> plans = getAllPlan();
         log.info(Constants.CLI_ALL_PLANS
@@ -187,12 +122,7 @@ public abstract class AbstractDataProvider {
         return plans;
     }
 
-    /**
-     * Appends transaction of selected plan
-     *
-     * @param planId chosen plan ID to execute now
-     * @return Optional of transaction of executed plan
-     */
+    @Override
     public Optional<Transaction> executePlanNow(long planId) {
         Transaction transaction = getPlanById(planId).getTransaction();
         if (transaction.getClass().equals(Income.class))
