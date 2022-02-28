@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.api.AbstractDataProvider;
+import ru.sfedu.accounter.api.IDataProvider;
 import ru.sfedu.accounter.model.Result;
 import ru.sfedu.accounter.model.beans.Balance;
 import ru.sfedu.accounter.model.beans.Income;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class CrudTest extends SampleData {
-    protected AbstractDataProvider dataProvider;
+    protected IDataProvider dataProvider;
 
     public void cleanUp() {
         dataProvider.deleteBalance(b1.getId());
