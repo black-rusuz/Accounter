@@ -45,9 +45,11 @@ Course project for SFedU. This API provides some tools for control your money.
 - ```JDBC MANAGEPLANS <planId> true```
 
 ### For example:
-- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar XML MANAGEBALANCE REPEAT 123```
+- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar XML MANAGEBALANCE REPEAT 21```
+- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar XML MANAGEBALANCE PLAN 22```
 - ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar CSV MANAGEPLANS```
-- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar JDBC MANAGEPLANS 123 TRUE```
+- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar JDBC MANAGEPLANS 31 TRUE```
+- ```java -jar -Dprops=./environment.properties -Dlog4j2.configurationFile=./log4j2.xml ./Accounter.jar JDBC MANAGEPLANS 32 FALSE```
 
 ## TODO's:
 - Maybe make CRUD for CLI?
