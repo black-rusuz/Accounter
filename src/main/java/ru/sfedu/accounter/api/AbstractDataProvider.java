@@ -41,11 +41,11 @@ public abstract class AbstractDataProvider implements IDataProvider {
     public List<Balance> manageBalance(String action, long transactionId) {
         if (action.equalsIgnoreCase(Constants.REPEAT))
             repeatTransaction(transactionId);
-        if (action.equalsIgnoreCase(Constants.PLAN))
-            makePlanBasedOnTransaction(transactionId);
         List<Balance> balancesHistory = getAllBalance();
         calculateBalance();
         displayIncomesAndOutcomes();
+        if (action.equalsIgnoreCase(Constants.PLAN))
+            makePlanBasedOnTransaction(transactionId);
         return balancesHistory;
     }
 
@@ -102,6 +102,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
         }
         Plan newPlan = new Plan(DEFAULT_PLAN_PERIOD, transaction);
         newPlan = appendPlan(newPlan);
+        log.info(Constants.CLI_CREATED_PLAN + newPlan);
         return Optional.of(newPlan);
     }
 

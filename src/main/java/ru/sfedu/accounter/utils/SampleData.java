@@ -21,11 +21,11 @@ public class SampleData {
     public Plan p2;
 
     public void createObjects() {
-        b1 = new Balance(11,30000);
-        b2 = new Balance(12,29300);
+        b1 = new Balance(11, 30000);
+        b2 = new Balance(12, 29300);
 
         i1 = new Income(21, 30000, "Salary", IncomeCategory.SALARY);
-        o1 = new Outcome(22,500, "Megafon", OutcomeCategory.SUBSCRIPTION);
+        o1 = new Outcome(22, 500, "Megafon", OutcomeCategory.SUBSCRIPTION);
         i2 = new Income(23, 100, "Found on street", IncomeCategory.BONUS);
         o2 = new Outcome(24, 300, "Food", OutcomeCategory.SUPERMARKET);
 

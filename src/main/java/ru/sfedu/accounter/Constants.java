@@ -47,6 +47,7 @@ public class Constants {
     public static final String CLI_CURRENT_BALANCE = "Current balance: ";
     public static final String CLI_ALL_TRANSACTIONS = "All your transactions: \n";
     public static final String CLI_ALL_PLANS = "All your plans: \n";
+    public static final String CLI_CREATED_PLAN = "Created plan: \n";
 
     public static final String XML = "XML";
     public static final String JDBC = "JDBC";
