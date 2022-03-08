@@ -29,7 +29,7 @@ public class DataProviderXml extends FileDataProvider {
             if (file.length() > 0) {
                 FileReader fileReader = new FileReader(file);
                 XmlWrapper<T> xmlWrapper = new Persister().read(XmlWrapper.class, fileReader);
-                list = xmlWrapper.getList();
+                if (xmlWrapper.getList() != null) list.addAll(xmlWrapper.getList());
                 fileReader.close();
             }
         } catch (Exception e) {

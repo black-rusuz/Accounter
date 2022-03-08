@@ -61,7 +61,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public List<Balance> getAllBalance() {
-        return read(Balance.class) != null ? read(Balance.class) : new ArrayList<>();
+        return read(Balance.class);
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public List<Income> getAllIncome() {
-        return read(Income.class) != null ? read(Income.class) : new ArrayList<>();
+        return read(Income.class);
     }
 
     @Override
@@ -151,7 +151,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public List<Outcome> getAllOutcome() {
-        return read(Outcome.class) != null ? read(Outcome.class) : new ArrayList<>();
+        return read(Outcome.class);
     }
 
     @Override
@@ -196,7 +196,7 @@ public abstract class FileDataProvider extends AbstractDataProvider {
 
     @Override
     public List<Plan> getAllPlan() {
-        return read(Plan.class) != null ? read(Plan.class) : new ArrayList<>();
+        return read(Plan.class);
     }
 
     @Override

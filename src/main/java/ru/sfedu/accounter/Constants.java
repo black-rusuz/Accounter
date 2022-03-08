@@ -25,7 +25,6 @@ public class Constants {
     public static final String H2_PASSWORD = "H2_PASSWORD";
 
 
-
     // Internal
     public static final String ENVIRONMENT_VARIABLE = "props";
     public static final String HIBERNATE_VARIABLE = "hiber";

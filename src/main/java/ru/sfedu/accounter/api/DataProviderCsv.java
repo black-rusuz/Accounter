@@ -32,7 +32,7 @@ public class DataProviderCsv extends FileDataProvider {
             if (file.length() > 0) {
                 CSVReader csvReader = new CSVReader(new FileReader(file));
                 CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(csvReader).withType(type).build();
-                list = csvToBean.parse();
+                list.addAll(csvToBean.parse());
                 csvReader.close();
             }
         } catch (Exception e) {
