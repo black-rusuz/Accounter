@@ -9,7 +9,6 @@ import ru.sfedu.accounter.model.beans.Plan;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FileDataProvider extends AbstractDataProvider {

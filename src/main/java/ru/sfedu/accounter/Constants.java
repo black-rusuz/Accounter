@@ -40,24 +40,31 @@ public class Constants {
     public static final String METHOD_NAME_UPDATE = "Update";
 
     // CLI
+    public static final String CLI_ARG_XML = "XML";
+    public static final String CLI_ARG_JDBC = "JDBC";
+    public static final String CLI_ARG_CSV = "CSV";
+
+    public static final String CLI_ARG_MANAGE_BALANCE = "MANAGEBALANCE";
+    public static final String CLI_ARG_CALCULATE_BALANCE = "CALCULATEBALANCE";
+    public static final String CLI_ARG_DISPLAY_INCOMES_AND_OUTCOMES = "DISPLAYINCOMESANDOUTCOMES";
+    public static final String CLI_ARG_REPEAT_TRANSACTION = "REPEATTRANSACTION";
+    public static final String CLI_ARG_MAKE_PLAN_BASED_ON_TRANSACTION = "MAKEPLANBASEDONTRANSACTION";
+    public static final String CLI_ARG_MANAGE_PLANS = "MANAGEPLANS";
+    public static final String CLI_ARG_DISPLAY_PLANS = "DISPLAYPLANS";
+    public static final String CLI_ARG_EXECUTE_PLAN_NOW = "EXECUTEPLANNOW";
+
+    public static final String CLI_ARG_REPEAT = "REPEAT";
+    public static final String CLI_ARG_PLAN = "PLAN";
+
+    public static final String CLI_MESSAGE_CURRENT_BALANCE = "Current balance: ";
+    public static final String CLI_MESSAGE_ALL_TRANSACTIONS = "All your transactions: \n";
+    public static final String CLI_MESSAGE_ALL_PLANS = "All your plans: \n";
+    public static final String CLI_MESSAGE_CREATED_PLAN = "Created plan: \n";
+    public static final String CLI_MESSAGE_APPENDED_TRANSACTION = "Appended transaction: \n";
+
     public static final String CLI_ERROR_INVALID_DATA_PROVIDER = "Invalid data provider";
-    public static final String CLI_ERROR_INVALID_ARGUMENTS = "Invalid number of arguments";
-    public static final String CLI_ERROR_FEW_ARGUMENTS = "Too few arguments";
-    public static final String CLI_ERROR_NOTHING_FOUND = "Nothing found";
-
-    public static final String CLI_CURRENT_BALANCE = "Current balance: ";
-    public static final String CLI_ALL_TRANSACTIONS = "All your transactions: \n";
-    public static final String CLI_ALL_PLANS = "All your plans: \n";
-    public static final String CLI_CREATED_PLAN = "Created plan: \n";
-
-    public static final String XML = "XML";
-    public static final String JDBC = "JDBC";
-    public static final String CSV = "CSV";
-
-    public static final String MANAGE_BALANCE = "MANAGEBALANCE";
-    public static final String MANAGE_PLANS = "MANAGEPLANS";
-
-    public static final String REPEAT = "REPEAT";
-    public static final String PLAN = "PLAN";
+    public static final String CLI_ERROR_INVALID_ARGUMENT = "Invalid argument";
+    public static final String CLI_ERROR_INVALID_NUMBER_OF_ARGUMENTS = "Invalid number of arguments";
+    public static final String CLI_ERROR_TOO_FEW_ARGUMENTS = "Too few arguments";
 
 }
