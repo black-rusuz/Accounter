@@ -39,12 +39,12 @@ public abstract class AbstractDataProvider implements IDataProvider {
 
     @Override
     public List<Balance> manageBalance(String action, long transactionId) {
-        if (action.equalsIgnoreCase(Constants.REPEAT))
+        if (action.equalsIgnoreCase(Constants.CLI_ARG_REPEAT))
             repeatTransaction(transactionId);
         List<Balance> balancesHistory = getAllBalance();
         calculateBalance();
         displayIncomesAndOutcomes();
-        if (action.equalsIgnoreCase(Constants.PLAN))
+        if (action.equalsIgnoreCase(Constants.CLI_ARG_PLAN))
             makePlanBasedOnTransaction(transactionId);
         return balancesHistory;
     }
@@ -57,7 +57,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
         for (Outcome outcome : getAllOutcome())
             balanceValue -= outcome.getValue();
         Balance newBalance = appendBalance(new Balance(balanceValue));
-        log.info(Constants.CLI_CURRENT_BALANCE + newBalance.getValue());
+        log.info(Constants.CLI_MESSAGE_CURRENT_BALANCE + newBalance.getValue());
         return Optional.of(newBalance);
     }
 
@@ -67,7 +67,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
         transactions.addAll(getAllIncome());
         transactions.addAll(getAllOutcome());
         transactions.sort(Comparator.comparing(Transaction::getId));
-        log.info(Constants.CLI_ALL_TRANSACTIONS
+        log.info(Constants.CLI_MESSAGE_ALL_TRANSACTIONS
                 + transactions.stream()
                 .map(Transaction::toString)
                 .collect(Collectors.joining("\n")));
@@ -102,7 +102,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
         }
         Plan newPlan = new Plan(DEFAULT_PLAN_PERIOD, transaction);
         newPlan = appendPlan(newPlan);
-        log.info(Constants.CLI_CREATED_PLAN + newPlan);
+        log.info(Constants.CLI_MESSAGE_CREATED_PLAN + newPlan);
         return Optional.of(newPlan);
     }
 
@@ -116,7 +116,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
     @Override
     public List<Plan> displayPlans() {
         List<Plan> plans = getAllPlan();
-        log.info(Constants.CLI_ALL_PLANS
+        log.info(Constants.CLI_MESSAGE_ALL_PLANS
                 + plans.stream()
                 .map(Plan::toString)
                 .collect(Collectors.joining("\n")));
@@ -130,6 +130,7 @@ public abstract class AbstractDataProvider implements IDataProvider {
             transaction = appendIncome((Income) transaction);
         else if (transaction.getClass().equals(Outcome.class))
             transaction = appendOutcome((Outcome) transaction);
+        log.info(Constants.CLI_MESSAGE_APPENDED_TRANSACTION + transaction);
         return Optional.of(transaction);
     }
 }
