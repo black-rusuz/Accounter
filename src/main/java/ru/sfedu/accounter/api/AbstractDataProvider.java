@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractDataProvider implements IDataProvider {
     protected static final Logger log = LogManager.getLogger(IDataProvider.class);
-    private final Boolean MONGO_DB_ENABLE_LOGGING = Boolean.parseBoolean(
+    private final boolean MONGO_DB_ENABLE_LOGGING = Boolean.parseBoolean(
             ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_ENABLE_LOGGING));
     private final String MONGO_DB_DEFAULT_ACTOR =
             ConfigurationUtil.getConfigurationEntry(Constants.MONGO_DB_DEFAULT_ACTOR);
