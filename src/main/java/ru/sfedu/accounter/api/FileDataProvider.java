@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class FileDataProvider extends AbstractDataProvider {
+    protected String path;
+    protected String extension;
 
     public FileDataProvider() throws IOException {
     }
@@ -30,21 +32,19 @@ public abstract class FileDataProvider extends AbstractDataProvider {
      *
      * @param list list of beans to write
      * @param <T>  generic class of list entries
-     * @return reading Result (Success/Warning/Error and message)
+     * @return writing Result (Success/Warning/Error and message)
      */
     protected abstract <T> Result write(List<T> list, Class<T> type, String methodName);
 
     /**
      * Generates full file name by filePath, bean and fileExtension.
      *
-     * @param filePath      path to file declared in environment.properties
      * @param type          bean to work with
-     * @param fileExtension file extension declared in environment.properties
      * @param <T>           generic class of bean
      * @return full filename string
      */
-    protected <T> String getName(String filePath, Class<T> type, String fileExtension) {
-        return filePath + type.getSimpleName() + fileExtension;
+    protected <T> String getName(Class<T> type) {
+        return path + type.getSimpleName() + extension;
     }
 
     /**

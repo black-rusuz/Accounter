@@ -18,17 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataProviderCsv extends FileDataProvider {
-    private final String CSV_PATH = ConfigurationUtil.getConfigurationEntry(Constants.CSV_PATH);
-    private final String CSV_EXTENSION = ConfigurationUtil.getConfigurationEntry(Constants.CSV_EXTENSION);
 
     public DataProviderCsv() throws IOException {
+        path = ConfigurationUtil.getConfigurationEntry(Constants.CSV_PATH);
+        extension = ConfigurationUtil.getConfigurationEntry(Constants.CSV_EXTENSION);
     }
 
     @Override
     protected <T> List<T> read(Class<T> type) {
         List<T> list = new ArrayList<>();
         try {
-            File file = initFile(getName(CSV_PATH, type, CSV_EXTENSION));
+            File file = initFile(getName(type));
             if (file.length() > 0) {
                 CSVReader csvReader = new CSVReader(new FileReader(file));
                 CsvToBean<T> csvToBean = new CsvToBeanBuilder<T>(csvReader).withType(type).build();
@@ -44,7 +44,7 @@ public class DataProviderCsv extends FileDataProvider {
     @Override
     protected <T> Result write(List<T> list, Class<T> type, String methodName) {
         try {
-            File file = initFile(getName(CSV_PATH, type, CSV_EXTENSION));
+            File file = initFile(getName(type));
             CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
             StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(csvWriter).build();
             beanToCsv.write(list);
