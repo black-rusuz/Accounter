@@ -1,15 +1,12 @@
 package ru.sfedu.accounter.lab2.model;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-@javax.persistence.Entity
-public class Beeean implements Serializable {
+@Entity
+public class Bean implements Serializable {
 
     @Id @GeneratedValue
     private long id;
@@ -18,17 +15,17 @@ public class Beeean implements Serializable {
     @Column(name = "isChecked")
     private boolean check;
     @Embedded
-    private Neeested neeested;
+    private Nested nested;
 
-    public Beeean() {
+    public Bean() {
     }
 
-    public Beeean(long id, String name, Date dateCreated, boolean check, Neeested neeested) {
+    public Bean(long id, String name, Date dateCreated, boolean check, Nested nested) {
         this.id = id;
         this.name = name;
         this.dateCreated = dateCreated;
         this.check = check;
-        this.neeested = neeested;
+        this.nested = nested;
     }
 
     public long getId() {
@@ -63,28 +60,28 @@ public class Beeean implements Serializable {
         this.check = check;
     }
 
-    public Neeested getNeeested() {
-        return neeested;
+    public Nested getNested() {
+        return nested;
     }
 
-    public void setNeeested(Neeested neeested) {
-        this.neeested = neeested;
+    public void setNested(Nested nested) {
+        this.nested = nested;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Beeean that)) return false;
+        if (!(o instanceof Bean that)) return false;
         return getId() == that.getId()
                 && isCheck() == that.isCheck()
                 && Objects.equals(getName(), that.getName())
                 && Objects.equals(getDateCreated(), that.getDateCreated())
-                && Objects.equals(getNeeested(), that.getNeeested());
+                && Objects.equals(getNested(), that.getNested());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDateCreated(), isCheck(), getNeeested());
+        return Objects.hash(getId(), getName(), getDateCreated(), isCheck(), getNested());
     }
 
     @Override
@@ -94,7 +91,7 @@ public class Beeean implements Serializable {
                 ", name='" + name + '\'' +
                 ", date=" + dateCreated +
                 ", check=" + check +
-                ", balance=" + neeested +
+                ", balance=" + nested +
                 '}';
     }
 }

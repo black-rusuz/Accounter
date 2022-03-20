@@ -25,11 +25,8 @@ public class Lab1Test extends SampleData {
 
     @Test
     public void getSchemasTestPos() {
-        HashMap hm1 = new HashMap();
-        hm1.put("SCHEMA_NAME", "INFORMATION_SCHEMA");
-        HashMap hm2 = new HashMap();
-        hm2.put("SCHEMA_NAME", "PUBLIC");
-        Assertions.assertEquals(List.of(hm1, hm2), dataProvider.getSchemas());
+        List list = List.of("INFORMATION_SCHEMA", "PUBLIC");
+        Assertions.assertEquals(list, dataProvider.getSchemas());
     }
 
     @Test

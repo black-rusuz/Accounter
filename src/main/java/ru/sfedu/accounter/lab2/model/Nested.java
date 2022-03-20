@@ -1,17 +1,18 @@
 package ru.sfedu.accounter.lab2.model;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Neeested {
+public class Nested {
     private String description;
     private String link;
 
-    public Neeested() {
+    public Nested() {
     }
 
-    public Neeested(String description, String link) {
+    public Nested(String description, String link) {
         this.description = description;
         this.link = link;
     }
@@ -35,8 +36,8 @@ public class Neeested {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Neeested neeested)) return false;
-        return Objects.equals(getDescription(), neeested.getDescription()) && Objects.equals(getLink(), neeested.getLink());
+        if (!(o instanceof Nested nested)) return false;
+        return Objects.equals(getDescription(), nested.getDescription()) && Objects.equals(getLink(), nested.getLink());
     }
 
     @Override

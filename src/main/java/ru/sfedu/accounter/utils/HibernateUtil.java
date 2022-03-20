@@ -8,8 +8,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.lab2.model.Beeean;
-import ru.sfedu.accounter.lab2.model.Neeested;
+import ru.sfedu.accounter.lab2.model.Bean;
+import ru.sfedu.accounter.lab2.model.Nested;
 
 import java.io.File;
 
@@ -27,8 +27,8 @@ public class HibernateUtil {
             ServiceRegistry serviceRegistry =
                     new StandardServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).build();
             MetadataSources metadataSources = new MetadataSources(serviceRegistry);
-            metadataSources.addAnnotatedClass(Beeean.class);
-            metadataSources.addAnnotatedClass(Neeested.class);
+            metadataSources.addAnnotatedClass(Bean.class);
+            metadataSources.addAnnotatedClass(Nested.class);
             // TODO: этачо?
             // metadataSources.addResource("named-queries.hbm.xml");
             sessionFactory = metadataSources.buildMetadata().buildSessionFactory();
