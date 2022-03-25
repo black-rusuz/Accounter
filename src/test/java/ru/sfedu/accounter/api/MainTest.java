@@ -7,33 +7,48 @@ import ru.sfedu.accounter.Accounter;
 import ru.sfedu.accounter.utils.SampleData;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainTest extends SampleData {
     private static final Logger log = LogManager.getLogger(MainTest.class);
 
     @Test
-    public void test() throws IOException {
-//        testMainForLogs("XML");
-//        testMainForLogs("CSV");
+    public void test() {
+        testMainForLogs("XML");
+        testMainForLogs("CSV");
 //        testMainForLogs("JDBC");
     }
 
-    public void testMainForLogs(String dp) throws IOException {
-        Accounter.main(new String[]{dp, "MANAGEBALANCE"});
-        Accounter.main(new String[]{dp, "MANAGEBALANCE", "REPEAT", "21"});
-        Accounter.main(new String[]{dp, "MANAGEBALANCE", "PLAN", "22"});
+    public void testMainForLogs(String dp) {
+        List<String> list = List.of(
+                "MANAGEBALANCE",
+                "MANAGEBALANCE REPEAT 21",
+                "MANAGEBALANCE PLAN 22",
 
-        Accounter.main(new String[]{dp, "CALCULATEBALANCE"});
-        Accounter.main(new String[]{dp, "DISPLAYINCOMESANDOUTCOMES"});
-        Accounter.main(new String[]{dp, "REPEATTRANSACTION", "21"});
-        Accounter.main(new String[]{dp, "MAKEPLANBASEDONTRANSACTION", "21"});
+                "CALCULATEBALANCE",
+                "DISPLAYINCOMESANDOUTCOMES",
+                "REPEATTRANSACTION 21",
+                "MAKEPLANBASEDONTRANSACTION 21",
 
-        Accounter.main(new String[]{dp, "MANAGEPLANS"});
-        Accounter.main(new String[]{dp, "MANAGEPLANS", "31"});
-        Accounter.main(new String[]{dp, "MANAGEPLANS", "31", "TRUE"});
-        Accounter.main(new String[]{dp, "MANAGEPLANS", "32", "FALSE"});
+                "MANAGEPLANS",
+                "MANAGEPLANS 31",
+                "MANAGEPLANS 31 TRUE",
+                "MANAGEPLANS 32 FALSE",
 
-        Accounter.main(new String[]{dp, "DISPLAYPLANS"});
-        Accounter.main(new String[]{dp, "EXECUTEPLANNOW", "31"});
+                "DISPLAYPLANS",
+                "EXECUTEPLANNOW 31"
+        );
+        
+        list.forEach(s -> {
+            try {
+                Accounter.main(stringToArgs(dp, s));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    private String[] stringToArgs(String dp, String args) {
+        return String.format("%s %s", dp, args).split(" ");
     }
 }

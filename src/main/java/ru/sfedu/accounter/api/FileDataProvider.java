@@ -99,9 +99,9 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
-        deleteBalance(id);
-        appendBalance(balance);
-        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        List<Balance> list = getAllBalance();
+        list.set(list.indexOf(getBalanceById(balance.getId())), balance);
+        return write(list, Balance.class, Constants.METHOD_NAME_UPDATE);
     }
 
     @Override
@@ -144,9 +144,9 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
-        deleteIncome(id);
-        appendIncome(income);
-        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        List<Income> list = getAllIncome();
+        list.set(list.indexOf(getIncomeById(income.getId())), income);
+        return write(list, Income.class, Constants.METHOD_NAME_UPDATE);
     }
 
     @Override
@@ -189,9 +189,9 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
-        deleteOutcome(id);
-        appendOutcome(outcome);
-        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        List<Outcome> list = getAllOutcome();
+        list.set(list.indexOf(getOutcomeById(outcome.getId())), outcome);
+        return write(list, Outcome.class, Constants.METHOD_NAME_UPDATE);
     }
 
     @Override
@@ -234,8 +234,8 @@ public abstract class FileDataProvider extends AbstractDataProvider {
             log.warn(Constants.RESULT_MESSAGE_NOT_FOUND);
             return new Result(Result.State.Warning, Constants.RESULT_MESSAGE_NOT_FOUND);
         }
-        deletePlan(id);
-        appendPlan(plan);
-        return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
+        List<Plan> list = getAllPlan();
+        list.set(list.indexOf(getPlanById(plan.getId())), plan);
+        return write(list, Plan.class, Constants.METHOD_NAME_UPDATE);
     }
 }
