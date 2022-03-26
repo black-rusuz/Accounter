@@ -16,13 +16,13 @@ public class DataProviderHibernate {
     private static final Logger log = LogManager.getLogger(DataProviderHibernate.class);
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
-    public List<Bean> getAllEntity() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        List list = session.createEntityGraph(Bean.class).getAttributeNodeList();
-        session.close();
-        return list;
-    }
+//    public List<Bean> getAllEntity() {
+//        Session session = sessionFactory.openSession();
+//        session.beginTransaction();
+//        List list = session.createCriteria(Bean.class).list();
+//        session.close();
+//        return list;
+//    }
 
     public Bean getEntityById(long id) {
         Session session = sessionFactory.openSession();
@@ -35,7 +35,7 @@ public class DataProviderHibernate {
     public Bean appendEntity(Bean bean) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        bean = (Bean) session.save(bean);
+        bean.setId((Long) session.save(bean));
         session.getTransaction().commit();
         session.close();
         return bean;

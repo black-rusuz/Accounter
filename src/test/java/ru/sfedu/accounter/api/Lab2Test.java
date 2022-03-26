@@ -5,10 +5,13 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.sfedu.accounter.Constants;
 import ru.sfedu.accounter.lab2.api.DataProviderHibernate;
 import ru.sfedu.accounter.lab2.model.Bean;
 import ru.sfedu.accounter.lab2.model.Nested;
+import ru.sfedu.accounter.model.Result;
 
+import javax.persistence.OptimisticLockException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +27,38 @@ public class Lab2Test {
 
     @AfterEach
     public void cleanUp() {
-        dataProvider.deleteEntity(bean.getId());
+        if (dataProvider.getEntityById(bean.getId()) != null)
+            dataProvider.deleteEntity(bean.getId());
+    }
+
+//    @Test
+//    public void testGetAllPos() {
+//        log.info(bean);
+//        Bean b1 = dataProvider.appendEntity(bean);
+//        log.info(b1);
+//        Bean b2 = dataProvider.appendEntity(b1);
+//        log.info(b2);
+//        Assertions.assertEquals(List.of(dataProvider.getEntityById(b1.getId()), dataProvider.getEntityById(b2.getId())),
+//                dataProvider.getAllEntity());
+//        dataProvider.deleteEntity(b2.getId());
+//    }
+//
+//    @Test
+//    public void testGetAllNeg() {
+//        Bean b1 = dataProvider.appendEntity(bean);
+//        Assertions.assertNotEquals(List.of(b1), dataProvider.getAllEntity());
+//    }
+
+    @Test
+    public void testGetPos() {
+        bean = dataProvider.appendEntity(bean);
+        Assertions.assertEquals(bean, dataProvider.getEntityById(bean.getId()));
+    }
+
+    @Test
+    public void testGetNeg() {
+        bean = dataProvider.appendEntity(bean);
+        Assertions.assertNotEquals(new Bean(), dataProvider.getEntityById(bean.getId()));
     }
 
     @Test
@@ -38,36 +72,32 @@ public class Lab2Test {
     }
 
     @Test
-    public void testGetAllPos() {
-        Bean b1 = dataProvider.appendEntity(bean);
-        Bean b2 = dataProvider.appendEntity(bean);
-        Assertions.assertEquals(List.of(b1, b2), dataProvider.getAllEntity());
-        dataProvider.deleteEntity(b2.getId());
+    public void testDelPos() {
+        bean = dataProvider.appendEntity(bean);
+        Assertions.assertEquals(new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS),
+                dataProvider.deleteEntity(bean.getId()));
     }
 
     @Test
-    public void testGetAllNeg() {
-        Bean b1 = dataProvider.appendEntity(bean);
-        Assertions.assertNotEquals(List.of(b1), dataProvider.getAllEntity());
+    public void testDelNeg() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> dataProvider.deleteEntity(bean.getId()));
     }
 
     @Test
-    public void test3() {
-        log.info(dataProvider.getEntityById(1));
-    }
-
-    @Test
-    public void test4() {
-        log.info(dataProvider.deleteEntity(1));
-        bean.setId(5);
+    public void testUpdatePos() {
+        bean = dataProvider.appendEntity(bean);
         bean.setName("Newest");
+        dataProvider.updateEntity(bean);
+        Assertions.assertEquals(bean, dataProvider.getEntityById(bean.getId()));
     }
 
     @Test
-    public void test5() {
-        log.info(dataProvider.appendEntity(bean));
+    public void testUpdateNeg() {
+        bean = dataProvider.appendEntity(bean);
         bean.setId(5);
-        bean.setName("Newest");
-        log.info(dataProvider.updateEntity(bean));
+        Assertions.assertThrows(
+                OptimisticLockException.class,
+                () -> dataProvider.updateEntity(bean));
     }
 }
