@@ -1,4 +1,4 @@
-package ru.sfedu.accounter.lab1.api;
+package ru.sfedu.accounter.lab1;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +11,6 @@ import ru.sfedu.accounter.utils.HibernateUtil;
 import java.util.List;
 
 public class DataProviderHibernate {
-    //TODO: Убрать после наследования
     private static final Logger log = LogManager.getLogger(DataProviderHibernate.class);
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 

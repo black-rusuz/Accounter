@@ -1,52 +1,50 @@
-package ru.sfedu.accounter.lab2.api;
+package ru.sfedu.accounter.lab3.st;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.lab2.model.Bean;
+import ru.sfedu.accounter.lab3.st.bean.Income;
 import ru.sfedu.accounter.model.Result;
-import ru.sfedu.accounter.utils.HibernateUtil;
 
-import java.util.List;
-
-public class DataProviderHibernate {
-    private static final Logger log = LogManager.getLogger(DataProviderHibernate.class);
+public class DataProvider {
+    private static final Logger log = LogManager.getLogger(ru.sfedu.accounter.lab2.api.DataProviderHibernate.class);
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
-    public Bean getEntityById(long id) {
+    public Income getIncomeById(long id) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        Bean bean = session.get(Bean.class, id);
+        Income income = session.get(Income.class, id);
         session.close();
-        return bean;
+        return income;
     }
 
-    public Bean appendEntity(Bean bean) {
+    public Income appendIncome(Income income) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        bean.setId((Long) session.save(bean));
+        income.setId((Long) session.save(income));
         session.getTransaction().commit();
         session.close();
-        return bean;
+        return income;
     }
 
-    public Result deleteEntity(long id) {
+    public Result deleteIncome(long id) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.delete(getEntityById(id));
+        session.delete(getIncomeById(id));
         session.getTransaction().commit();
         session.close();
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 
-    public Result updateEntity(Bean bean) {
+    public Result updateIncome(Income income) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(bean);
+        session.update(income);
         session.getTransaction().commit();
         session.close();
         return new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS);
     }
 }
+

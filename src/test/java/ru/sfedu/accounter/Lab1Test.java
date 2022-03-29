@@ -1,10 +1,10 @@
-package ru.sfedu.accounter.api;
+package ru.sfedu.accounter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ru.sfedu.accounter.lab1.api.DataProviderHibernate;
+import ru.sfedu.accounter.lab1.DataProviderHibernate;
 import ru.sfedu.accounter.utils.SampleData;
 
 import java.util.ArrayList;
@@ -39,18 +39,9 @@ public class Lab1Test extends SampleData {
     @Test
     public void getTablesTestPos() {
         HashMap hm1 = new HashMap();
-        hm1.put("TABLE_NAME", "BALANCE");
+        hm1.put("TABLE_NAME", "BEAN");
         hm1.put("TABLE_SCHEMA", "PUBLIC");
-        HashMap hm2 = new HashMap();
-        hm2.put("TABLE_NAME", "INCOME");
-        hm2.put("TABLE_SCHEMA", "PUBLIC");
-        HashMap hm3 = new HashMap();
-        hm3.put("TABLE_NAME", "OUTCOME");
-        hm3.put("TABLE_SCHEMA", "PUBLIC");
-        HashMap hm4 = new HashMap();
-        hm4.put("TABLE_NAME", "PLAN");
-        hm4.put("TABLE_SCHEMA", "PUBLIC");
-        Assertions.assertEquals(List.of(hm1, hm2, hm3, hm4), dataProvider.getTables());
+        Assertions.assertEquals(List.of(hm1), dataProvider.getTables());
     }
 
     @Test
