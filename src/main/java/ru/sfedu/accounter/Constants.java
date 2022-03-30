@@ -29,6 +29,10 @@ public class Constants {
     public static final String ENVIRONMENT_VARIABLE = "props";
     public static final String HIBERNATE_VARIABLE = "hiber";
 
+    public static final String QUERY = "FROM %s";
+    public static final String HGAME = "game";
+    public static final String GET_COUNT = "select count(*) from %s";
+
     // CRUD
     public static final String RESULT_MESSAGE_WRITING_SUCCESS = "Records wrote successfully";
     public static final String RESULT_MESSAGE_WRITING_ERROR = "Error while writing: ";

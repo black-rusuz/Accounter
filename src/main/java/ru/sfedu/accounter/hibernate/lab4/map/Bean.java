@@ -11,7 +11,8 @@ public class Bean {
     @GeneratedValue
     private long id;
     @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyColumn(name = "Strings")
+    @MapKeyColumn(name = "Keys")
+    @Column(name = "Strings")
     private Map<String, String> strings;
 
     public Bean() {

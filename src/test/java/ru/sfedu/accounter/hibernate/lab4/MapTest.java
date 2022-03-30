@@ -8,7 +8,6 @@ import ru.sfedu.accounter.hibernate.lab4.map.Bean;
 import ru.sfedu.accounter.hibernate.lab4.map.DataProvider;
 import ru.sfedu.accounter.model.Result;
 
-import javax.persistence.PersistenceException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,8 +18,6 @@ public class MapTest {
 
     @AfterEach
     public void cleanUp() {
-        if (dataProvider.getBeanById(bean.getId()) != null)
-            dataProvider.deleteBean(bean.getId());
     }
 
     @Test

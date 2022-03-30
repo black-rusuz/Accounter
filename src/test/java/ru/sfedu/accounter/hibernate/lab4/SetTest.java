@@ -18,8 +18,6 @@ public class SetTest {
 
     @AfterEach
     public void cleanUp() {
-        if (dataProvider.getBeanById(bean.getId()) != null)
-            dataProvider.deleteBean(bean.getId());
     }
 
     @Test

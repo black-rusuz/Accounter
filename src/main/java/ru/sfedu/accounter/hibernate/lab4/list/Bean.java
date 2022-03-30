@@ -10,6 +10,7 @@ public class Bean {
     @GeneratedValue
     private long id;
     @ElementCollection(fetch = FetchType.EAGER)
+    @OrderColumn
     private List<String> strings;
 
     public Bean() {
