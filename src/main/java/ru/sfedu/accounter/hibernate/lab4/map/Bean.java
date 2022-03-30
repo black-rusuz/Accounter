@@ -2,6 +2,7 @@ package ru.sfedu.accounter.hibernate.lab4.map;
 
 import javax.persistence.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -9,14 +10,14 @@ public class Bean {
     @Id
     @GeneratedValue
     private long id;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyColumn(name = "Strings")
-    private HashMap<String, String> strings;
+    private Map<String, String> strings;
 
     public Bean() {
     }
 
-    public Bean(long id, HashMap<String, String> strings) {
+    public Bean(long id, Map<String, String> strings) {
         this.id = id;
         this.strings = strings;
     }
@@ -29,11 +30,11 @@ public class Bean {
         this.id = id;
     }
 
-    public HashMap<String, String> getStrings() {
+    public Map<String, String> getStrings() {
         return strings;
     }
 
-    public void setStrings(HashMap<String, String> strings) {
+    public void setStrings(Map<String, String> strings) {
         this.strings = strings;
     }
 

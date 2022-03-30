@@ -1,9 +1,6 @@
 package ru.sfedu.accounter.hibernate.lab4.list;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.List;
 
@@ -12,7 +9,7 @@ public class Bean {
     @Id
     @GeneratedValue
     private long id;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> strings;
 
     public Bean() {

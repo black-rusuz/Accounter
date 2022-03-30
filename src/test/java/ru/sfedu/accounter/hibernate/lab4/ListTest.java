@@ -34,7 +34,7 @@ public class ListTest {
     @Test
     public void testGetPos() {
         bean = dataProvider.appendBean(bean);
-        Assertions.assertEquals(bean, dataProvider.getBeanById(bean.getId()));
+        Assertions.assertEquals(bean.toString(), dataProvider.getBeanById(bean.getId()).toString());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ListTest {
         bean = dataProvider.appendBean(bean);
         bean.setStrings(List.of("Newest"));
         dataProvider.updateBean(bean);
-        Assertions.assertEquals(bean, dataProvider.getBeanById(bean.getId()));
+        Assertions.assertEquals(bean.toString(), dataProvider.getBeanById(bean.getId()).toString());
     }
 
     @Test

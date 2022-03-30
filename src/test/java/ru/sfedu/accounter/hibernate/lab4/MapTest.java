@@ -10,10 +10,11 @@ import ru.sfedu.accounter.model.Result;
 
 import javax.persistence.PersistenceException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MapTest {
     DataProvider dataProvider = new DataProvider();
-    HashMap<String, String> hm = new HashMap<>();
+    Map<String, String> hm = new HashMap<>();
     Bean bean = new Bean(1, hm);
 
     @AfterEach
@@ -78,9 +79,8 @@ public class MapTest {
     @Test
     public void testUpdateNeg() {
         bean = dataProvider.appendBean(bean);
-        bean.setId(5);
-        Assertions.assertThrows(
-                PersistenceException.class,
-                () -> dataProvider.updateBean(bean));
+        bean.setStrings(new HashMap<>());
+        Assertions.assertEquals(new Result(Result.State.Success, Constants.RESULT_MESSAGE_WRITING_SUCCESS),
+                dataProvider.updateBean(bean));
     }
 }
