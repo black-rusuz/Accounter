@@ -1,4 +1,4 @@
-package ru.sfedu.accounter.utils;
+package ru.sfedu.accounter.hibernate.lab4.map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,14 +8,14 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import ru.sfedu.accounter.Constants;
-import ru.sfedu.accounter.hibernate.lab2.model.Bean;
-import ru.sfedu.accounter.hibernate.lab2.model.Nested;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class HibernateUtil {
+    private static final Logger log = LogManager.getLogger(ru.sfedu.accounter.utils.HibernateUtil.class);
     private static SessionFactory sessionFactory;
-    private static final Logger log = LogManager.getLogger(HibernateUtil.class);
+    private static MetadataSources metadataSources;
 
     /**
      * Creates SessionFactory
@@ -26,11 +26,8 @@ public class HibernateUtil {
         if (sessionFactory == null) {
             ServiceRegistry serviceRegistry =
                     new StandardServiceRegistryBuilder().applySettings(getConfiguration().getProperties()).build();
-            MetadataSources metadataSources = new MetadataSources(serviceRegistry);
-            metadataSources.addAnnotatedClass(Bean.class);
-            metadataSources.addAnnotatedClass(Nested.class);
-            // TODO: непонятно что это ->
-            // metadataSources.addResource("named-queries.hbm.xml");
+            metadataSources = new MetadataSources(serviceRegistry);
+            addAnnotatedClass(Bean.class);
             sessionFactory = metadataSources.buildMetadata().buildSessionFactory();
         }
         return sessionFactory;
@@ -51,5 +48,9 @@ public class HibernateUtil {
                 log.error("Your Hibernate configuration file not found. Default loaded.");
         }
         return configuration;
+    }
+
+    private static void addAnnotatedClass(Class... classes) {
+        Arrays.stream(classes).forEach(c -> metadataSources.addAnnotatedClass(c));
     }
 }
