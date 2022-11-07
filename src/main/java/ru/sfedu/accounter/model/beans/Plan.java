@@ -61,7 +61,7 @@ public class Plan implements Serializable {
     //
 
     /**
-     * Set the value of id System.currenttimemillis()
+     * Set the value of id System.currentTimeMillis()
      */
     public void setId() {
         id = System.currentTimeMillis();

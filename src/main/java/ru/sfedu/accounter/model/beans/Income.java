@@ -4,7 +4,6 @@ import com.opencsv.bean.CsvBindByPosition;
 import org.simpleframework.xml.Element;
 import ru.sfedu.accounter.model.enums.IncomeCategory;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 
@@ -12,7 +11,7 @@ import java.util.Objects;
  * Class Income
  */
 @Element
-public class Income extends Transaction implements Serializable {
+public class Income extends Transaction {
 
     //
     // Fields
